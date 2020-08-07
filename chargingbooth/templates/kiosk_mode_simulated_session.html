@@ -1,14 +1,14 @@
 {% extends "kiosk_mode_defualt_layout.html" %}
 
 {% block content %}
-
 	<h1>Charging Booth Kiosk: Simulate Session</h1>
+
 	<h4>Pay: {{ setting.toggle_pay }}</h4>
 	<h4>Cost: {{ setting.cents_per_second }} cents/second</h4>
 	<h4>Session time: {{ setting.charge_time }} seconds</h4>
 
 	<div class="form-group btn btn-outline-info">
-		Start Charge Session
+		<a href="{{ url_for('kiosk_mode.session') }}">Start Charge Session</a>
 	</div>
 
 {% endblock %}

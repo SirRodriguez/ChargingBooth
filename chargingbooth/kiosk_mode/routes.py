@@ -24,6 +24,10 @@ def simulated_session():
 	setting = Settings.query.first()
 	return render_template('kiosk_mode_simulated_session.html', title='Simulate', setting=setting)
 
+@kiosk_mode.route("/kiosk_mode/session")
+def session():
+	return render_template('kiosk_mode_session.html')
+
 @kiosk_mode.route("/kiosk_mode/add_session", methods=['GET', 'POST'])
 def add_session():
 	start_route()
