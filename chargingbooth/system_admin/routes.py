@@ -150,21 +150,6 @@ def settings():
 
 	return render_template('system_admin_settings.html', title='Settings', form=form)
 
-@system_admin.route("/system_admin/toggle_pay")
-@login_required
-def toggle_pay():
-	return render_template('system_admin_toggle_pay.html', title='Payment')
-
-@system_admin.route("/system_admin/price")
-@login_required
-def price():
-	return render_template("system_admin_price.html", title='Price')
-
-@system_admin.route("/system_admin/charge_time")
-@login_required
-def charge_time():
-	return render_template("system_admin_charge_time.html", title='Charge Time')
-
 @system_admin.route("/system_admin/data")
 @login_required
 def view_data():

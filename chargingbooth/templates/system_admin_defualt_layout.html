@@ -31,9 +31,6 @@
               {% if current_user.is_authenticated %}
               <a class="nav-item nav-link" href="{{ url_for('system_admin.account') }}">Account</a>
               <a class="nav-item nav-link" href="{{ url_for('system_admin.settings') }}">Settings</a>
-              <a class="nav-item nav-link" href="{{ url_for('system_admin.toggle_pay') }}">Toggle Pay</a>
-              <a class="nav-item nav-link" href="{{ url_for('system_admin.price') }}">Price</a>
-              <a class="nav-item nav-link" href="{{ url_for('system_admin.charge_time') }}">Charge Time</a>
               <a class="nav-item nav-link" href="{{ url_for('system_admin.view_data') }}">Data</a>
               {% endif %}
             </div>
