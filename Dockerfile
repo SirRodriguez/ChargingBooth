@@ -1,17 +1,17 @@
-# pull official base image
-FROM python:3.8.1-slim-buster
+FROM ubuntu:16.04
 
-# set work directory
-WORKDIR /usr/src/app
+RUN apt-get update -y && \
+    apt-get install -y python-pip python-dev
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# We copy just the requirements.txt first to leverage Docker cache
+COPY ./requirements.txt /app/requirements.txt
 
-# install dependencies
-RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
+WORKDIR /app
+
 RUN pip install -r requirements.txt
 
-# copy project
-COPY . /usr/src/app/
+COPY . /app
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "app.py" ]
