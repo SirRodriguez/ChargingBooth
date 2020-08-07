@@ -1,0 +1,136 @@
+{% extends "kiosk_mode_defualt_layout.html" %}
+{% block content %}
+	<h1>Charging Booth Kiosk: Add Session</h1>
+
+
+	<div class="content-section">
+	  <div class="media">
+	    <div class="media-body">
+
+	    </div>
+	  </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Add Session</legend>
+
+                <!-- Duration -->
+                <div class="form-group">
+                    {{ form.duration.label(class="form-control-label") }}
+
+                    {% if form.duration.errors %}
+                        {{ form.duration(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.duration.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.duration(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Power Used -->
+                <div class="form-group">
+                    {{ form.power_used.label(class="form-control-label") }}
+
+                    {% if form.power_used.errors %}
+                        {{ form.power_used(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.power_used.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.power_used(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Amount Paid -->
+                <div class="form-group">
+                    {{ form.amount_paid.label(class="form-control-label") }}
+
+                    {% if form.amount_paid.errors %}
+                        {{ form.amount_paid(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.amount_paid.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.amount_paid(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Location -->
+                <div class="form-group">
+                    {{ form.location.label(class="form-control-label") }}
+
+                    {% if form.location.errors %}
+                        {{ form.location(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.location.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.location(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Port -->
+                <div class="form-group">
+                    {{ form.port.label(class="form-control-label") }}
+
+                    {% if form.port.errors %}
+                        {{ form.port(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.port.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.port(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Increment Size -->
+                <div class="form-group">
+                    {{ form.increment_size.label(class="form-control-label") }}
+
+                    {% if form.increment_size.errors %}
+                        {{ form.increment_size(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.increment_size.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.increment_size(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Increments -->
+                <div class="form-group">
+                    {{ form.increments.label(class="form-control-label") }}
+
+                    {% if form.increments.errors %}
+                        {{ form.increments(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.increments.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.increments(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+	</div>
+{% endblock content %}

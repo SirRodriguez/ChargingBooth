@@ -1,0 +1,218 @@
+{% extends "kiosk_mode_defualt_layout.html" %}
+
+{% block content %}
+
+	<h1>Charging Booth Kiosk: Add Random Sessions</h1>
+
+	<div class="content-section">
+	  <div class="media">
+	    <div class="media-body">
+
+	    </div>
+	  </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Add Random Sessions Ranges</legend>
+
+                <!-- Min Duration -->
+                <div class="form-group">
+                    {{ form.min_duration.label(class="form-control-label") }}
+
+                    {% if form.min_duration.errors %}
+                        {{ form.min_duration(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.min_duration.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.min_duration(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Max Duration -->
+                <div class="form-group">
+                    {{ form.max_duration.label(class="form-control-label") }}
+
+                    {% if form.max_duration.errors %}
+                        {{ form.max_duration(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.max_duration.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.max_duration(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Min Power Used -->
+                <div class="form-group">
+                    {{ form.min_power_used.label(class="form-control-label") }}
+
+                    {% if form.min_power_used.errors %}
+                        {{ form.min_power_used(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.min_power_used.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.min_power_used(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Max Power Used -->
+                <div class="form-group">
+                    {{ form.max_power_used.label(class="form-control-label") }}
+
+                    {% if form.max_power_used.errors %}
+                        {{ form.max_power_used(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.max_power_used.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.max_power_used(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Max Amount Paid -->
+                <div class="form-group">
+                    {{ form.min_amount_paid.label(class="form-control-label") }}
+
+                    {% if form.min_amount_paid.errors %}
+                        {{ form.min_amount_paid(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.min_amount_paid.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.min_amount_paid(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Min Amount Paid -->
+                <div class="form-group">
+                    {{ form.max_amount_paid.label(class="form-control-label") }}
+
+                    {% if form.max_amount_paid.errors %}
+                        {{ form.max_amount_paid(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.max_amount_paid.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.max_amount_paid(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Location -->
+                <div class="form-group">
+                    {{ form.location.label(class="form-control-label") }}
+
+                    {% if form.location.errors %}
+                        {{ form.location(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.location.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.location(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Min Port -->
+                <div class="form-group">
+                    {{ form.min_port.label(class="form-control-label") }}
+
+                    {% if form.min_port.errors %}
+                        {{ form.min_port(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.min_port.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.min_port(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Max Port -->
+                <div class="form-group">
+                    {{ form.max_port.label(class="form-control-label") }}
+
+                    {% if form.max_port.errors %}
+                        {{ form.max_port(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.max_port.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.max_port(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Min Increment Size -->
+                <div class="form-group">
+                    {{ form.min_increment_size.label(class="form-control-label") }}
+
+                    {% if form.min_increment_size.errors %}
+                        {{ form.min_increment_size(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.min_increment_size.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.min_increment_size(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Max Increment Size -->
+                <div class="form-group">
+                    {{ form.max_increment_size.label(class="form-control-label") }}
+
+                    {% if form.max_increment_size.errors %}
+                        {{ form.max_increment_size(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.max_increment_size.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.max_increment_size(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Number of Sessions -->
+                <div class="form-group">
+                    {{ form.num_sessions.label(class="form-control-label") }}
+
+                    {% if form.num_sessions.errors %}
+                        {{ form.num_sessions(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.num_sessions.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.num_sessions(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+	</div>
+
+{% endblock content %}

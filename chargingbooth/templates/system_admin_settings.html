@@ -1,0 +1,75 @@
+{% extends "system_admin_defualt_layout.html" %}
+
+{% block content %}
+
+	<h1>Charging Booth: Settings</h1>
+
+
+	<div class="content-section">
+	  <div class="media">
+	    <div class="media-body">
+<!-- 	      <h2 class="account-heading">Username: {{ current_user.username }}</h2>
+	      <p class="text-secondary">Email: {{ current_user.email }}</p> -->
+	    </div>
+	  </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Change Settings</legend>
+
+                <!-- Toggle Pay -->
+                <div class="form-group">
+                	{{ form.toggle_pay.label(class="form-control-label") }}
+
+                    {% if form.toggle_pay.errors %}
+                        {{ form.toggle_pay(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.toggle_pay.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.toggle_pay(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Cents per Second -->
+                <div class="form-group">
+                    {{ form.cents_per_second.label(class="form-control-label") }}
+                    {% if form.cents_per_second.errors %}
+                        {{ form.cents_per_second(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.cents_per_second.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.cents_per_second(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <!-- Charge Time -->
+                <div class="form-group">
+                    {{ form.charge_time.label(class="form-control-label") }}
+                    {% if form.charge_time.errors %}
+                        {{ form.charge_time(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.charge_time.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.charge_time(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+
+
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+	</div>
+
+{% endblock content %}
