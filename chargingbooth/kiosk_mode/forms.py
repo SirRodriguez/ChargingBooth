@@ -56,3 +56,12 @@ class RandomDataForm(FlaskForm):
 	def validate_num_sessions(self, num_sessions):
 		if num_sessions.data < 1:
 			raise ValidationError('Number of Sessions must be a possitive number.')
+
+
+class SessionForm(FlaskForm):
+	num_of_sessions = IntegerField('Number of sessions?', validators=[DataRequired()])
+	submit = SubmitField('Pay')
+
+	def validate_num_sessions(self, num_of_sessions):
+		if num_of_sessions.data < 1:
+			raise ValidationError('Must be greater than 0.')

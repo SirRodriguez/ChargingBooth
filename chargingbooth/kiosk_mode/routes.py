@@ -1,11 +1,12 @@
 import string
 import math
 import random
+from datetime import datetime
 from flask import render_template, Blueprint, redirect, url_for, flash, request
 from flask_login import current_user, logout_user
-from chargingbooth import db, bcrypt
+from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import Session, Settings
-from chargingbooth.kiosk_mode.forms import DataForm, RandomDataForm
+from chargingbooth.kiosk_mode.forms import DataForm, RandomDataForm, SessionForm
 from chargingbooth.kiosk_mode.utils import start_route
 
 kiosk_mode = Blueprint('kiosk_mode', __name__)
@@ -15,7 +16,7 @@ kiosk_mode = Blueprint('kiosk_mode', __name__)
 def home():
 	start_route()
 
-	return render_template('kiosk_mode_home.html', title='Kiosk Mode')
+	return render_template('kiosk_mode_home.html', title='Kiosk Mode', current_sessions=current_sessions)
 
 @kiosk_mode.route("/kiosk_mode/simulated_session")
 def simulated_session():
@@ -24,9 +25,23 @@ def simulated_session():
 	setting = Settings.query.first()
 	return render_template('kiosk_mode_simulated_session.html', title='Simulate', setting=setting)
 
-@kiosk_mode.route("/kiosk_mode/session")
+@kiosk_mode.route("/kiosk_mode/session", methods=['GET', 'POST'])
 def session():
-	return render_template('kiosk_mode_session.html')
+	start_route()
+
+	setting = Settings.query.first()
+	form = SessionForm()
+	if form.validate_on_submit():
+		amount_paid = setting.cents_per_second * setting.charge_time * form.num_of_sessions.data
+		location = "current_location"
+		port = "current_port"
+		increment_size = setting.charge_time
+		increments = form.num_of_sessions.data
+		current_sessions.add_session(amount_paid, location, port, increment_size, increments)
+		flash('You have created a session and you may now start charging.', 'success')
+		return redirect(url_for('kiosk_mode.home'))
+
+	return render_template('kiosk_mode_session.html', title='Session', form=form, setting=setting)
 
 @kiosk_mode.route("/kiosk_mode/add_session", methods=['GET', 'POST'])
 def add_session():

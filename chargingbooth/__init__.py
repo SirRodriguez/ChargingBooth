@@ -12,6 +12,10 @@ login_manager.login_view = 'system_admin.login'
 login_manager.login_message_category = 'info'
 mail = Mail()
 
+from chargingbooth.models import Sessions_Container, Local_Session
+
+current_sessions = Sessions_Container()
+
 
 
 def create_app(config_class=Config):

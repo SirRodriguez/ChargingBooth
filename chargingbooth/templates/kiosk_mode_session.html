@@ -4,4 +4,41 @@
 
 	<h1>Charging Booth Kiosk: Session</h1>
 
+	<div class="content-section">
+	  <div class="media">
+	    <div class="media-body">
+
+	    </div>
+	  </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">How many sessions?</legend>
+                <h5>
+                	Cost per Session: ${{ setting.cents_per_second * setting.charge_time / 100 }}
+               </h5>
+
+                <!-- Number of Sessions -->
+                <div class="form-group">
+                    {{ form.num_of_sessions.label(class="form-control-label") }}
+
+                    {% if form.num_of_sessions.errors %}
+                        {{ form.num_of_sessions(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.num_of_sessions.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.num_of_sessions(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+	</div>
+
 {% endblock content %}

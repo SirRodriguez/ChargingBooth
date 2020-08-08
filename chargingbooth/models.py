@@ -1,8 +1,15 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from chargingbooth import db, login_manager
 from flask_login import UserMixin
+from typing import List
+
+
+
+##################
+#### Database ####
+##################
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -48,3 +55,37 @@ class Settings(db.Model):
 	toggle_pay = db.Column(db.Boolean)
 	cents_per_second = db.Column(db.Integer) #Cents per Second
 	charge_time = db.Column(db.Integer) #Seconds
+
+
+###############
+#### Local ####
+###############
+
+
+class Local_Session:
+	def __init__(self, amount_paid, location, port, increment_size, increments):
+		self.date_initiated = datetime.utcnow()
+		self.amount_paid = amount_paid
+		self.location = location
+		self.port = port
+		self.increment_size = increment_size
+		self.increments = increments
+
+	def get_time_remaining(self):
+		total_seconds = self.increment_size * self.increments
+		elapsed_time = datetime.utcnow() - self.date_initiated
+		time_remain = timedelta(seconds=total_seconds) - elapsed_time
+
+		if time_remain < timedelta(seconds=0):
+			return "0:00:00"
+		else:
+			return str(time_remain).split(".")[0]
+
+
+
+class Sessions_Container:
+	def __init__(self):
+		self.local_sessions = list()
+
+	def add_session(self, amount_paid, location, port, increment_size, increments):
+		self.local_sessions.append(Local_Session(amount_paid, location, port, increment_size, increments))
