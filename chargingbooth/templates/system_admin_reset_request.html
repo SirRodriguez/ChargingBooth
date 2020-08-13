@@ -6,19 +6,26 @@
 			{{ form.hidden_tag() }}
 			<fieldset class="form-group">
 				<legend class="border-bottom mb-4">Reset Password</legend>
-				<div class="form-group">
-					{{ form.email.label(class="form-control-label") }}
-					{% if form.email.errors %}
-						{{ form.email(class="form-control form-control-lg is-invalid") }}
-						<div class="invalid-feedback">
-							{% for error in form.email.errors %}
-								<span>{{ error }}</span>
-							{% endfor %}
-						</div>
-					{% else %}
-						{{ form.email(class="form-control form-control-lg") }}
-					{% endif %}
-				</div>
+				
+				{% for field in form %}
+                    {% if field.type != "SubmitField" and field.id != "csrf_token" %}
+                        <div class="form-group">
+                            {{ field.label(class="form-control-label") }}
+
+                            {% if field.errors %}
+                                {{ field(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in field.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ field(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                
 			</fieldset>
 			<div class="form-group">
 				{{ form.submit(class="btn btn-outline-info") }}

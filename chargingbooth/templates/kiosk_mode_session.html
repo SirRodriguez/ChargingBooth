@@ -14,25 +14,31 @@
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">How many sessions?</legend>
-                <h5>
-                	Cost per Session: ${{ setting.cents_per_second * setting.charge_time / 100 }}
-               </h5>
 
-                <!-- Number of Sessions -->
-                <div class="form-group">
-                    {{ form.num_of_sessions.label(class="form-control-label") }}
+                {% if setting.toggle_pay %}
+                    <h5>Cost per Session: ${{ setting.cents_per_second * setting.charge_time / 100 }}</h5>
+                {% else %}
+                    <h5>Cost: Free</h5>
+                {% endif %}
 
-                    {% if form.num_of_sessions.errors %}
-                        {{ form.num_of_sessions(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.num_of_sessions.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
+                {% for field in form %}
+                    {% if field.type != "SubmitField" and field.id != "csrf_token" %}
+                        <div class="form-group">
+                            {{ field.label(class="form-control-label") }}
+
+                            {% if field.errors %}
+                                {{ field(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in field.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ field(class="form-control form-control-lg") }}
+                            {% endif %}
                         </div>
-                    {% else %}
-                        {{ form.num_of_sessions(class="form-control form-control-lg") }}
                     {% endif %}
-                </div>
+                {% endfor %}
 
             </fieldset>
             <div class="form-group">
