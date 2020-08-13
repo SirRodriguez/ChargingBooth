@@ -1,3 +1,5 @@
+import threading
+import time
 from datetime import datetime, timedelta
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -63,7 +65,7 @@ class Settings(db.Model):
 
 
 class Local_Session:
-	def __init__(self, amount_paid, location, port, increment_size, increments):
+	def __init__(self, amount_paid, location, port, increment_size, increments, index):
 		self.date_initiated = datetime.utcnow()
 		self.amount_paid = amount_paid
 		self.location = location
@@ -71,13 +73,19 @@ class Local_Session:
 		self.increment_size = increment_size
 		self.increments = increments
 
+		# When it needs to refer to itelf in the dictionary
+		self.index = index
+
+	def zero_time(self):
+		return "0:00:00"
+
 	def get_time_remaining(self):
 		total_seconds = self.increment_size * self.increments
 		elapsed_time = datetime.utcnow() - self.date_initiated
 		time_remain = timedelta(seconds=total_seconds) - elapsed_time
 
 		if time_remain < timedelta(seconds=0):
-			return "0:00:00"
+			return zero_time()
 		else:
 			return str(time_remain).split(".")[0]
 
@@ -85,7 +93,33 @@ class Local_Session:
 
 class Sessions_Container:
 	def __init__(self):
-		self.local_sessions = list()
+		self.local_sessions = dict()
+		self.index = 0
+		self.thread_pool = list()
 
 	def add_session(self, amount_paid, location, port, increment_size, increments):
-		self.local_sessions.append(Local_Session(amount_paid, location, port, increment_size, increments))
+		# define an index for the dictionary
+		if len(self.local_sessions.keys()) != 0:
+			self.index = self.index + 1
+		else:
+			self.index = 0
+		# Create the session
+		self.local_sessions[self.index] = Local_Session(amount_paid, location, port, increment_size, increments, self.index)
+
+		# Create a thread to handle the session and terminate when needed
+		sess = threading.Thread(target=self.handler, args=[self.index])
+		sess.start()
+		self.thread_pool.append(sess)
+
+
+	# Handler for the sessions
+	def handler(self, index):
+		running = True
+		while(running):
+			# Time has run out!
+			if(self.local_sessions[index].get_time_remaining() == self.local_sessions[index].zero_time()):
+				self.local_sessions.pop(index)
+				running = False
+
+			# Save CPU Time, Check every second.
+			time.sleep(1)

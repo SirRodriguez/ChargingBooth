@@ -2,7 +2,7 @@
 {% block content %}
 	<h1>Charging Booth Kiosk: Home</h1>
 
-	{% for session in current_sessions.local_sessions %}
+	{% for session in current_sessions.local_sessions.values() %}
 		<article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
