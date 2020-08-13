@@ -76,16 +76,25 @@ class Local_Session:
 		# When it needs to refer to itelf in the dictionary
 		self.index = index
 
+	# Will be changed later to check the amount of power used
+	def power_used(self):
+		power_constant = 1
+		return self.total_seconds() * power_constant
+
 	def zero_time(self):
 		return "0:00:00"
 
+	def total_seconds(self):
+		return self.increment_size * self.increments
+
+	def elapsed_time(self):
+		return datetime.utcnow() - self.date_initiated
+
 	def get_time_remaining(self):
-		total_seconds = self.increment_size * self.increments
-		elapsed_time = datetime.utcnow() - self.date_initiated
-		time_remain = timedelta(seconds=total_seconds) - elapsed_time
+		time_remain = timedelta(seconds=self.total_seconds()) - self.elapsed_time()
 
 		if time_remain < timedelta(seconds=0):
-			return zero_time()
+			return self.zero_time()
 		else:
 			return str(time_remain).split(".")[0]
 
@@ -94,6 +103,7 @@ class Local_Session:
 class Sessions_Container:
 	def __init__(self):
 		self.local_sessions = dict()
+		self.completed_sessions = list()
 		self.index = 0
 		self.thread_pool = list()
 
@@ -118,6 +128,7 @@ class Sessions_Container:
 		while(running):
 			# Time has run out!
 			if(self.local_sessions[index].get_time_remaining() == self.local_sessions[index].zero_time()):
+				self.completed_sessions.append(self.local_sessions[index])
 				self.local_sessions.pop(index)
 				running = False
 

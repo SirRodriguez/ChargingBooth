@@ -1,6 +1,6 @@
 from flask import render_template, Blueprint, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
-from chargingbooth import db, bcrypt
+from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import User, Session, Settings
 from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm, RequestRestForm,
 												RequestRestForm, ResetPasswordForm, SettingsForm)
@@ -156,3 +156,9 @@ def view_data():
 	page = request.args.get('page', 1, type=int)
 	sessions = Session.query.order_by(Session.date_initiated.desc()).paginate(page=page, per_page=10)
 	return render_template("system_admin_data.html", title="Data", sessions=sessions)
+
+@system_admin.route("/system_admin/local_data")
+@login_required
+def view_local_data():
+	sessions = current_sessions.completed_sessions
+	return render_template("system_admin_local_data.html", title="Local Data", sessions=sessions)
