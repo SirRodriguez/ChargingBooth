@@ -1,5 +1,19 @@
 {% extends "system_admin_defualt_layout.html" %}
 
 {% block content %}
-	<h1>Charging Booth: Main</h1>
+	<!-- <h1>Charging Booth: Main</h1> -->
+
+	<div class="col-md">
+		<div class="content-section">
+			<h3>Menu Options</h3>
+			<p>
+				<ul class="list-group">
+					<a href="{{ url_for('system_admin.account') }}"><li class="list-group-item list-group-item-light">Account</li></a>
+					<a href="{{ url_for('system_admin.settings') }}"><li class="list-group-item list-group-item-light">Settings</li></a>
+					<a href="{{ url_for('system_admin.view_data') }}"><li class="list-group-item list-group-item-light">Data</li></a>
+					<a href="{{ url_for('system_admin.view_local_data') }}"><li class="list-group-item list-group-item-light">Local Data</li></a>
+				</ul>
+			</p>
+		</div>
+	</div>
 {% endblock content %}
