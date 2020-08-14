@@ -1,12 +1,12 @@
 {% extends "system_admin_defualt_layout.html" %}
 {% block content %}
-	<h1>Charging Booth: Login</h1>
+	<!-- <h1>Charging Booth: Login</h1> -->
 
 	<div class="content-section">
 		<form method="POST" action="">
 			{{ form.hidden_tag() }}
 			<fieldset class="form-group">
-				<legend class="border-bottom mb-4">Log In</legend>
+				<legend class="border-bottom mb-4">System Admin: Log In</legend>
 				
 				{% for field in form %}
                     {% if field.type != "SubmitField" and field.id != "csrf_token" %}
@@ -36,10 +36,39 @@
 			</div>
 
 		</form>
+
 	</div>
 	<div class="border-top pt-3">
 		<small class="test-muted">
 			Need An Account? <a class="ml-2" href="{{ url_for('system_admin.register') }}">Sign Up Now</a>
 		</small>
 	</div>
+
 {% endblock content %}
+
+{% block side_content %}
+
+	<div class="col-md-4">
+      <div class="content-section">
+      	<h3>Redirect in:</h3>
+        <h3 id="time"></h3>
+      </div>
+    </div>
+
+    <script>
+    	var timer = setInterval(run_timer, 1000);
+    	var duration = 60; // seconds
+    	run_timer();
+
+    	function run_timer(){
+    		if(duration > 0){
+    			duration -= 1;
+    			var t = duration.toString()
+    			document.getElementById("time").innerHTML = t;
+    		}else{
+    			window.location.replace("/kiosk_mode");
+    		}
+    	}
+    </script>
+
+{% endblock side_content %}

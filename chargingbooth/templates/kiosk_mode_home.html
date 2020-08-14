@@ -1,17 +1,17 @@
 {% extends "kiosk_mode_defualt_layout.html" %}
 {% block content %}
-	<h1>Charging Booth Kiosk: Home</h1>
+  <h1>Charging Booth Kiosk: Home</h1>
 
-	{% for session in current_sessions.local_sessions.values() %}
-		<article class="media content-section">
+  {% for session in current_sessions.local_sessions.values() %}
+    <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="#">{{ session.port }}</a>
+              <a class="mr-2">{{ session.port }}</a>
               <small class="text-muted">Time Started: {{ session.date_initiated.strftime('%I:%M:%S %p') }}</small>
             </div>
             <h2><a class="article-title" href="#">Time Remaining: {{session.get_time_remaining()}}</a></h2>
           </div>
         </article>
-	{% endfor %}
+  {% endfor %}
 
 {% endblock content %}
