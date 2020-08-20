@@ -6,7 +6,7 @@
 
 <!-- CSS Files -->
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='kiosk_mode_main_css.css') }}">
 
 </head>
@@ -57,11 +57,13 @@
 
 <!-- This is the side bar start-->
 <div class="main">
-  <h6 align="right"><a href="{{ url_for('system_admin.home')}}"><i class="fa fa-home"></i></a></h6>
+  <p align="right" style="font-size: 75%"><a href="{{ url_for('system_admin.home')}}"><i class="material-icons">settings</i></a></p>
+
+  <p align="center" style="font-size: 75%"><b>Active Sessions</b></p>
 
 
   <!-- Flash messages -->
-  <main role="main" class="container">
+  <main role="main" class="container flash">
     <div class="row">
       <div class="col-md-8">
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -85,7 +87,7 @@
 
             <div class="article-metadata">
 
-              <p style="font-size: 60%"><b>Port Number: </b></p>
+              <p style="font-size: 60%"><b>Port: </b></p>
               <p class="port" style="font-size: 60%">{{ session.port }}</p>
 
               <p style="font-size: 60%"><b>Start Time: </b></p>
@@ -109,7 +111,24 @@
 </div>  
 
 <!-- JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='kiosk_mode_main_script.js') }}"></script>
+
+<!-- Flash Fade Out -->
+<script type="text/javascript">
+
+  var flash_fade = setTimeout(flash_fade_out, 5000);
+
+  function flash_fade_out(){
+  
+  $(document).ready(function(){
+    $("flash").ready(function(){
+      $("main").fadeOut(5000, "swing");
+    });
+  });
+}
+
+</script>
 
 
 </body>
