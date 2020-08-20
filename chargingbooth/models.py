@@ -98,6 +98,34 @@ class Local_Session:
 		else:
 			return str(time_remain).split(".")[0]
 
+	def get_final_time(self):
+		end_time = timedelta( seconds=( self.total_seconds() ), ) + self.date_initiated
+
+		with_date = str( end_time ).split(".")[0]
+
+		time_only = with_date.split(" ")[1]
+
+		# Fix to 12 hour clock
+		if(int(time_only.split(":")[0]) > 12 ): # if hour is greater than 12
+			new_hour = str(int(time_only.split(":")[0]) - 12)
+
+			time_only = new_hour + ":" + time_only.split(":", 1)[1]
+			time_only += " PM"
+
+		elif(int(time_only.split(":")[0]) == 12 ): # if it is 12 pm
+			time_only += " PM"
+
+		elif(int(time_only.split(":")[0]) == 0): # make 0 hour 12 am
+			new_hour = "12"
+
+			time_only = new_hour + ":" + time_only.split(":", 1)[1]
+			time_only += " AM"
+
+		else: # only add AM
+			time_only += " AM"
+
+		return time_only
+
 
 
 class Sessions_Container:
