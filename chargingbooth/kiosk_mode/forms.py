@@ -59,7 +59,7 @@ class RandomDataForm(FlaskForm):
 
 
 class SessionForm(FlaskForm):
-	num_of_sessions = IntegerField('Number of sessions?', validators=[DataRequired()])
+	num_of_sessions = IntegerField('Number of sessions', validators=[DataRequired()])
 	submit = SubmitField('Pay')
 
 	def validate_num_sessions(self, num_of_sessions):

@@ -8,6 +8,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
     {% if title %}
@@ -20,7 +22,7 @@
     <header class="site-header">
       <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
-          <a class="navbar-brand mr-4" href="{{ url_for('system_admin.home')}}">System Admin</a>
+          
           <a class="navbar-brand mr-4" href="{{ url_for('kiosk_mode.home') }}">Kiosk Mode</a>
 
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,13 +30,11 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{{ url_for('kiosk_mode.simulated_session') }}">Simulated Session</a>
-              <a class="nav-item nav-link" href="{{ url_for('kiosk_mode.add_session') }}">Add Session</a>
-              <a class="nav-item nav-link" href="{{ url_for('kiosk_mode.add_rand_session') }}">Add Random Sessions</a>
             </div>
 
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
+              <a class="navbar-brand mr-4" href="{{ url_for('system_admin.home')}}"><i class="fa fa-home"></i></a>
             </div>
           </div>
         </div>

@@ -13,7 +13,9 @@
         <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">How many sessions?</legend>
+                <legend class="border-bottom mb-4">Please enter how many sessions you would like to add.</legend>
+
+                <h5>Time per Session: {{ setting.charge_time }} seconds.</h5>
 
                 {% if setting.toggle_pay %}
                     <h5>Cost per Session: ${{ setting.cents_per_second * setting.charge_time / 100 }}</h5>
@@ -21,6 +23,7 @@
                     <h5>Cost: Free</h5>
                 {% endif %}
 
+                <!-- Form -->
                 {% for field in form %}
                     {% if field.type != "SubmitField" and field.id != "csrf_token" %}
                         <div class="form-group">
