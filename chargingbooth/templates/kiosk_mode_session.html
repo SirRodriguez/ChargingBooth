@@ -50,4 +50,20 @@
         </form>
 	</div>
 
+
+    <!-- Go back to "kisok mode" timer -->
+    <script>
+        var timer = setInterval(run_timer, 1000);
+        var duration = 120; // seconds (2 min)
+        run_timer();
+
+        function run_timer(){
+            if(duration > 0){
+                duration -= 1;
+            }else{
+                window.location.replace("/kiosk_mode");
+            }
+        }
+    </script>
+
 {% endblock content %}
