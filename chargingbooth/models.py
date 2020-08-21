@@ -43,7 +43,7 @@ class User(db.Model, UserMixin):
 class Session(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	duration = db.Column(db.Integer) #Seconds
-	power_used = db.Column(db.Float) #Watts
+	power_used = db.Column(db.Float) #Watts per second
 	amount_paid = db.Column(db.Integer) #Cents
 	date_initiated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 	location = db.Column(db.String(100))
