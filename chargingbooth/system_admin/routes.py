@@ -171,7 +171,8 @@ def slide_show_pics():
 
 	form = SlideShowPicsForm()
 	if form.validate_on_submit():
-		pass
+		pic_files.save_file(form.picture.data)
+		flash('Picture has been uploaded', 'success')
 
 
 	return render_template("system_admin_slide_show_pics.html", title="Slide Show Pictures", form=form, 

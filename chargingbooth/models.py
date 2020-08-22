@@ -175,3 +175,10 @@ class PFI:
 
 	def get_copy(self):
 		return self.pic_files.copy()
+
+	def save_file(self, file):
+		#f_name, f_ext = os.path.splittext(file.filename)
+		file_path = os.path.join(current_app.root_path, 'static/picture_files', file.filename)
+		file.save(file_path)
+
+		self.pic_files.append(file.filename)
