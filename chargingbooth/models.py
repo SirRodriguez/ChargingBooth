@@ -1,3 +1,4 @@
+import os
 import threading
 import time
 from datetime import datetime, timedelta
@@ -6,6 +7,8 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from chargingbooth import db, login_manager
 from flask_login import UserMixin
 from typing import List
+from os import listdir
+from os.path import isfile, join
 
 
 
@@ -162,3 +165,13 @@ class Sessions_Container:
 
 			# Save CPU Time, Check every second.
 			time.sleep(1)
+
+# Picture File Interface
+class PFI:
+	# Starts by grabbing the files and putting them in a list
+	def __init__(self):
+		files_path = os.path.join(current_app.root_path, 'static/picture_files')
+		self.pic_files = [f for f in listdir(files_path) if isfile(join(files_path, f))]
+
+	def get_copy(self):
+		return self.pic_files.copy()

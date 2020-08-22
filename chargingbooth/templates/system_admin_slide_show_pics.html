@@ -1,0 +1,32 @@
+{% extends "system_admin_defualt_layout.html" %}
+
+{% block content %}
+	<h1>System Admin: Slide Show Pics</h1>
+
+
+	<form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Pictuer Upload</legend>
+            <div class="form-group">
+                {{ form.picture.label() }}
+                {{ form.picture(class="form-control-file") }}
+                {% if form.picture.errors %}
+                	{% for error in form.picture.errors %}
+                        <span class="text-danger">{{ error }}</span></br>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+
+    <div>
+    	{% for pic_file in pic_files %}
+    		<img src="{{ url_for('static', filename='picture_files/' + pic_file) }}">
+    	{% endfor %}
+    </div>
+
+{% endblock content %}

@@ -1,9 +1,10 @@
 from flask import render_template, Blueprint, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from chargingbooth import db, bcrypt, current_sessions
-from chargingbooth.models import User, Session, Settings
-from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm, RequestRestForm,
-												RequestRestForm, ResetPasswordForm, SettingsForm)
+from chargingbooth.models import User, Session, Settings, PFI
+from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
+												RequestRestForm, RequestRestForm, ResetPasswordForm, 
+												SettingsForm, SlideShowPicsForm)
 from chargingbooth.system_admin.utils import send_reset_email
 
 
@@ -162,3 +163,16 @@ def view_data():
 def view_local_data():
 	sessions = current_sessions.completed_sessions
 	return render_template("system_admin_local_data.html", title="Local Data", sessions=sessions)
+
+@system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
+@login_required
+def slide_show_pics():
+	pic_files = PFI()
+
+	form = SlideShowPicsForm()
+	if form.validate_on_submit():
+		pass
+
+
+	return render_template("system_admin_slide_show_pics.html", title="Slide Show Pictures", form=form, 
+							pic_files=pic_files.get_copy())

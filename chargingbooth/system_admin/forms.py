@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, Email
 from flask_login import current_user
@@ -69,3 +70,8 @@ class SettingsForm(FlaskForm):
 	cents_per_second = IntegerField('Price (cents/sec)', validators=[DataRequired()])
 	charge_time = IntegerField('Allowed Charge Time (sec)', validators=[DataRequired()])
 	submit = SubmitField('Update Settings')
+
+# Slide Show Pictures
+class SlideShowPicsForm(FlaskForm):
+	picture = FileField('Upload Picture', validators=[FileAllowed(['jpg', 'png'])])
+	submit = SubmitField('Upload Picture')

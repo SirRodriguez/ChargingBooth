@@ -8,6 +8,7 @@ from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import Session, Settings
 from chargingbooth.kiosk_mode.forms import DataForm, RandomDataForm, SessionForm
 from chargingbooth.kiosk_mode.utils import start_route
+from chargingbooth.models import PFI
 
 kiosk_mode = Blueprint('kiosk_mode', __name__)
 
@@ -16,7 +17,10 @@ kiosk_mode = Blueprint('kiosk_mode', __name__)
 def home():
 	start_route()
 
-	return render_template('kiosk_mode_home.html', title='Kiosk Mode', current_sessions=current_sessions)
+	pic_files = PFI()
+
+	return render_template('kiosk_mode_home.html', title='Kiosk Mode', current_sessions=current_sessions,
+							pic_files=pic_files.get_copy())
 
 @kiosk_mode.route("/kiosk_mode/simulated_session")
 def simulated_session():
