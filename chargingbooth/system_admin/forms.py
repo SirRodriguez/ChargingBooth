@@ -73,5 +73,5 @@ class SettingsForm(FlaskForm):
 
 # Slide Show Pictures
 class SlideShowPicsForm(FlaskForm):
-	picture = FileField('Upload Picture', validators=[FileAllowed(['jpg', 'png'])])
+	picture = FileField('Upload Picture', validators=[FileAllowed(['jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'png'])])
 	submit = SubmitField('Upload Picture')
