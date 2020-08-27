@@ -4,7 +4,7 @@ from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import User, Session, Settings, PFI
 from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
 												RequestRestForm, RequestRestForm, ResetPasswordForm, 
-												SettingsForm, SlideShowPicsForm)
+												SettingsForm, SlideShowPicsForm, RemovePictureForm)
 from chargingbooth.system_admin.utils import send_reset_email
 
 
@@ -167,13 +167,38 @@ def view_local_data():
 @system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
 @login_required
 def slide_show_pics():
+
+	remove_pic_form = RemovePictureForm()
+	if remove_pic_form.validate_on_submit() and remove_pic_form.removals.data != "":
+		flash('Picture Files have been removed', 'success')
+
+	return render_template("system_admin_slide_show_pics.html", title="Slide Show Pictures")
+
+@system_admin.route("/system_admin/add_slides", methods=['GET', 'POST'])
+@login_required
+def upload_image():
 	pic_files = PFI()
 
 	form = SlideShowPicsForm()
 	if form.validate_on_submit():
 		pic_files.save_file(form.picture.data)
 		flash('Picture has been uploaded', 'success')
+		return redirect(url_for('system_admin.upload_image'))
 
-
-	return render_template("system_admin_slide_show_pics.html", title="Slide Show Pictures", form=form, 
+	return render_template("system_admin_upload_image.html", title="Upload Image", form=form,
 							pic_files=pic_files.get_copy())
+
+@system_admin.route("/system_admin/remove_slides", methods=['GET', 'POST'])
+@login_required
+def remove_image():
+	pic_files = PFI()
+	pic_files_length = pic_files.get_length()
+
+	form = RemovePictureForm()
+	if form.validate_on_submit():
+		pic_files.remove_images(form.removals.data)
+		flash("Images have been deleted!", 'success')
+		return redirect(url_for('system_admin.remove_image'))
+
+	return render_template("system_admin_remove_image.html", title="Remove Images", form=form,
+							pic_files=pic_files.get_copy(), pic_files_length=pic_files_length)

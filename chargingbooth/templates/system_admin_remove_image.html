@@ -1,0 +1,42 @@
+{% extends "system_admin_defualt_layout.html" %}
+
+{% block content %}
+
+
+	<form method="POST" action="" enctype="multipart/form-data">
+	    {{ form.hidden_tag() }}
+	    <fieldset class="form-group">
+	        <legend class="border-bottom mb-4">Picture Removal</legend>
+	        <div class="form-group">
+	            {{ form.removals.label() }}
+	            {{ form.removals(class="form-control-file") }}
+	            {% if form.removals.errors %}
+	            	{% for error in form.removals.errors %}
+	                    <span class="text-danger">{{ error }}</span></br>
+	                {% endfor %}
+	            {% endif %}
+	        </div>
+	    </fieldset>
+	    <div class="form-group">
+	        {{ form.submit(class="btn btn-outline-info") }}
+	    </div>
+
+	    <p id="demo"></p>
+	</form>
+
+	<div class="row">
+
+      {% for i in range(pic_files_length) %}
+        
+        <ul>
+          <div>
+          	<legend style="text-align: center">Image number: {{ i + 1 }}</legend>
+            <img src="{{ url_for('static', filename='picture_files/' + pic_files[i]) }}" style="width: 100%; max-width: 300px; height: auto">
+          </div>
+      	</ul>
+        
+    	{% endfor %}
+
+    </div>
+
+{% endblock content %}

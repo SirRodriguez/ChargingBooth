@@ -170,8 +170,7 @@ class Sessions_Container:
 class PFI:
 	# Starts by grabbing the files and putting them in a list
 	def __init__(self):
-		files_path = os.path.join(current_app.root_path, 'static/picture_files')
-		self.pic_files = [f for f in listdir(files_path) if isfile(join(files_path, f))]
+		self.set_up()
 
 	def get_copy(self):
 		return self.pic_files.copy()
@@ -181,4 +180,23 @@ class PFI:
 		file_path = os.path.join(current_app.root_path, 'static/picture_files', file.filename)
 		file.save(file_path)
 
-		self.pic_files.append(file.filename)
+		# Reset the pic_files
+		self.set_up()
+
+	def remove_images(self, file_numbers): # File numbers will come index starting at 1 rather than 0
+		index_list = file_numbers.split(",")
+		for i in index_list:
+			if i.isnumeric():
+				index = int(i)-1
+				if index >= 0 and index < len(self.pic_files):
+					file_path = os.path.join(current_app.root_path, "static/picture_files/", self.pic_files[index])
+					os.remove(file_path)
+					# Reset the pic_files
+					self.set_up()
+
+	def get_length(self):
+		return len(self.pic_files)
+
+	def set_up(self):
+		files_path = os.path.join(current_app.root_path, 'static/picture_files')
+		self.pic_files = [f for f in listdir(files_path) if isfile(join(files_path, f))]
