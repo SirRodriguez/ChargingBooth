@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='kiosk_mode_main_css.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 </head>
@@ -95,7 +96,14 @@
 
 <!-- This is the side bar start-->
 <div class="main">
-  <p align="right" style="font-size: 75%"><a href="{{ url_for('system_admin.home')}}"><i class="material-icons">settings</i></a></p>
+  <p style="font-size: 75%">
+    {% if current_sessions.has_sessions() != 0 %}
+      <div id="battery" class="fa"></div>
+    {% endif %}
+    <a href="{{ url_for('system_admin.home')}}">
+      <i class="material-icons">settings</i>
+    </a>
+  </p>
 
   <p align="center" style="font-size: 75%"><b>Session</b></p>
 
