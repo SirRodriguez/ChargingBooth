@@ -15,12 +15,52 @@
 <body>
 
 
+
 <!-- This is the slide show part -->
 <div class="sidenav">
   
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    {% if setting.toggle_pay %}
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>Confirm Payment</h2>
+        </div>
+        <div class="modal-body">
+          <p>Session cost: ${{ setting.cents_per_second / 100}}</p>
+          <p>Session Time: {{ setting.charge_time }} seconds</p>
+        </div>
+        <div class="modal-footer">
+          <button id="confim" class="block_button"><a href="{{ url_for('kiosk_mode.confirm_payment') }}">Confirm</a></button>
+        </div>
+      </div>
+
+    {% else %}
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>Confirm Session</h2>
+        </div>
+        <div class="modal-body">
+          <p>Session Time: {{ setting.charge_time }} seconds</p>
+        </div>
+        <div class="modal-footer">
+          <button id="confim" class="block_button"><a href="{{ url_for('kiosk_mode.make_session') }}">Confirm</a></button>
+        </div>
+      </div>
+
+    {% endif %}
+
+  </div>
 
   <div class="slideshow-container">
 
+    <!-- Show the Images -->
     {% for pic_file in pic_files %}
       <div class="mySlides fade">
         <!-- <div class="numbertext">1 / 3</div> -->
@@ -31,23 +71,24 @@
 
 
   
-
+  <!-- Left and Right arrows for the Slideshow -->
   <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
   <a class="next" onclick="plusSlides(1)">&#10095;</a>
 
   </div>
   <br>
 
+  <!-- Dots under Slide Show -->
   <div style="text-align:left">
     {% for _ in pic_files %}
       <span class="dot"></span>
     {% endfor %}
-    <!-- <span class="dot" onclick="currentSlide(1)"></span> 
-    <span class="dot" onclick="currentSlide(2)"></span> 
-    <span class="dot" onclick="currentSlide(3)"></span>  -->
   </div>
 
-  <div class="btn btn-info" style="text-align: center"><a href="{{ url_for('kiosk_mode.session') }}">Click To Start a Session</a></div>
+  <!-- Trigger/Open The Modal -->
+  <div id="Btn" class="btn btn-info" style="text-align: center"><a href="#">Click To Start A Session</a></div>
+
+  <div id="progBtn" class="btn btn-info" style="text-align: center; display: none; font-size: 200%">Session In Progress</div>
 
 </div>
 
@@ -56,76 +97,103 @@
 <div class="main">
   <p align="right" style="font-size: 75%"><a href="{{ url_for('system_admin.home')}}"><i class="material-icons">settings</i></a></p>
 
-  <p align="center" style="font-size: 75%"><b>Active Sessions</b></p>
+  <p align="center" style="font-size: 75%"><b>Session</b></p>
 
 
-  <!-- Flash messages -->
-  <main role="main" class="container flash">
-    <div class="row">
-      <div class="col-md-8">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }}" style="font-size: 20px; background-color: #9acd32">
-            {{ message }}
+  <!-- Flash Message -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+
+      <div id="FlashModal" class="modal">
+
+      <!-- Modal content -->
+        <div class="modal-content">
+          <div class="modal-header">
+            <span class="close">&times;</span>
+            <h5 style="text-align: center;">
+              {% for category, message in messages %}
+                {{ message }}
+              {% endfor %}
+            </h5>
           </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+          <div class="modal-body">
+            <p style="display: none">Body</p>
+          </div>
+          <div class="modal-footer">
+            <h5 style="display: none; text-align: center;">Click Anywhere To Continue</h5>
+          </div>
+        </div>
       </div>
-    </div>
-  </main>
+
+    {% endif %}
+  {% endwith %}
 
 
-  <!-- The Sessions -->
+  <!-- The Session -->
   {% for session in current_sessions.local_sessions.values() %}
     <article class="media content-section">
-          <div class="media-body">
+      <div class="media-body">
 
-            <div class="article-metadata">
+        <div class="article-metadata">
 
-              <p style="font-size: 60%"><b>Port: </b></p>
-              <p class="port" style="font-size: 60%">{{ session.port }}</p>
+          <!-- Commented for now since there will only be one port -->
+          <!-- <p style="font-size: 60%"><b>Port: </b></p>
+          <p class="port" style="font-size: 60%">{{ session.port }}</p> -->
 
-              <p style="font-size: 60%"><b>Start Time: </b></p>
-              <p class="start_time" style="font-size: 60%">{{ session.date_initiated.strftime('%I:%M:%S %p') }}</p>
+          <p style="font-size: 60%"><b>Start Time: </b></p>
+          <p class="start_time" style="font-size: 60%">{{ session.date_initiated.strftime('%I:%M:%S %p') }}</p>
 
-              <p style="font-size: 60%"><b>End Time: </b></p>
-              <p class="final_time" style="font-size: 60%">{{session.get_final_time()}}</p>        
+          <p style="font-size: 60%"><b>End Time: </b></p>
+          <p class="final_time" style="font-size: 60%">{{session.get_final_time()}}</p>        
 
-            </div>
+        </div>
 
-            <div>
+        <div>
 
-              <p style="font-size: 60%"><b>Time Remaining: </b></p>
-              <p class="time_remaining" style="font-size: 60%">{{session.get_time_remaining()}}</p>
+          <p style="font-size: 60%"><b>Time Remaining: </b></p>
+          <p class="time_remaining" style="font-size: 60%">{{session.get_time_remaining()}}</p>
 
-            </div>
+        </div>
 
-          </div>
-        </article>
+      </div>
+    </article>
   {% endfor %}
+
+  <!-- If there is no session active -->
+  {% if current_sessions.has_sessions() == 0 %}
+    <article class="media content-section">
+      <div class="media-body">
+
+        <div class="article-metadata">
+
+          <!-- Commented for now since there will only be one port -->
+          <!-- <p style="font-size: 60%"><b>Port: </b></p>
+          <p class="port" style="font-size: 60%">None</p> -->
+
+          <p style="font-size: 60%"><b>Start Time: </b></p>
+          <p class="start_time" style="font-size: 60%">None</p>
+
+          <p style="font-size: 60%"><b>End Time: </b></p>
+          <p class="final_time" style="font-size: 60%">None</p>        
+
+        </div>
+
+        <div>
+
+          <p style="font-size: 60%"><b>Time Remaining: </b></p>
+          <p class="None" style="font-size: 60%">None</p>
+
+        </div>
+
+      </div>
+    </article>
+  {% endif %}
+
 </div>  
 
 <!-- JavaScript -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="{{ url_for('static', filename='kiosk_mode_main_script.js') }}"></script>
-
-<!-- Flash Fade Out -->
-<script type="text/javascript">
-
-  var flash_fade = setTimeout(flash_fade_out, 5000);
-
-  function flash_fade_out(){
-  
-  $(document).ready(function(){
-    $("flash").ready(function(){
-      $("main").fadeOut(5000, "swing");
-    });
-  });
-}
-
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='kiosk_mode_main_script.js') }}"></script>
 
 
 </body>

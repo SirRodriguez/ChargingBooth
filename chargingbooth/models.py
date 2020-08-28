@@ -166,6 +166,12 @@ class Sessions_Container:
 			# Save CPU Time, Check every second.
 			time.sleep(1)
 
+	def has_sessions(self):
+		if len(self.local_sessions) > 0:
+			return True
+		else:
+			return False
+
 # Picture File Interface
 class PFI:
 	# Starts by grabbing the files and putting them in a list

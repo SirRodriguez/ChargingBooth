@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, FloatField, StringField, SubmitField
-from wtforms.validators import DataRequired, ValidationError
+from wtforms.validators import DataRequired, ValidationError, Length
 from chargingbooth.models import Session
 
 class DataForm(FlaskForm):
@@ -65,3 +65,6 @@ class SessionForm(FlaskForm):
 	def validate_num_sessions(self, num_of_sessions):
 		if num_of_sessions.data < 1:
 			raise ValidationError('Must be greater than 0.')
+
+class ConfirmSessionForm(FlaskForm):
+	submit = SubmitField('Confirm')
