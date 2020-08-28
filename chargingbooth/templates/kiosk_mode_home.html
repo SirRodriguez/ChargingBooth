@@ -96,10 +96,7 @@
 
 <!-- This is the side bar start-->
 <div class="main">
-  <p style="font-size: 75%">
-    {% if current_sessions.has_sessions() != 0 %}
-      <div id="battery" class="fa"></div>
-    {% endif %}
+  <p style="font-size: 75%; text-align: right">
     <a href="{{ url_for('system_admin.home')}}">
       <i class="material-icons">settings</i>
     </a>
@@ -141,6 +138,8 @@
   {% for session in current_sessions.local_sessions.values() %}
     <article class="media content-section">
       <div class="media-body">
+
+        <div id="battery" class="fa"></div>
 
         <div class="article-metadata">
 
