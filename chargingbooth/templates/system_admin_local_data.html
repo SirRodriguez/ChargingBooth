@@ -4,7 +4,7 @@
 
 	<h1>System Admin: Local Data</h1>
 
-	{% for session in sessions %}
+	{% for session in current_sessions.local_sessions.values() %}
 
 		<article class="media content-section">
 			<div class="media-body">

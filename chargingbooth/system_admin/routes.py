@@ -161,8 +161,8 @@ def view_data():
 @system_admin.route("/system_admin/local_data")
 @login_required
 def view_local_data():
-	sessions = current_sessions.completed_sessions
-	return render_template("system_admin_local_data.html", title="Local Data", sessions=sessions)
+	return render_template("system_admin_local_data.html", title="Local Data", 
+							current_sessions=current_sessions)
 
 @system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
 @login_required
