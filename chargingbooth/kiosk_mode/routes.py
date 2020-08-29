@@ -7,7 +7,7 @@ from flask_login import current_user, logout_user
 from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import Session, Settings
 from chargingbooth.kiosk_mode.forms import DataForm, RandomDataForm, SessionForm, ConfirmSessionForm
-from chargingbooth.kiosk_mode.utils import start_route
+from chargingbooth.kiosk_mode.utils import start_route, get_offset_dates_initiated, get_offset_dates_end
 from chargingbooth.models import PFI
 
 kiosk_mode = Blueprint('kiosk_mode', __name__)
@@ -20,7 +20,17 @@ def home():
 	pic_files = PFI()
 	setting = Settings.query.first()
 
-	return render_template('kiosk_mode_home.html', title='Kiosk Mode', current_sessions=current_sessions,
+	sessions = current_sessions.local_sessions.values()
+	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
+	date_end_str = get_offset_dates_end(sessions=sessions, time_offset=Settings.query.first().time_offset)
+
+	print(date_end_str)
+
+	sessions_and_dates = zip(sessions, date_strings, date_end_str)
+
+	return render_template('kiosk_mode_home.html', title='Kiosk Mode', 
+							current_sessions=current_sessions,
+							sessions_and_dates=sessions_and_dates,
 							pic_files=pic_files.get_copy(), setting=setting)
 
 

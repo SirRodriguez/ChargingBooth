@@ -135,7 +135,7 @@
 
 
   <!-- The Session -->
-  {% for session in current_sessions.local_sessions.values() %}
+  {% for session, date, date_end in sessions_and_dates %}
     <article class="media content-section">
       <div class="media-body">
 
@@ -148,10 +148,10 @@
           <p class="port" style="font-size: 60%">{{ session.port }}</p> -->
 
           <p style="font-size: 60%"><b>Start Time: </b></p>
-          <p class="start_time" style="font-size: 60%">{{ session.date_initiated.strftime('%I:%M:%S %p') }}</p>
+          <p class="start_time" style="font-size: 60%">{{ date }}</p>
 
           <p style="font-size: 60%"><b>End Time: </b></p>
-          <p class="final_time" style="font-size: 60%">{{session.get_final_time()}}</p>        
+          <p class="final_time" style="font-size: 60%">{{ date_end }}</p>        
 
         </div>
 

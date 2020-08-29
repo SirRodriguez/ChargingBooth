@@ -102,6 +102,9 @@ class Local_Session:
 		else:
 			return str(time_remain).split(".")[0]
 
+	def get_end_time(self):
+		return timedelta( seconds=( self.total_seconds() ), ) + self.date_initiated
+
 	def get_final_time(self):
 		end_time = timedelta( seconds=( self.total_seconds() ), ) + self.date_initiated
 

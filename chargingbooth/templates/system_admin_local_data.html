@@ -4,12 +4,12 @@
 
 	<h1>System Admin: Local Data</h1>
 
-	{% for session in current_sessions.local_sessions.values() %}
+	{% for session, date in sessions_and_dates %}
 
 		<article class="media content-section">
 			<div class="media-body">
 				<div class="article-metadata">
-					<h5 class="mr-2">Date Initiated: {{ session.date_initiated.strftime('%b %d, %Y - %I:%M:%S %p') }}</h5>
+					<h5 class="mr-2">Date Initiated: {{date}}</h5>
 				</div>
 
 				<p class="article-content">Duration: {{ session.total_seconds() }} Seconds</p>

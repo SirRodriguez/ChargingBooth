@@ -5,7 +5,7 @@ from chargingbooth.models import User, Session, Settings, PFI
 from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
 												RequestRestForm, RequestRestForm, ResetPasswordForm, 
 												SettingsForm, SlideShowPicsForm, RemovePictureForm)
-from chargingbooth.system_admin.utils import send_reset_email
+from chargingbooth.system_admin.utils import send_reset_email, get_offset_dates_initiated
 
 
 system_admin = Blueprint('system_admin', __name__)
@@ -157,14 +157,23 @@ def settings():
 @login_required
 def view_data():
 	page = request.args.get('page', 1, type=int)
+
 	sessions = Session.query.order_by(Session.date_initiated.desc()).paginate(page=page, per_page=10)
-	return render_template("system_admin_data.html", title="Data", sessions=sessions)
+	date_strings = get_offset_dates_initiated(sessions=sessions.items,
+									time_offset=Settings.query.first().time_offset)
+
+	sessions_and_dates = zip(sessions.items, date_strings) # Pack them together to iterate simultaniously
+	return render_template("system_admin_data.html", title="Data", sessions=sessions, sessions_and_dates=sessions_and_dates)
 
 @system_admin.route("/system_admin/local_data")
 @login_required
 def view_local_data():
+	sessions = current_sessions.local_sessions.values()
+	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
+
+	sessions_and_dates = zip(sessions, date_strings)
 	return render_template("system_admin_local_data.html", title="Local Data", 
-							current_sessions=current_sessions)
+							current_sessions=current_sessions, sessions_and_dates=sessions_and_dates)
 
 @system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
 @login_required
