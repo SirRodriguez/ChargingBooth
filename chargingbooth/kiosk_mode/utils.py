@@ -35,7 +35,7 @@ def get_offset_dates_end(sessions, time_offset):
 		add_seconds = timedelta(seconds=session.total_seconds())
 		local_time += add_seconds
 
-		print(local_time)
+		# print(local_time)
 
 		# print(zone)
 		# print(local_time.strftime(fmt))
