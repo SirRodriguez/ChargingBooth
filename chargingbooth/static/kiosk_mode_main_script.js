@@ -6,7 +6,7 @@ var timeout_seconds = 20;
 var slides = setTimeout(nextSlide, 0);
 
 // Session Counter
-var sessions = setTimeout(count_sessions, 0);
+var sessions = setTimeout(count_sessions, 1000);
 
 
 // --- Functions

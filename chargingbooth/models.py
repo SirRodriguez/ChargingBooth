@@ -134,9 +134,12 @@ class Local_Session:
 class Sessions_Container:
 	def __init__(self):
 		self.local_sessions = dict()
-		self.completed_sessions = list()
+		# self.completed_sessions = list()
 		self.index = 0
 		self.thread_pool = list()
+
+	def init_app(self, application):
+		self.app = application
 
 	def add_session(self, amount_paid, location, port, increment_size, increments):
 		# define an index for the dictionary
@@ -159,12 +162,28 @@ class Sessions_Container:
 		while(running):
 			# Time has run out!
 			if(self.local_sessions[index].get_time_remaining() == self.local_sessions[index].zero_time()):
-				self.completed_sessions.append(self.local_sessions[index])
+				# self.completed_sessions.append(self.local_sessions[index])
+				# Waits an extra second to catch up
+				time.sleep(1)
+
+				with self.app.app_context():
+					session = Session(duration=int(self.local_sessions[index].elapsed_time().total_seconds()), 
+									power_used=self.local_sessions[index].power_used(), 
+									amount_paid=self.local_sessions[index].amount_paid, 
+									location=self.local_sessions[index].location, 
+									port=self.local_sessions[index].port,
+									increment_size=self.local_sessions[index].increment_size, 
+									increments=self.local_sessions[index].increments)
+
+					db.session.add(session)
+					db.session.commit()
+
 				self.local_sessions.pop(index)
 				running = False
 
 			# Save CPU Time, Check every second.
 			time.sleep(1)
+
 
 	def has_sessions(self):
 		if len(self.local_sessions) > 0:

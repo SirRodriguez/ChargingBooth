@@ -25,6 +25,7 @@ def create_app(config_class=Config):
 	bcrypt.init_app(app)
 	login_manager.init_app(app)
 	mail.init_app(app)
+	current_sessions.init_app(app)
 
 	from chargingbooth.main.routes import main
 	from chargingbooth.system_admin.routes import system_admin
