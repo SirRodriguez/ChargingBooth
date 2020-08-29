@@ -49,8 +49,8 @@ class Session(db.Model):
 	power_used = db.Column(db.Float) #Watts per second
 	amount_paid = db.Column(db.Integer) #Cents
 	date_initiated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-	location = db.Column(db.String(100))
-	port = db.Column(db.String(100))
+	location = db.Column(db.String(100), default="No Location")
+	port = db.Column(db.String(100), default="No Port")
 	increment_size = db.Column(db.Integer) #Seconds
 	increments = db.Column(db.Integer)
 
@@ -60,6 +60,7 @@ class Settings(db.Model):
 	toggle_pay = db.Column(db.Boolean)
 	cents_per_second = db.Column(db.Integer) #Cents per Second
 	charge_time = db.Column(db.Integer) #Seconds
+	time_offset = db.Column(db.String(20)) # timezone offset
 
 
 ###############

@@ -141,6 +141,7 @@ def settings():
 		Settings.query.first().toggle_pay = form.toggle_pay.data
 		Settings.query.first().cents_per_second = form.cents_per_second.data
 		Settings.query.first().charge_time = form.charge_time.data
+		Settings.query.first().time_offset = form.time_zone.data
 		db.session.commit()
 		flash('Settings have been updated!', 'success')
 		return redirect(url_for('system_admin.settings'))
@@ -148,6 +149,7 @@ def settings():
 		form.toggle_pay.data = Settings.query.first().toggle_pay
 		form.cents_per_second.data = Settings.query.first().cents_per_second
 		form.charge_time.data = Settings.query.first().charge_time
+		form.time_zone.data = Settings.query.first().time_offset
 
 	return render_template('system_admin_settings.html', title='Settings', form=form)
 
