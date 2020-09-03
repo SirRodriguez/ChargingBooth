@@ -36,7 +36,7 @@
           <p>Session Time: {{ setting.charge_time }} seconds</p>
         </div>
         <div class="modal-footer">
-          <button id="confim" class="block_button"><a href="{{ url_for('kiosk_mode.confirm_payment') }}">Confirm</a></button>
+          <button id="confim" class="block_button"><a href="{{ url_for('kiosk_mode.confirm_payment') }}" style="color: black">Continue With Payment</a></button>
         </div>
       </div>
 
@@ -87,9 +87,9 @@
   </div>
 
   <!-- Trigger/Open The Modal -->
-  <div id="Btn" class="btn btn-info" style="text-align: center"><a href="#">Click To Start A Session</a></div>
+  <div id="Btn" class="btn btn-info" style="text-align: center; background-color: white; margin:4px 2px; border-radius: 12px; display: none"><a href="#">Click To Start A Session</a></div>
 
-  <div id="progBtn" class="btn btn-info" style="text-align: center; display: none; font-size: 200%">Session In Progress</div>
+  <div id="progBtn" class="btn btn-info" style="text-align: center; display: none; font-size: 200%; background-color: white; margin:4px 2px; border-radius: 12px;">Session In Progress</div>
 
 </div>
 
