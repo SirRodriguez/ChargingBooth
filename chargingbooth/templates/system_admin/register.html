@@ -1,19 +1,14 @@
-{% extends "kiosk_mode_defualt_layout.html" %}
+{% extends "system_admin/defualt_layout.html" %}
 {% block content %}
-	<h1>Charging Booth Kiosk: Add Session</h1>
+	<h1>Charging Booth: Register</h1>
 
 
 	<div class="content-section">
-	  <div class="media">
-	    <div class="media-body">
-
-	    </div>
-	  </div>
-        <form method="POST" action="" enctype="multipart/form-data">
+        <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Add Session</legend>
-
+                <legend class="border-bottom mb-4">Admin Sign In Only</legend>
+                
                 {% for field in form %}
                     {% if field.type != "SubmitField" and field.id != "csrf_token" %}
                         <div class="form-group">
@@ -32,11 +27,17 @@
                         </div>
                     {% endif %}
                 {% endfor %}
-
+                
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>
-	</div>
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Already Have An Account? <a class="ml-2" href="#">Sign In</a>
+        </small>
+    </div>
+
 {% endblock content %}

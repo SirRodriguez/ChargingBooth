@@ -1,17 +1,18 @@
-{% extends "system_admin_defualt_layout.html" %}
-
+{% extends "kiosk_mode/defualt_layout.html" %}
 {% block content %}
-	<h1>Charging Booth: Settings</h1>
+	<h1>Charging Booth Kiosk: Add Session</h1>
+
 
 	<div class="content-section">
 	  <div class="media">
 	    <div class="media-body">
+
 	    </div>
 	  </div>
         <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Change Settings</legend>
+                <legend class="border-bottom mb-4">Add Session</legend>
 
                 {% for field in form %}
                     {% if field.type != "SubmitField" and field.id != "csrf_token" %}
@@ -38,5 +39,4 @@
             </div>
         </form>
 	</div>
-
 {% endblock content %}

@@ -1,12 +1,11 @@
-{% extends "system_admin_defualt_layout.html" %}
-{% block content %}
-	<!-- <h1>Charging Booth: Login</h1> -->
+{% extends "system_admin/defualt_layout.html" %}
 
+{% block content %}
 	<div class="content-section">
 		<form method="POST" action="">
 			{{ form.hidden_tag() }}
 			<fieldset class="form-group">
-				<legend class="border-bottom mb-4">System Admin: Log In</legend>
+				<legend class="border-bottom mb-4">Reset Password</legend>
 				
 				{% for field in form %}
                     {% if field.type != "SubmitField" and field.id != "csrf_token" %}
@@ -30,40 +29,7 @@
 			</fieldset>
 			<div class="form-group">
 				{{ form.submit(class="btn btn-outline-info") }}
-				<small class="text-muted ml-2">
-				<a href="{{ url_for('system_admin.reset_request') }}">Forgot Password?</a>
-				</small>
 			</div>
-
 		</form>
-
 	</div>
-
 {% endblock content %}
-
-{% block side_content %}
-
-	<div class="col-md-4">
-      <div class="content-section">
-      	<h3>Redirect in:</h3>
-        <h3 id="time"></h3>
-      </div>
-    </div>
-
-    <script>
-    	var timer = setInterval(run_timer, 1000);
-    	var duration = 60; // seconds
-    	run_timer();
-
-    	function run_timer(){
-    		if(duration > 0){
-    			duration -= 1;
-    			var t = duration.toString()
-    			document.getElementById("time").innerHTML = t;
-    		}else{
-    			window.location.replace("/kiosk_mode");
-    		}
-    	}
-    </script>
-
-{% endblock side_content %}

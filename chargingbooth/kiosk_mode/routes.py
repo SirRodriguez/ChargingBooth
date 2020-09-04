@@ -24,11 +24,11 @@ def home():
 	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
 	date_end_str = get_offset_dates_end(sessions=sessions, time_offset=Settings.query.first().time_offset)
 
-	print(date_end_str)
+	# print(date_end_str)
 
 	sessions_and_dates = zip(sessions, date_strings, date_end_str)
 
-	return render_template('kiosk_mode_home.html', title='Kiosk Mode', 
+	return render_template('kiosk_mode/home.html', title='Kiosk Mode', 
 							current_sessions=current_sessions,
 							sessions_and_dates=sessions_and_dates,
 							pic_files=pic_files.get_copy(), setting=setting)
@@ -66,7 +66,7 @@ def simulated_session():
 	start_route()
 
 	setting = Settings.query.first()
-	return render_template('kiosk_mode_simulated_session.html', title='Simulate', setting=setting)
+	return render_template('kiosk_mode/simulated_session.html', title='Simulate', setting=setting)
 
 @kiosk_mode.route("/kiosk_mode/session", methods=['GET', 'POST'])
 def session():
@@ -84,7 +84,7 @@ def session():
 		flash('You have created a session and you may now start charging.', 'success')
 		return redirect(url_for('kiosk_mode.home'))
 
-	return render_template('kiosk_mode_session.html', title='Session', form=form, setting=setting)
+	return render_template('kiosk_mode/session.html', title='Session', form=form, setting=setting)
 
 @kiosk_mode.route("/kiosk_mode/add_session", methods=['GET', 'POST'])
 def add_session():
@@ -99,7 +99,7 @@ def add_session():
 		db.session.commit()
 		flash('Session Added!', 'success')
 		return redirect(url_for('kiosk_mode.add_session'))
-	return render_template('kiosk_mode_add_session.html', title='Add', form=form)
+	return render_template('kiosk_mode/add_session.html', title='Add', form=form)
 
 @kiosk_mode.route("/kiosk_mode/add_rand_session", methods=['GET', 'POST'])
 def add_rand_session():
@@ -110,23 +110,23 @@ def add_rand_session():
 
 		if form.min_duration.data > form.max_duration.data:
 			flash('Min Duration must be less than Max Duration', 'danger')
-			return render_template('kiosk_mode_add_rand_session.html', form=form)
+			return render_template('kiosk_mode/add_rand_session.html', form=form)
 
 		elif form.min_power_used.data > form.max_power_used.data:
 			flash('Min Power Used must be less than Max Power Used', 'danger')
-			return render_template('kiosk_mode_add_rand_session.html', form=form)
+			return render_template('kiosk_mode/add_rand_session.html', form=form)
 
 		elif form.min_amount_paid.data > form.max_amount_paid.data:
 			flash('Min Cents must be less than Max Cents', 'danger')
-			return render_template('kiosk_mode_add_rand_session.html', form=form)
+			return render_template('kiosk_mode/add_rand_session.html', form=form)
 
 		elif form.min_port.data > form.max_port.data:
 			flash('Min Port must be less than Max Port', 'danger')
-			return render_template('kiosk_mode_add_rand_session.html', form=form)
+			return render_template('kiosk_mode/add_rand_session.html', form=form)
 
 		elif form.min_increment_size.data > form.max_increment_size.data:
 			flash('Min Increment Size must be less than Max Increment Size', 'danger')
-			return render_template('kiosk_mode_add_rand_session.html', form=form)
+			return render_template('kiosk_mode/add_rand_session.html', form=form)
 
 		else:
 			for s in range(form.num_sessions.data):
@@ -154,4 +154,4 @@ def add_rand_session():
 			flash('Sessions Added!', 'success')
 			return redirect(url_for('kiosk_mode.add_rand_session'))
 
-	return render_template('kiosk_mode_add_rand_session.html', title='Random', form=form)
+	return render_template('kiosk_mode/add_rand_session.html', title='Random', form=form)

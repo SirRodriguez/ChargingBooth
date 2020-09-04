@@ -27,7 +27,7 @@ def login():
 			return redirect(url_for('system_admin.main'))
 		else:
 			flash('Loging Unsuccessful. Please check username and password', 'danger')
-	return render_template('system_admin_login.html', title='System Admin Login', form=form)
+	return render_template('system_admin/login.html', title='System Admin Login', form=form)
 
 @system_admin.route("/system_admin/logout")
 @login_required
@@ -39,7 +39,7 @@ def logout():
 @system_admin.route("/system_admin/main")
 @login_required
 def main():
-	return render_template('system_admin_main.html', title='System Admin Main')
+	return render_template('system_admin/main.html', title='System Admin Main')
 
 @system_admin.route("/system_admin/register", methods=['GET', 'POST'])
 def register():
@@ -53,7 +53,7 @@ def register():
 		db.session.commit()
 		flash('Your account has been created! You are now able to log in', 'success')
 		return redirect(url_for('system_admin.login'))
-	return render_template('system_admin_register.html', title='Register', form=form)
+	return render_template('system_admin/register.html', title='Register', form=form)
 
 
 @system_admin.route("/system_admin/account", methods=['GET', 'POST'])
@@ -69,7 +69,7 @@ def account():
 	elif request.method == 'GET':
 		form.username.data = current_user.username
 		form.email.data = current_user.email
-	return render_template('system_admin_account.html', title='Account', form=form)
+	return render_template('system_admin/account.html', title='Account', form=form)
 
 
 # When logged out and forgot password
@@ -83,7 +83,7 @@ def reset_request():
 		send_reset_email(user, logged_in=False)
 		flash('An email has been sent with instructions to reset your password.', 'info')
 		return redirect(url_for('system_admin.login'))
-	return render_template('system_admin_reset_request.html', title='Reset Password', form=form)
+	return render_template('system_admin/reset_request.html', title='Reset Password', form=form)
 
 @system_admin.route("/system_admin/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
@@ -100,9 +100,9 @@ def reset_token(token):
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
 		user.password = hashed_password
 		db.session.commit()
-		flash('Your password has been updated! Ypu are now able to log in.', 'success')
+		flash('Your password has been updated! You are now able to log in.', 'success')
 		return redirect(url_for('system_admin.login'))
-	return render_template('system_admin_reset_token.html', title='Reset Password', form=form)
+	return render_template('system_admin/reset_token.html', title='Reset Password', form=form)
 
 
 
@@ -130,7 +130,7 @@ def change_token(token):
 		db.session.commit()
 		flash('Your password has been updated!', 'success')
 		return redirect(url_for('system_admin.login'))
-	return render_template('system_admin_reset_token.html', title='Reset Password', form=form)
+	return render_template('system_admin/reset_token.html', title='Reset Password', form=form)
 
 
 @system_admin.route("/system_admin/settings", methods=['GET', 'POST'])
@@ -151,7 +151,7 @@ def settings():
 		form.charge_time.data = Settings.query.first().charge_time
 		form.time_zone.data = Settings.query.first().time_offset
 
-	return render_template('system_admin_settings.html', title='Settings', form=form)
+	return render_template('system_admin/settings.html', title='Settings', form=form)
 
 @system_admin.route("/system_admin/data")
 @login_required
@@ -163,7 +163,7 @@ def view_data():
 									time_offset=Settings.query.first().time_offset)
 
 	sessions_and_dates = zip(sessions.items, date_strings) # Pack them together to iterate simultaniously
-	return render_template("system_admin_data.html", title="Data", sessions=sessions, sessions_and_dates=sessions_and_dates)
+	return render_template("system_admin/data.html", title="Data", sessions=sessions, sessions_and_dates=sessions_and_dates)
 
 @system_admin.route("/system_admin/local_data")
 @login_required
@@ -172,7 +172,7 @@ def view_local_data():
 	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
 
 	sessions_and_dates = zip(sessions, date_strings)
-	return render_template("system_admin_local_data.html", title="Local Data", 
+	return render_template("system_admin/local_data.html", title="Local Data", 
 							current_sessions=current_sessions, sessions_and_dates=sessions_and_dates)
 
 @system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
@@ -183,7 +183,7 @@ def slide_show_pics():
 	if remove_pic_form.validate_on_submit() and remove_pic_form.removals.data != "":
 		flash('Picture Files have been removed', 'success')
 
-	return render_template("system_admin_slide_show_pics.html", title="Slide Show Pictures")
+	return render_template("system_admin/slide_show_pics.html", title="Slide Show Pictures")
 
 @system_admin.route("/system_admin/add_slides", methods=['GET', 'POST'])
 @login_required
@@ -196,7 +196,7 @@ def upload_image():
 		flash('Picture has been uploaded', 'success')
 		return redirect(url_for('system_admin.upload_image'))
 
-	return render_template("system_admin_upload_image.html", title="Upload Image", form=form,
+	return render_template("system_admin/upload_image.html", title="Upload Image", form=form,
 							pic_files=pic_files.get_copy())
 
 @system_admin.route("/system_admin/remove_slides", methods=['GET', 'POST'])
@@ -211,5 +211,5 @@ def remove_image():
 		flash("Images have been deleted!", 'success')
 		return redirect(url_for('system_admin.remove_image'))
 
-	return render_template("system_admin_remove_image.html", title="Remove Images", form=form,
+	return render_template("system_admin/remove_image.html", title="Remove Images", form=form,
 							pic_files=pic_files.get_copy(), pic_files_length=pic_files_length)

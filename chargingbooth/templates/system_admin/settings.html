@@ -1,29 +1,18 @@
-{% extends "kiosk_mode_defualt_layout.html" %}
+{% extends "system_admin/defualt_layout.html" %}
 
 {% block content %}
-
-	<h1>Charging Booth Kiosk: Session</h1>
+	<h1>Charging Booth: Settings</h1>
 
 	<div class="content-section">
 	  <div class="media">
 	    <div class="media-body">
-
 	    </div>
 	  </div>
         <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Please enter how many sessions you would like to add.</legend>
+                <legend class="border-bottom mb-4">Change Settings</legend>
 
-                <h5>Time per Session: {{ setting.charge_time }} seconds.</h5>
-
-                {% if setting.toggle_pay %}
-                    <h5>Cost per Session: ${{ setting.cents_per_second * setting.charge_time / 100 }}</h5>
-                {% else %}
-                    <h5>Cost: Free</h5>
-                {% endif %}
-
-                <!-- Form -->
                 {% for field in form %}
                     {% if field.type != "SubmitField" and field.id != "csrf_token" %}
                         <div class="form-group">
@@ -49,21 +38,5 @@
             </div>
         </form>
 	</div>
-
-
-    <!-- Go back to "kisok mode" timer -->
-    <script>
-        var timer = setInterval(run_timer, 1000);
-        var duration = 120; // seconds (2 min)
-        run_timer();
-
-        function run_timer(){
-            if(duration > 0){
-                duration -= 1;
-            }else{
-                window.location.replace("/kiosk_mode");
-            }
-        }
-    </script>
 
 {% endblock content %}

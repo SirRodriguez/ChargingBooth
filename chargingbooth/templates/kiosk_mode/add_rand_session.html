@@ -1,13 +1,21 @@
-{% extends "system_admin_defualt_layout.html" %}
+{% extends "kiosk_mode/defualt_layout.html" %}
 
 {% block content %}
+
+	<h1>Charging Booth Kiosk: Add Random Sessions</h1>
+
 	<div class="content-section">
-		<form method="POST" action="">
-			{{ form.hidden_tag() }}
-			<fieldset class="form-group">
-				<legend class="border-bottom mb-4">Reset Password</legend>
-				
-				{% for field in form %}
+	  <div class="media">
+	    <div class="media-body">
+
+	    </div>
+	  </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Add Random Sessions Ranges</legend>
+
+                {% for field in form %}
                     {% if field.type != "SubmitField" and field.id != "csrf_token" %}
                         <div class="form-group">
                             {{ field.label(class="form-control-label") }}
@@ -25,11 +33,12 @@
                         </div>
                     {% endif %}
                 {% endfor %}
-                
-			</fieldset>
-			<div class="form-group">
-				{{ form.submit(class="btn btn-outline-info") }}
-			</div>
-		</form>
+
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
 	</div>
+
 {% endblock content %}
