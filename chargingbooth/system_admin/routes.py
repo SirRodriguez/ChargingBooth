@@ -155,6 +155,11 @@ def settings():
 
 @system_admin.route("/system_admin/data")
 @login_required
+def data():
+	return render_template("system_admin/data.html", title="Data")
+
+@system_admin.route("/system_admin/list_data")
+@login_required
 def view_data():
 	page = request.args.get('page', 1, type=int)
 
@@ -163,7 +168,12 @@ def view_data():
 									time_offset=Settings.query.first().time_offset)
 
 	sessions_and_dates = zip(sessions.items, date_strings) # Pack them together to iterate simultaniously
-	return render_template("system_admin/data.html", title="Data", sessions=sessions, sessions_and_dates=sessions_and_dates)
+	return render_template("system_admin/list_data.html", title="List Data", sessions=sessions, sessions_and_dates=sessions_and_dates)
+
+@system_admin.route("/system_admin/graph_data")
+@login_required
+def graph_data():
+	return render_template("system_admin/graph_data.html", title="Graph Data")
 
 @system_admin.route("/system_admin/local_data")
 @login_required

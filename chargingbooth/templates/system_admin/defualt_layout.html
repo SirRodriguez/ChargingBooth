@@ -31,7 +31,7 @@
               {% if current_user.is_authenticated %}
               <a class="nav-item nav-link" href="{{ url_for('system_admin.account') }}">Account</a>
               <a class="nav-item nav-link" href="{{ url_for('system_admin.settings') }}">Settings</a>
-              <a class="nav-item nav-link" href="{{ url_for('system_admin.view_data') }}">Data</a>
+              <a class="nav-item nav-link" href="{{ url_for('system_admin.data') }}">Data</a>
               <a class="nav-item nav-link" href="{{ url_for('system_admin.view_local_data') }}">Local Data</a>
               <a class="nav-item nav-link" href="{{ url_for('system_admin.slide_show_pics') }}">Slide Show Pictures</a>
               {% endif %}
