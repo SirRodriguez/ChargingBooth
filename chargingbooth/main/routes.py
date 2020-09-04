@@ -8,4 +8,5 @@ main = Blueprint('main', __name__)
 def home():
 	start_route()
 
-	return redirect(url_for('system_admin.home'))#defualt
+	# return redirect(url_for('system_admin.home')) # Defualt
+	return redirect(url_for('kiosk_mode.home'))
