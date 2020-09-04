@@ -5,10 +5,15 @@
 
 
 <!-- CSS Files -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='kiosk_mode_main_css.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Local CSS -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='kiosk_mode/css/sidebar_separation.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='kiosk_mode/css/slide_show.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='kiosk_mode/css/flash.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='kiosk_mode/css/modal.css') }}">
 
 
 </head>
@@ -195,7 +200,13 @@
 
 <!-- JavaScript -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='kiosk_mode_main_script.js') }}"></script>
+
+<!-- Local JavaScript -->
+<script type="text/javascript" src="{{ url_for('static', filename='kiosk_mode/javascript/slideshow.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='kiosk_mode/javascript/sessions.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='kiosk_mode/javascript/modal.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='kiosk_mode/javascript/flash.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='kiosk_mode/javascript/battery.js') }}"></script>
 
 
 </body>
