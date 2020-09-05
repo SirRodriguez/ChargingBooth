@@ -138,7 +138,6 @@ class Local_Session:
 class Sessions_Container:
 	def __init__(self):
 		self.local_sessions = dict()
-		# self.completed_sessions = list()
 		self.index = 0
 		self.thread_pool = list()
 
@@ -151,8 +150,20 @@ class Sessions_Container:
 			self.index = self.index + 1
 		else:
 			self.index = 0
+
 		# Create the session
 		self.local_sessions[self.index] = Local_Session(amount_paid, location, port, increment_size, increments, self.index)
+
+		# Create the file for the session checkpoints
+		file_name = 'session' + str(self.index) + '.txt'
+		file_path = os.path.join(self.app.root_path, r'static\session_files', file_name)
+		file = open(file_path, 'w')
+		session_info = "Start:" + str(self.local_sessions[self.index].date_initiated) + \
+						", Duration:" + str(self.local_sessions[self.index].total_seconds()) + \
+						", End:" + str(self.local_sessions[self.index].get_end_time()) + '\n'
+		file.write(session_info)
+		file.write('0') # Place holder for second line
+		file.close() # Close right away so that the handeler can open and use it for itself.
 
 		# Create a thread to handle the session and terminate when needed
 		sess = threading.Thread(target=self.handler, args=[self.index])
@@ -162,11 +173,14 @@ class Sessions_Container:
 
 	# Handler for the sessions
 	def handler(self, index):
+		# Open the corresponding session file
+		file_name = 'session' + str(index) + '.txt'
+		file_path = os.path.join(self.app.root_path, r'static\session_files', file_name)
+
 		running = True
 		while(running):
 			# Time has run out!
 			if(self.local_sessions[index].get_time_remaining() == self.local_sessions[index].zero_time()):
-				# self.completed_sessions.append(self.local_sessions[index])
 				# Waits an extra second to catch up
 				time.sleep(1)
 
@@ -184,6 +198,20 @@ class Sessions_Container:
 
 				self.local_sessions.pop(index)
 				running = False
+
+				# delete the file
+				os.remove(file_path)
+
+			# This is where the file will be written too and updated for checkpoints
+			else:
+				with open(file_path, 'r') as file:
+					file_data = file.readlines()
+
+				file_data[1] = "Seconds elapsed: " + str(self.local_sessions[index].elapsed_time().total_seconds())
+
+				with open(file_path, 'w') as file:
+					file.writelines(file_data)
+
 
 			# Save CPU Time, Check every second.
 			time.sleep(1)
@@ -205,7 +233,6 @@ class PFI:
 		return self.pic_files.copy()
 
 	def save_file(self, file):
-		#f_name, f_ext = os.path.splittext(file.filename)
 		file_path = os.path.join(current_app.root_path, 'static/picture_files', file.filename)
 		file.save(file_path)
 
