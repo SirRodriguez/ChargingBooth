@@ -144,6 +144,48 @@ class Sessions_Container:
 	def init_app(self, application):
 		self.app = application
 
+		# Check here if there are any session files exist to continue working on them
+		# Reason is because the application is needed for the app directory
+		dir_path = os.path.join(self.app.root_path, r'static\session_files')
+		files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
+
+		if files:
+			for file_name in files:
+				file_path = os.path.join(dir_path, file_name)
+				with open(file_path, 'r') as file:
+					session_info = file.readlines()
+
+
+				# Incomplete session info
+				# File line comes in as (all one line):
+				# Start:<datetime>, Duration:60, End:<date time>, Amount Paid:<number>, 
+				# Location:<location name>, Port:<port name>, Increment Size:<number>, 
+				# Increments:<number>
+
+				duration = int(session_info[0].split(", ")[1].split(":")[1])
+
+				# File line comes in as:
+				# Seconds elapsed: <number>
+				# Where number is a float and is converted to an int by rounding down
+				time_elapsed = int(float(session_info[1].split(": ")[1]))
+
+				time_remaining = duration - time_elapsed
+
+				amount_paid 	= int(session_info[0].split(", ")[3].split(":")[1])
+				location 		= session_info[0].split(",")[4].split(":")[1]
+				port 			= session_info[0].split(",")[5].split(":")[1]
+				# increment_size 	= int(session_info[0].split(",")[6].split(":")[1])
+				# increments 		= int(session_info[0].split(",")[7].split(":")[1])
+
+				# Remove the old file so add_session creates a new one
+				os.remove(file_path)
+
+				# Add the session back in the container but this time the increment size will 
+				# be the remaining duration and the increments will defualt to 1
+				self.add_session(amount_paid=amount_paid, location=location, port=port,
+									increment_size=time_remaining, increments=1)
+
+
 	def add_session(self, amount_paid, location, port, increment_size, increments):
 		# define an index for the dictionary
 		if len(self.local_sessions.keys()) != 0:
@@ -160,9 +202,14 @@ class Sessions_Container:
 		file = open(file_path, 'w')
 		session_info = "Start:" + str(self.local_sessions[self.index].date_initiated) + \
 						", Duration:" + str(self.local_sessions[self.index].total_seconds()) + \
-						", End:" + str(self.local_sessions[self.index].get_end_time()) + '\n'
+						", End:" + str(self.local_sessions[self.index].get_end_time()) + \
+						", Amount Paid:" + str(self.local_sessions[self.index].amount_paid) + \
+						", Location:" + self.local_sessions[self.index].location + \
+						", Port:" + self.local_sessions[self.index].port + \
+						", Increment Size:" + str(self.local_sessions[self.index].increment_size) + \
+						", Increments:" + str(self.local_sessions[self.index].increments) + '\n'
 		file.write(session_info)
-		file.write('0') # Place holder for second line
+		file.write("Seconds elapsed: 0") # Place holder for second line
 		file.close() # Close right away so that the handeler can open and use it for itself.
 
 		# Create a thread to handle the session and terminate when needed
