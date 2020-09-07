@@ -9,9 +9,10 @@
 		<article class="media content-section">
 			<div class="media-body">
 				<div class="article-metadata">
-					<h5 class="mr-2">Date Initiated: {{date}}</h5>
+					<h5 class="mr-2">Session ID: {{ session.id }}</h5>
 				</div>
 
+				<p class="article-content">Date Initiated: {{date}}</p>
 				<p class="article-content">Duration: {{ session.total_seconds() }} Seconds</p>
 				<p class="article-content">Power Consumed: {{ session.power_used() }} Watt Hours</p>
 				<p class="article-content">Amount Paid: {{ session.amount_paid }} Cents</p>
