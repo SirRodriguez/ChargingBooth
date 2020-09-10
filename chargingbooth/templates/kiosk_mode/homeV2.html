@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<title>Kisok Mode</title>
+
+	<style type="text/css">
+		/* Style for dot */
+		.dot {
+	      cursor: pointer;
+	      height: 15px;
+	      width: 15px;
+	      margin: 0 2px;
+	      background-color: #bbb;
+	      border-radius: 50%;
+	      display: inline-block;
+	      transition: background-color 0.6s ease;
+	    }
+
+	    .active, .dot:hover {
+	      background-color: #717171;
+	    }
+
+
+	    /* Style for Session Content */
+	    .content-section {
+		  background: #ffffff;
+		  padding: 10px 20px;
+		  border: 1px solid #dddddd;
+		  border-radius: 3px;
+		  margin-bottom: 20px;
+		}
+
+		.article-metadata {
+		  padding-bottom: 1px;
+		  margin-bottom: 4px;
+		  border-bottom: 1px solid #e3e3e3
+		}
+
+	</style>
+
+</head>
+<body style="background-color: dodgerblue">
+
+	<!-- Entire Kiosk window -->
+	<div class="row" style="margin: 10px">
+
+		<!-- Slide Show -->
+		<div class="col-md-8">
+			<!-- Image  -->
+			<img src="{{ url_for('static', filename='picture_files/black_widow.jpg') }}" style="width: 100%">
+
+			<!-- Dots under the Image -->
+			<!-- Needs a css style in order to be shown -->
+			<div style="text-align: left">
+				<span class="dot"></span>
+				<span class="dot"></span>
+				<span class="dot"></span>
+			</div>
+
+			<!-- Both shown to edit style -->
+			<!-- No functionality at the moment -->
+			<div id="Btn" class="btn btn-dark" style="display: block; text-align: center; margin:4px 2px; border-radius: 12px;">Click To Start A Session</div>
+
+  			<div id="progBtn" class="btn btn-outline-dark" style="display: block; text-align: center; margin:4px 2px; border-radius: 12px;">Session In Progress</div>
+
+		</div>
+
+		<!-- Session -->
+		<div class="col-md-3">
+
+			<h2>Session Info</h2>
+
+			<!-- Requires a style CSS to show properly -->
+			<article class="media content-section">
+		      <div class="media-body">
+
+		        <div class="article-metadata">
+
+		          <!-- Commented for now since there will only be one port -->
+		          <!-- <p style="font-size: 110%"><b>Port: </b></p>
+		          <p class="port" style="font-size: 110%">None</p> -->
+
+		          <p style="font-size: 110%"><b>Start Time: </b></p>
+		          <p class="start_time" style="font-size: 110%">None</p>
+
+		          <p style="font-size: 110%"><b>End Time: </b></p>
+		          <p class="final_time" style="font-size: 110%">None</p>        
+
+		        </div>
+
+		        <div>
+
+		          <p style="font-size: 110%"><b>Time Remaining: </b></p>
+		          <p class="None" style="font-size: 110%">None</p>
+
+		        </div>
+
+		      </div>
+		    </article>
+
+		</div>
+
+	</div>
+
+</body>
+</html>
