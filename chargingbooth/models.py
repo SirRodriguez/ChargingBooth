@@ -200,7 +200,7 @@ class Sessions_Container:
 
 		# Create the file for the session checkpoints
 		file_name = 'session' + str(self.index) + '.txt'
-		file_path = os.path.join(self.app.root_path, r'static\session_files', file_name)
+		file_path = os.path.join(self.app.root_path, 'static', 'session_files', file_name)
 		file = open(file_path, 'w')
 		session_info = "Start:" + str(self.local_sessions[self.index].date_initiated) + \
 						", Duration:" + str(self.local_sessions[self.index].total_seconds()) + \
@@ -224,7 +224,7 @@ class Sessions_Container:
 	def handler(self, index):
 		# Open the corresponding session file
 		file_name = 'session' + str(index) + '.txt'
-		file_path = os.path.join(self.app.root_path, r'static\session_files', file_name)
+		file_path = os.path.join(self.app.root_path, 'static', 'session_files', file_name)
 
 		running = True
 		while(running):
@@ -282,7 +282,7 @@ class PFI:
 		return self.pic_files.copy()
 
 	def save_file(self, file):
-		file_path = os.path.join(current_app.root_path, 'static/picture_files', file.filename)
+		file_path = os.path.join(current_app.root_path, 'static', 'picture_files', file.filename)
 		file.save(file_path)
 
 		# Reset the pic_files
@@ -294,7 +294,7 @@ class PFI:
 			if i.isnumeric():
 				index = int(i)-1
 				if index >= 0 and index < len(self.pic_files):
-					file_path = os.path.join(current_app.root_path, "static/picture_files/", self.pic_files[index])
+					file_path = os.path.join(current_app.root_path, 'static', 'picture_files', self.pic_files[index])
 					os.remove(file_path)
 					# Reset the pic_files
 					self.set_up()
@@ -303,5 +303,5 @@ class PFI:
 		return len(self.pic_files)
 
 	def set_up(self):
-		files_path = os.path.join(current_app.root_path, 'static/picture_files')
+		files_path = os.path.join(current_app.root_path, 'static', 'picture_files')
 		self.pic_files = [f for f in listdir(files_path) if isfile(join(files_path, f))]
