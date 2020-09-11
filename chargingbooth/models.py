@@ -146,7 +146,7 @@ class Sessions_Container:
 
 		# Check here if there are any session files exist to continue working on them
 		# Reason is because the application is needed for the app directory
-		dir_path = os.path.join(self.app.root_path, r'static\session_files')
+		dir_path = os.path.join(self.app.root_path, r'static/session_files')
 		files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
 
 		if files:
