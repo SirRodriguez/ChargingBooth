@@ -146,44 +146,46 @@ class Sessions_Container:
 
 		# Check here if there are any session files exist to continue working on them
 		# Reason is because the application is needed for the app directory
-		dir_path = os.path.join(self.app.root_path, r'static/session_files')
+		dir_path = os.path.join(self.app.root_path, r'static\session_files')
 		files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
 
 		if files:
 			for file_name in files:
-				file_path = os.path.join(dir_path, file_name)
-				with open(file_path, 'r') as file:
-					session_info = file.readlines()
+				# Place Holder file is there in order to push the session folder to git
+				if file_name != "place_holder.txt":
+					file_path = os.path.join(dir_path, file_name)
+					with open(file_path, 'r') as file:
+						session_info = file.readlines()
 
 
-				# Incomplete session info
-				# File line comes in as (all one line):
-				# Start:<datetime>, Duration:60, End:<date time>, Amount Paid:<number>, 
-				# Location:<location name>, Port:<port name>, Increment Size:<number>, 
-				# Increments:<number>
+					# Incomplete session info
+					# File line comes in as (all one line):
+					# Start:<datetime>, Duration:60, End:<date time>, Amount Paid:<number>, 
+					# Location:<location name>, Port:<port name>, Increment Size:<number>, 
+					# Increments:<number>
 
-				duration = int(session_info[0].split(", ")[1].split(":")[1])
+					duration = int(session_info[0].split(", ")[1].split(":")[1])
 
-				# File line comes in as:
-				# Seconds elapsed: <number>
-				# Where number is a float and is converted to an int by rounding down
-				time_elapsed = int(float(session_info[1].split(": ")[1]))
+					# File line comes in as:
+					# Seconds elapsed: <number>
+					# Where number is a float and is converted to an int by rounding down
+					time_elapsed = int(float(session_info[1].split(": ")[1]))
 
-				time_remaining = duration - time_elapsed
+					time_remaining = duration - time_elapsed
 
-				amount_paid 	= int(session_info[0].split(", ")[3].split(":")[1])
-				location 		= session_info[0].split(",")[4].split(":")[1]
-				port 			= session_info[0].split(",")[5].split(":")[1]
-				# increment_size 	= int(session_info[0].split(",")[6].split(":")[1])
-				# increments 		= int(session_info[0].split(",")[7].split(":")[1])
+					amount_paid 	= int(session_info[0].split(", ")[3].split(":")[1])
+					location 		= session_info[0].split(",")[4].split(":")[1]
+					port 			= session_info[0].split(",")[5].split(":")[1]
+					# increment_size 	= int(session_info[0].split(",")[6].split(":")[1])
+					# increments 		= int(session_info[0].split(",")[7].split(":")[1])
 
-				# Remove the old file so add_session creates a new one
-				os.remove(file_path)
+					# Remove the old file so add_session creates a new one
+					os.remove(file_path)
 
-				# Add the session back in the container but this time the increment size will 
-				# be the remaining duration and the increments will defualt to 1
-				self.add_session(amount_paid=amount_paid, location=location, port=port,
-									increment_size=time_remaining, increments=1)
+					# Add the session back in the container but this time the increment size will 
+					# be the remaining duration and the increments will defualt to 1
+					self.add_session(amount_paid=amount_paid, location=location, port=port,
+										increment_size=time_remaining, increments=1)
 
 
 	def add_session(self, amount_paid, location, port, increment_size, increments):
