@@ -1,10 +1,7 @@
-// --- Variables
-
+//-----SlideShow Script
 var slideIndex = 0;
 var timeout_seconds = 20;
 var slides = setTimeout(nextSlide, 0);
-
-// --- Functions
 
 function plusSlides(n) {
   showSlides(slideIndex += n, false);
@@ -20,7 +17,7 @@ function nextSlide(){
 
 function showSlides(n, timeout) {
   var i;
-  var slides = document.getElementsByClassName("mySlides");
+  var slides = document.getElementsByClassName("slides");
   var dots = document.getElementsByClassName("dot");
   if (n > slides.length) {
     slideIndex = 1

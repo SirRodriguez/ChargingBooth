@@ -1,0 +1,20 @@
+/* Style for Session Content */
+.content-section {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+/* For the Session Completed Mark */
+mark{
+  background-color: #fefefe;
+  color: black;
+}

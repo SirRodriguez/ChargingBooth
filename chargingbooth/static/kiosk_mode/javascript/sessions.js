@@ -1,8 +1,6 @@
-// --- Variables
-
+//-----Sessions
 var sessions = setTimeout(count_sessions, 1000);
 
-// --- Functions
 
 // Returns True if there are sessions running, false othersiwse
 // Only works when there is only one session allowed at a time!
