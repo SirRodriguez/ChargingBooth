@@ -149,8 +149,6 @@ class Sessions_Container:
 		dir_path = os.path.join(self.app.root_path, 'static', 'session_files')
 		files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
 
-		print(dir_path)
-
 		if files:
 			for file_name in files:
 				# Place Holder file is there in order to push the session folder to git
