@@ -1,11 +1,17 @@
-from flask import render_template, Blueprint, redirect, url_for, flash, request
+from flask import render_template, Blueprint, redirect, url_for, flash, request, current_app
 from flask_login import login_user, current_user, logout_user, login_required
 from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import User, Session, Settings, PFI
 from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
 												RequestRestForm, RequestRestForm, ResetPasswordForm, 
 												SettingsForm, SlideShowPicsForm, RemovePictureForm)
-from chargingbooth.system_admin.utils import send_reset_email, get_offset_dates_initiated
+from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated, 
+												create_csv_file_from_sessions)
+import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import os
 
 
 system_admin = Blueprint('system_admin', __name__)
@@ -173,7 +179,27 @@ def view_data():
 @system_admin.route("/system_admin/graph_data")
 @login_required
 def graph_data():
-	return render_template("system_admin/graph_data.html", title="Graph Data")
+
+	sessions = Session.query.order_by(Session.date_initiated.desc())
+
+	# CSV file comes out ready with session data inside of it.
+	csv_file = create_csv_file_from_sessions(sessions=sessions)
+
+	# # Create the panda file
+	df = pd.read_csv(csv_file, delimiter=',')
+
+	# Create the plot
+	x = df['id']
+	y = df['duration']
+	f, ax = plt.subplots(1,1, figsize=(10,8))
+	ax.plot(x, y, color='black', alpha=0.75)
+	
+	# Create the pic file to show
+	pic_name = "sessions_plot.png"
+	pic_path = os.path.join(current_app.root_path, 'static', 'data_files', pic_name)
+	plt.savefig(pic_path)
+
+	return render_template("system_admin/graph_data.html", title="Graph Data", sessions=sessions, pic_name=pic_name)
 
 @system_admin.route("/system_admin/local_data")
 @login_required
