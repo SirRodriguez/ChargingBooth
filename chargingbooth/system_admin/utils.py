@@ -75,7 +75,7 @@ def create_csv_file_from_sessions(sessions):
 		data_line += ","
 		data_line += str(session.amount_paid)
 		data_line += ","
-		data_line += str(session.date_initiated) # Maybe format this to mm/dd/yyyy
+		data_line += str(session.date_initiated.strftime("%Y-%m-%d %H:%M:%S")) # Maybe format this to yyyy-mm-dd hh:mm:ss
 		data_line += ","
 		data_line += str(session.location)
 		data_line += ","
@@ -89,3 +89,16 @@ def create_csv_file_from_sessions(sessions):
 		file.write(data_line)
 
 	return file_path
+
+def create_plot(df, x_label, y_label):
+	x = df[x_label]
+	y = df[y_label]
+	f, ax = plt.subplots(1,1, figsize=(10,5))
+
+	plt.xlabel(x_label)
+	plt.ylabel(y_label)
+
+	plt.xticks(rotation=90)
+	plt.gcf().subplots_adjust(bottom=0.40)
+
+	ax.plot(x, y, color='black', alpha=0.75)

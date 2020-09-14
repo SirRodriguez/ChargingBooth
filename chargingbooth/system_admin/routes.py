@@ -6,7 +6,7 @@ from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, Updat
 												RequestRestForm, RequestRestForm, ResetPasswordForm, 
 												SettingsForm, SlideShowPicsForm, RemovePictureForm)
 from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated, 
-												create_csv_file_from_sessions)
+												create_csv_file_from_sessions, create_plot)
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -180,7 +180,23 @@ def view_data():
 @login_required
 def graph_data():
 
-	sessions = Session.query.order_by(Session.date_initiated.desc())
+	# class Session(db.Model):
+# 	id = db.Column(db.Integer, primary_key=True)
+# 	duration = db.Column(db.Integer) #Seconds
+# 	power_used = db.Column(db.Float) #Watts per second
+# 	amount_paid = db.Column(db.Integer) #Cents
+# 	date_initiated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+# 	location = db.Column(db.String(100), default="No Location")
+# 	port = db.Column(db.String(100), default="No Port")
+# 	increment_size = db.Column(db.Integer) #Seconds
+# 	increments = db.Column(db.Integer)
+
+	# Sessions come with these variable:
+	# {id, duration, power_used, amount_paid, date_initiated, location, port, increment_size, increments}
+	# variable that have numerical values that only work with graph are:
+	# {id, duration, power_used, amount_paid, date_initiated, increment_size, increments}
+
+	sessions = Session.query.all()
 
 	# CSV file comes out ready with session data inside of it.
 	csv_file = create_csv_file_from_sessions(sessions=sessions)
@@ -189,10 +205,7 @@ def graph_data():
 	df = pd.read_csv(csv_file, delimiter=',')
 
 	# Create the plot
-	x = df['id']
-	y = df['duration']
-	f, ax = plt.subplots(1,1, figsize=(10,8))
-	ax.plot(x, y, color='black', alpha=0.75)
+	create_plot(df, x_label="date_initiated", y_label="duration")
 	
 	# Create the pic file to show
 	pic_name = "sessions_plot.png"
