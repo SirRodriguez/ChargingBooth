@@ -60,7 +60,7 @@ def make_session():
 	if not current_sessions.has_sessions():
 		setting = Settings.query.first()
 
-		current_sessions.add_session(amount_paid=setting.cents_per_second * setting.charge_time, location="No Location",
+		current_sessions.add_session(amount_paid=setting.cents_per_second * setting.charge_time, location=setting.location,
 										port="1", increment_size=setting.charge_time, increments=1)
 		flash('Session Added Successfully! You may start charging now.')
 

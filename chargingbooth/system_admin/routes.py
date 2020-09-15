@@ -47,6 +47,8 @@ def logout():
 def main():
 	return render_template('system_admin/main.html', title='System Admin Main')
 
+# This is needed to be removed after production
+# This is only used to adjust the database for an admin user
 @system_admin.route("/system_admin/register", methods=['GET', 'POST'])
 def register():
 	if current_user.is_authenticated:
@@ -148,6 +150,7 @@ def settings():
 		Settings.query.first().cents_per_second = form.cents_per_second.data
 		Settings.query.first().charge_time = form.charge_time.data
 		Settings.query.first().time_offset = form.time_zone.data
+		Settings.query.first().location = form.location.data
 		db.session.commit()
 		flash('Settings have been updated!', 'success')
 		return redirect(url_for('system_admin.settings'))
@@ -156,6 +159,7 @@ def settings():
 		form.cents_per_second.data = Settings.query.first().cents_per_second
 		form.charge_time.data = Settings.query.first().charge_time
 		form.time_zone.data = Settings.query.first().time_offset
+		form.location.data = Settings.query.first().location
 
 	return render_template('system_admin/settings.html', title='Settings', form=form)
 
@@ -179,18 +183,6 @@ def view_data():
 @system_admin.route("/system_admin/graph_data")
 @login_required
 def graph_data():
-
-	# class Session(db.Model):
-# 	id = db.Column(db.Integer, primary_key=True)
-# 	duration = db.Column(db.Integer) #Seconds
-# 	power_used = db.Column(db.Float) #Watts per second
-# 	amount_paid = db.Column(db.Integer) #Cents
-# 	date_initiated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-# 	location = db.Column(db.String(100), default="No Location")
-# 	port = db.Column(db.String(100), default="No Port")
-# 	increment_size = db.Column(db.Integer) #Seconds
-# 	increments = db.Column(db.Integer)
-
 	# Sessions come with these variable:
 	# {id, duration, power_used, amount_paid, date_initiated, location, port, increment_size, increments}
 	# variable that have numerical values that only work with graph are:
@@ -242,6 +234,9 @@ def upload_image():
 	form = SlideShowPicsForm()
 	if form.validate_on_submit():
 		pic_files.save_file(form.picture.data)
+
+		# TODO: Refit the image here
+
 		flash('Picture has been uploaded', 'success')
 		return redirect(url_for('system_admin.upload_image'))
 

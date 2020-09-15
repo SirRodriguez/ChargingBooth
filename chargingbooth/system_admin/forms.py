@@ -73,6 +73,8 @@ class SettingsForm(FlaskForm):
 	cents_per_second = IntegerField('Price (cents/sec)', validators=[DataRequired()])
 	charge_time = IntegerField('Allowed Charge Time (sec)', validators=[DataRequired()])
 	time_zone = SelectField('Timezone', choices=pytz.all_timezones)
+	location = StringField('Location', validators=[])
+
 	submit = SubmitField('Update Settings')
 
 # Slide Show Pictures
