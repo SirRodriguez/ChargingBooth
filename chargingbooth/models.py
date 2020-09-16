@@ -58,7 +58,7 @@ class Session(db.Model):
 class Settings(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	toggle_pay = db.Column(db.Boolean)
-	cents_per_second = db.Column(db.Integer) #Cents per Second
+	price = db.Column(db.Integer) #Cents per Session
 	charge_time = db.Column(db.Integer) #Seconds
 	time_offset = db.Column(db.String(20)) # timezone offset
 	location = db.Column(db.String(100)) # Location of the device

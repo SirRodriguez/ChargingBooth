@@ -102,3 +102,8 @@ def create_plot(df, x_label, y_label):
 	plt.gcf().subplots_adjust(bottom=0.40)
 
 	ax.plot(x, y, color='black', alpha=0.75)
+
+def get_min_sec(seconds):
+	minutes = seconds // 60
+	sec = seconds - (minutes * 60)
+	return minutes, sec

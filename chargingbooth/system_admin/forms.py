@@ -2,7 +2,8 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import (StringField, PasswordField, SubmitField, BooleanField, IntegerField,
 					 SelectField)
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, Email
+from wtforms.validators import (DataRequired, Length, EqualTo, ValidationError, Email, 
+								InputRequired, NumberRange)
 from flask_login import current_user
 from chargingbooth.models import User
 import pytz
@@ -70,8 +71,9 @@ class ResetPasswordForm(FlaskForm):
 # Settings
 class SettingsForm(FlaskForm):
 	toggle_pay = BooleanField('Toggle Pay')
-	cents_per_second = IntegerField('Price (cents/sec)', validators=[DataRequired()])
-	charge_time = IntegerField('Allowed Charge Time (sec)', validators=[DataRequired()])
+	price = IntegerField('Price per session in cents (ex. $3.50 = 350c)', validators=[InputRequired(), NumberRange(min=0, message="Cannot be negative")])
+	charge_time_min = IntegerField('Allowed Charge Time (minutes)', validators=[InputRequired(), NumberRange(min=0, message="Cannot be negative")])
+	charge_time_sec = IntegerField('Allowed Charge Time (seconds)', validators=[InputRequired(), NumberRange(min=0, message="Cannot be negative")])
 	time_zone = SelectField('Timezone', choices=pytz.all_timezones)
 	location = StringField('Location', validators=[])
 

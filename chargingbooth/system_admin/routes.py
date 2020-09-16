@@ -3,10 +3,12 @@ from flask_login import login_user, current_user, logout_user, login_required
 from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import User, Session, Settings, PFI
 from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
-												RequestRestForm, RequestRestForm, ResetPasswordForm, 
-												SettingsForm, SlideShowPicsForm, RemovePictureForm)
+												RequestRestForm, RequestRestForm, 
+												ResetPasswordForm, SettingsForm, 
+												SlideShowPicsForm, RemovePictureForm)
 from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated, 
-												create_csv_file_from_sessions, create_plot)
+												create_csv_file_from_sessions, create_plot, 
+												get_min_sec)
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -147,8 +149,11 @@ def settings():
 	form = SettingsForm()
 	if form.validate_on_submit():
 		Settings.query.first().toggle_pay = form.toggle_pay.data
-		Settings.query.first().cents_per_second = form.cents_per_second.data
-		Settings.query.first().charge_time = form.charge_time.data
+		Settings.query.first().price = form.price.data
+		# Settings.query.first().charge_time = form.charge_time.data
+		minutes = form.charge_time_min.data
+		seconds = form.charge_time_sec.data
+		Settings.query.first().charge_time = minutes*60 + seconds;
 		Settings.query.first().time_offset = form.time_zone.data
 		Settings.query.first().location = form.location.data
 		db.session.commit()
@@ -156,8 +161,11 @@ def settings():
 		return redirect(url_for('system_admin.settings'))
 	elif request.method == 'GET':
 		form.toggle_pay.data = Settings.query.first().toggle_pay
-		form.cents_per_second.data = Settings.query.first().cents_per_second
-		form.charge_time.data = Settings.query.first().charge_time
+		form.price.data = Settings.query.first().price
+		# form.charge_time.data = Settings.query.first().charge_time
+		minutes, seconds = get_min_sec(seconds=Settings.query.first().charge_time)
+		form.charge_time_min.data = minutes
+		form.charge_time_sec.data = seconds
 		form.time_zone.data = Settings.query.first().time_offset
 		form.location.data = Settings.query.first().location
 
