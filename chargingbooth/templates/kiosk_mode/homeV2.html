@@ -33,8 +33,16 @@
 	          <span class="close">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p>Session cost: ${{ setting.price / 100}}</p>
-	          <p>Session Time: {{ setting.charge_time }} seconds</p>
+				<p>Session cost: ${{ setting.price / 100}}</p>
+
+				{% if hours > 0 %}
+					<p>Session Time: {{ hours }} hours, {{ minutes }} minutes, {{ seconds }} seconds</p>
+				{% elif minutes > 0 %}
+					<p>Session Time: {{ minutes }} minutes, {{ seconds }} seconds</p>
+				{% else %}
+					<p>Session Time: {{ seconds }} seconds</p>
+				{% endif %}
+
 	        </div>
 	        <div class="modal-footer">
 		        <!-- Need to change this to ask for a payment first before moving on to make a session -->

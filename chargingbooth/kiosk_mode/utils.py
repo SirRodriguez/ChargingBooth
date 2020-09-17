@@ -17,9 +17,6 @@ def get_offset_dates_initiated(sessions, time_offset):
 		utc_time = pytz.utc.localize(session.date_initiated)
 		local_time = utc_time.astimezone(zone)
 
-		# print(zone)
-		# print(local_time.strftime(fmt))
-
 		dates.append(local_time.strftime(fmt))
 
 	return dates
@@ -35,11 +32,15 @@ def get_offset_dates_end(sessions, time_offset):
 		add_seconds = timedelta(seconds=session.total_seconds())
 		local_time += add_seconds
 
-		# print(local_time)
-
-		# print(zone)
-		# print(local_time.strftime(fmt))
-
 		dates.append(local_time.strftime(fmt))
 
 	return dates
+
+def split_seconds(secs):
+	hours = secs // 3600
+	remaining_seconds = secs - ( hours * 3600 )
+	minutes = remaining_seconds // 60;
+	remaining_seconds = remaining_seconds - ( minutes * 60 )
+	seconds = remaining_seconds
+
+	return hours, minutes, seconds

@@ -7,7 +7,8 @@ from flask_login import current_user, logout_user
 from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import Session, Settings
 # from chargingbooth.kiosk_mode.forms import
-from chargingbooth.kiosk_mode.utils import start_route, get_offset_dates_initiated, get_offset_dates_end
+from chargingbooth.kiosk_mode.utils import (start_route, get_offset_dates_initiated, get_offset_dates_end,
+											split_seconds)
 from chargingbooth.models import PFI
 
 kiosk_mode = Blueprint('kiosk_mode', __name__)
@@ -24,9 +25,10 @@ def home():
 	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
 	date_end_str = get_offset_dates_end(sessions=sessions, time_offset=Settings.query.first().time_offset)
 
-	# print(date_end_str)
-
 	sessions_and_dates = zip(sessions, date_strings, date_end_str)
+
+	# Get the total hours, minutes, seconds for the session time
+	hours, minutes, seconds = split_seconds(setting.charge_time)
 
 	# return render_template('kiosk_mode/home.html', title='Kiosk Mode', 
 	# 						current_sessions=current_sessions,
@@ -36,7 +38,8 @@ def home():
 	return render_template('kiosk_mode/homeV2.html', title='Kiosk Mode', 
 							current_sessions=current_sessions,
 							sessions_and_dates=sessions_and_dates,
-							pic_files=pic_files.get_copy(), setting=setting)
+							pic_files=pic_files.get_copy(), setting=setting, 
+							hours=hours, minutes=minutes, seconds=seconds)
 
 
 @kiosk_mode.route("/kiosk_mode/confirm_payment")
