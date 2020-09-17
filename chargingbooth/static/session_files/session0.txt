@@ -1,2 +1,0 @@
-Start:2020-09-17 03:00:53.567394, Duration:915, End:2020-09-17 03:16:08.567394, Amount Paid:399, Location:Los Angeles, Port:1, Increment Size:915, Increments:1
-Seconds elapsed: 35.312051
