@@ -243,13 +243,11 @@ def upload_image():
 	if form.validate_on_submit():
 		pic_files.save_file(form.picture.data)
 
-		# TODO: Refit the image here
-
 		flash('Picture has been uploaded', 'success')
 		return redirect(url_for('system_admin.upload_image'))
 
 	return render_template("system_admin/upload_image.html", title="Upload Image", form=form,
-							pic_files=pic_files.get_copy())
+							pic_files=pic_files.get_resized_copy())
 
 @system_admin.route("/system_admin/remove_slides", methods=['GET', 'POST'])
 @login_required
@@ -264,4 +262,4 @@ def remove_image():
 		return redirect(url_for('system_admin.remove_image'))
 
 	return render_template("system_admin/remove_image.html", title="Remove Images", form=form,
-							pic_files=pic_files.get_copy(), pic_files_length=pic_files_length)
+							pic_files=pic_files.get_resized_copy(), pic_files_length=pic_files_length)

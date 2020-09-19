@@ -9,6 +9,7 @@ from flask_login import UserMixin
 from typing import List
 from os import listdir
 from os.path import isfile, join
+from PIL import Image
 
 
 
@@ -282,8 +283,25 @@ class PFI:
 	def get_copy(self):
 		return self.pic_files.copy()
 
+	def get_resized_copy(self):
+		return self.resized_pic_files.copy()
+
 	def save_file(self, file):
 		file_path = os.path.join(current_app.root_path, 'static', 'picture_files', file.filename)
+		file.save(file_path)
+
+		# Do resizing here
+		# Last two values should be width and height of desired ratio
+		re_img = self.resize_image(file, 'black', 1366, 768)
+
+		resized_file_path = os.path.join(current_app.root_path, 'static', 'picture_files', 'resized', file.filename)
+		re_img.save(resized_file_path)
+
+		# Reset the pic_files
+		self.set_up()
+
+	def save_resize_file(self, file):
+		file_path = os.path.join(current_app.root_path, 'static', 'picture_files', 'resized', file.filename)
 		file.save(file_path)
 
 		# Reset the pic_files
@@ -296,9 +314,11 @@ class PFI:
 				index = int(i)-1
 				if index >= 0 and index < len(self.pic_files):
 					file_path = os.path.join(current_app.root_path, 'static', 'picture_files', self.pic_files[index])
+					resized_file_path = os.path.join(current_app.root_path, 'static', 'picture_files', 'resized', self.pic_files[index])
 					os.remove(file_path)
-					# Reset the pic_files
-					self.set_up()
+					os.remove(resized_file_path)
+		# Reset the pic_files
+		self.set_up()
 
 	def get_length(self):
 		return len(self.pic_files)
@@ -306,3 +326,31 @@ class PFI:
 	def set_up(self):
 		files_path = os.path.join(current_app.root_path, 'static', 'picture_files')
 		self.pic_files = [f for f in listdir(files_path) if isfile(join(files_path, f))]
+
+		resized_files_path = os.path.join(current_app.root_path, 'static', 'picture_files', 'resized')
+		self.resized_pic_files = [f for f in listdir(resized_files_path) if isfile(join(resized_files_path, f))]
+
+
+	# Return a new image that is resized with black padding
+	def resize_image(self, img_file, background_color, width, height):
+		img = Image.open(img_file)
+
+		img_width, img_height = img.size
+
+		screen_ratio = width / height
+		img_ratio = img_width / img_height
+
+		if img_ratio == screen_ratio:
+			return img
+
+		elif img_ratio > screen_ratio:
+			new_height = height * img_width / width
+			result = Image.new(img.mode, (img_width, int(new_height)), background_color)
+			result.paste(img, ( 0, (int(new_height) - img_height) // 2 ) )
+			return result
+
+		elif img_ratio < screen_ratio:
+			new_width = width * img_height / height
+			result = Image.new(img.mode, (int(new_width), img_height), background_color)
+			result.paste(img, ( (int(new_width) - img_width) // 2, 0))
+			return result

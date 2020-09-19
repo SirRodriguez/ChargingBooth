@@ -33,12 +33,12 @@ def home():
 	# return render_template('kiosk_mode/home.html', title='Kiosk Mode', 
 	# 						current_sessions=current_sessions,
 	# 						sessions_and_dates=sessions_and_dates,
-	# 						pic_files=pic_files.get_copy(), setting=setting)
+	# 						pic_files=pic_files.get_resized_copy(), setting=setting)
 
 	return render_template('kiosk_mode/homeV2.html', title='Kiosk Mode', 
 							current_sessions=current_sessions,
 							sessions_and_dates=sessions_and_dates,
-							pic_files=pic_files.get_copy(), setting=setting, 
+							pic_files=pic_files.get_resized_copy(), setting=setting, 
 							hours=hours, minutes=minutes, seconds=seconds)
 
 
