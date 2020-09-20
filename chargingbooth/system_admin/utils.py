@@ -93,6 +93,16 @@ def create_csv_file_from_sessions(sessions):
 
 	return file_path
 
+def count_years(dates):
+	years = {}
+
+	for date in dates:
+		yr = date.split(" ")[2]
+		years[yr] = years.get(yr, 0) + 1
+
+
+	return years
+
 def create_plot(df, x_label, y_label):
 	x = df[x_label]
 	y = df[y_label]
@@ -105,6 +115,17 @@ def create_plot(df, x_label, y_label):
 	plt.gcf().subplots_adjust(bottom=0.40)
 
 	ax.plot(x, y, color='black', alpha=0.75)
+
+def create_bar_years(years):
+	yrs = list(years.keys())
+	vls = list(years.values())
+
+	fig = plt.figure(figsize = (10, 5))
+
+	# Create the bar plot
+	plt.bar(yrs, vls)
+
+
 
 def save_figure():
 	fig_name = secrets.token_hex(8) + ".png"

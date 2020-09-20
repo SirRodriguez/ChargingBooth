@@ -8,7 +8,8 @@ from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, Updat
 												SlideShowPicsForm, RemovePictureForm)
 from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated, 
 												create_csv_file_from_sessions, create_plot, 
-												get_min_sec, save_figure, remove_png)
+												get_min_sec, save_figure, remove_png, count_years, 
+												create_bar_years)
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -206,10 +207,17 @@ def view_data():
 @system_admin.route("/system_admin/graph_data")
 @login_required
 def graph_data():
+	return render_template("system_admin/graph_data.html", title="Graph Data")
+
+@system_admin.route("/system_admin/graph_data/all_years")
+@login_required
+def graph_all_years():
 	# Sessions come with these variable:
 	# {id, duration, power_used, amount_paid, date_initiated, location, port, increment_size, increments}
 	# variable that have numerical values that only work with graph are:
 	# {id, duration, power_used, amount_paid, date_initiated, increment_size, increments}
+
+	
 
 	# Delete old pic files
 	remove_png()
@@ -217,19 +225,45 @@ def graph_data():
 	# Grab the sessions
 	sessions = Session.query.all()
 
+	# This is what will be used for the bar graph
+	date_strings = get_offset_dates_initiated(sessions=sessions,
+									time_offset=Settings.query.first().time_offset)
+
+	# For every year, count how many sessions occured
+	# Returns a dictionary
+	years = count_years(date_strings)
+
+	create_bar_years(years)
+
+
 	# CSV file comes out ready with session data inside of it.
-	csv_file = create_csv_file_from_sessions(sessions=sessions)
+	# csv_file = create_csv_file_from_sessions(sessions=sessions)
 
 	# # Create the panda file
-	df = pd.read_csv(csv_file, delimiter=',')
+	# df = pd.read_csv(csv_file, delimiter=',')
 
 	# Create the plot
-	create_plot(df, x_label="date_initiated", y_label="duration")
+	# create_plot(df, x_label="date_initiated", y_label="duration")
 	
 	# Create the pic file to show
 	pic_name = save_figure()
 
-	return render_template("system_admin/graph_data.html", title="Graph Data", sessions=sessions, pic_name=pic_name)
+	return render_template("system_admin/graph_data_all_years.html", title="Years", pic_name=pic_name)
+
+@system_admin.route("/system_admin/graph_data/year")
+@login_required
+def graph_year():
+	return render_template("system_admin/graph_data_year.html", title="Year")
+
+@system_admin.route("/system_admin/graph_data/month")
+@login_required
+def graph_month():
+	return render_template("system_admin/graph_data_month.html", title="Year")
+
+@system_admin.route("/system_admin/graph_data/day")
+@login_required
+def graph_day():
+	return render_template("system_admin/graph_data_day.html", title="Year")
 
 @system_admin.route("/system_admin/local_data")
 @login_required

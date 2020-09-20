@@ -4,7 +4,19 @@
 	<h1>Charging Booth: Graph Data</h1>
 
 
-	<img src="{{ url_for('static', filename='data_files/' + pic_name) }}">
+	<div class="col-md">
+    <div class="content-section">
+      <h3>Graph Options</h3>
+      <p>
+        <ul class="list-group">
+          <a href="{{ url_for('system_admin.graph_all_years') }}"><li class="list-group-item list-group-item-light">All Years</li></a>
+          <a href="{{ url_for('system_admin.graph_year') }}"><li class="list-group-item list-group-item-light">By Year</li></a>
+          <a href="{{ url_for('system_admin.graph_month') }}"><li class="list-group-item list-group-item-light">By Month</li></a>
+          <a href="{{ url_for('system_admin.graph_day') }}"><li class="list-group-item list-group-item-light">By Day</li></a>
+        </ul>
+      </p>
+    </div>
+  </div>
   	
 
 
