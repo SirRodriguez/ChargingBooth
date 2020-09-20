@@ -46,53 +46,6 @@ def get_offset_dates_initiated(sessions, time_offset):
 
 	return dates
 
-
-# class Session(db.Model):
-# 	id = db.Column(db.Integer, primary_key=True)
-# 	duration = db.Column(db.Integer) #Seconds
-# 	power_used = db.Column(db.Float) #Watts per second
-# 	amount_paid = db.Column(db.Integer) #Cents
-# 	date_initiated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-# 	location = db.Column(db.String(100), default="No Location")
-# 	port = db.Column(db.String(100), default="No Port")
-# 	increment_size = db.Column(db.Integer) #Seconds
-# 	increments = db.Column(db.Integer)
-
-def create_csv_file_from_sessions(sessions):
-	# Save Sessions to a csv file so pandas can read it
-	file_name = "sessions.csv"
-	file_path = os.path.join(current_app.root_path, 'static', 'data_files', file_name)
-	file = open(file_path, 'w')
-
-	# Session information from model above
-	titles_line = "id,duration,power_used,amount_paid,date_initiated,location,port,increment_size,increments\n"
-	file.write(titles_line)
-
-	# For each session it will add lines to the file depending on the data
-	for session in sessions:
-		data_line = str(session.id)
-		data_line += ","
-		data_line += str(session.duration)
-		data_line += ","
-		data_line += str(session.power_used)
-		data_line += ","
-		data_line += str(session.amount_paid)
-		data_line += ","
-		data_line += str(session.date_initiated.strftime("%Y-%m-%d %H:%M:%S")) # Maybe format this to yyyy-mm-dd hh:mm:ss
-		data_line += ","
-		data_line += str(session.location)
-		data_line += ","
-		data_line += str(session.port)
-		data_line += ","
-		data_line += str(session.increment_size)
-		data_line += ","
-		data_line += str(session.increments)
-		data_line += "\n"
-
-		file.write(data_line)
-
-	return file_path
-
 def count_years(dates):
 	years = {}
 
@@ -102,19 +55,6 @@ def count_years(dates):
 
 
 	return years
-
-def create_plot(df, x_label, y_label):
-	x = df[x_label]
-	y = df[y_label]
-	f, ax = plt.subplots(1,1, figsize=(10,5))
-
-	plt.xlabel(x_label)
-	plt.ylabel(y_label)
-
-	plt.xticks(rotation=90)
-	plt.gcf().subplots_adjust(bottom=0.40)
-
-	ax.plot(x, y, color='black', alpha=0.75)
 
 def create_bar_years(years):
 	yrs = list(years.keys())

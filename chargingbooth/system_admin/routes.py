@@ -6,8 +6,7 @@ from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, Updat
 												RequestRestForm, RequestRestForm, 
 												ResetPasswordForm, SettingsForm, 
 												SlideShowPicsForm, RemovePictureForm)
-from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated, 
-												create_csv_file_from_sessions, create_plot, 
+from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated,
 												get_min_sec, save_figure, remove_png, count_years, 
 												create_bar_years)
 import pandas as pd
@@ -234,16 +233,6 @@ def graph_all_years():
 	years = count_years(date_strings)
 
 	create_bar_years(years)
-
-
-	# CSV file comes out ready with session data inside of it.
-	# csv_file = create_csv_file_from_sessions(sessions=sessions)
-
-	# # Create the panda file
-	# df = pd.read_csv(csv_file, delimiter=',')
-
-	# Create the plot
-	# create_plot(df, x_label="date_initiated", y_label="duration")
 	
 	# Create the pic file to show
 	pic_name = save_figure()
