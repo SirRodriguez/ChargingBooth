@@ -156,6 +156,20 @@ def settings():
 		Settings.query.first().charge_time = minutes*60 + seconds;
 		Settings.query.first().time_offset = form.time_zone.data
 		Settings.query.first().location = form.location.data
+
+		# Check if aspect ration is different so that it can resize all images
+		resize = False
+		if Settings.query.first().aspect_ratio_width != float(form.aspect_ratio.data.split(":")[0]) and \
+			Settings.query.first().aspect_ratio_height != float(form.aspect_ratio.data.split(":")[1]):
+			resize = True
+
+		Settings.query.first().aspect_ratio_width = float(form.aspect_ratio.data.split(":")[0])
+		Settings.query.first().aspect_ratio_height = float(form.aspect_ratio.data.split(":")[1])
+
+		if resize:
+			pic_files = PFI()
+			pic_files.resize_all(Settings.query.first().aspect_ratio_width, Settings.query.first().aspect_ratio_height)
+
 		db.session.commit()
 		flash('Settings have been updated!', 'success')
 		return redirect(url_for('system_admin.settings'))
@@ -168,6 +182,7 @@ def settings():
 		form.charge_time_sec.data = seconds
 		form.time_zone.data = Settings.query.first().time_offset
 		form.location.data = Settings.query.first().location
+		form.aspect_ratio.data = str(Settings.query.first().aspect_ratio_width) + ":" + str(Settings.query.first().aspect_ratio_height)
 
 	return render_template('system_admin/settings.html', title='Settings', form=form)
 
@@ -241,9 +256,12 @@ def upload_image():
 
 	form = SlideShowPicsForm()
 	if form.validate_on_submit():
-		pic_files.save_file(form.picture.data)
+		# TODO: iterate through all the files selected
+		for file in form.picture.data:
+			pic_files.save_file(file, Settings.query.first().aspect_ratio_width,
+								Settings.query.first().aspect_ratio_height)
 
-		flash('Picture has been uploaded', 'success')
+		flash('Pictures has been uploaded', 'success')
 		return redirect(url_for('system_admin.upload_image'))
 
 	return render_template("system_admin/upload_image.html", title="Upload Image", form=form,

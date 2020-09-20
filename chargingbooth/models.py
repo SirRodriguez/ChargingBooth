@@ -63,6 +63,8 @@ class Settings(db.Model):
 	charge_time = db.Column(db.Integer) #Seconds
 	time_offset = db.Column(db.String(20)) # timezone offset
 	location = db.Column(db.String(100)) # Location of the device
+	aspect_ratio_width = db.Column(db.Float) # Screen Ratio Width
+	aspect_ratio_height = db.Column(db.Float) # Screen Ratio Height
 
 
 ###############
@@ -240,7 +242,7 @@ class Sessions_Container:
 									power_used=self.local_sessions[index].power_used(), 
 									amount_paid=self.local_sessions[index].amount_paid, 
 									location=self.local_sessions[index].location, 
-									port=self.local_sessions[index].port,
+									port=self.local_sessions[index].port if self.local_sessions[index].port != "" else "No Port Assigned",
 									increment_size=self.local_sessions[index].increment_size, 
 									increments=self.local_sessions[index].increments)
 
@@ -286,13 +288,14 @@ class PFI:
 	def get_resized_copy(self):
 		return self.resized_pic_files.copy()
 
-	def save_file(self, file):
+	def save_file(self, file, resize_width, resize_height):
 		file_path = os.path.join(current_app.root_path, 'static', 'picture_files', file.filename)
 		file.save(file_path)
 
 		# Do resizing here
 		# Last two values should be width and height of desired ratio
-		re_img = self.resize_image(file, 'black', 1366, 768)
+		background_color = 'black'
+		re_img = self.resize_image(file, background_color, resize_width, resize_height)
 
 		resized_file_path = os.path.join(current_app.root_path, 'static', 'picture_files', 'resized', file.filename)
 		re_img.save(resized_file_path)
@@ -329,6 +332,21 @@ class PFI:
 
 		resized_files_path = os.path.join(current_app.root_path, 'static', 'picture_files', 'resized')
 		self.resized_pic_files = [f for f in listdir(resized_files_path) if isfile(join(resized_files_path, f))]
+
+	def resize_all(self, resize_width, resize_height):
+		background_color = 'black'
+		for file in self.pic_files:
+			file_path = os.path.join(current_app.root_path, 'static', 'picture_files', file)
+			resized_file_path = os.path.join(current_app.root_path, 'static', 'picture_files', 'resized', file)
+
+			# Delete old resized image
+			os.remove(resized_file_path)
+
+			# resize the original image
+			re_img = self.resize_image(file_path, background_color, resize_width, resize_height)
+
+			# Save the resized image
+			re_img.save(resized_file_path)
 
 
 	# Return a new image that is resized with black padding

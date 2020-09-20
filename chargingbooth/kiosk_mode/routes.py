@@ -64,7 +64,7 @@ def make_session():
 		setting = Settings.query.first()
 
 		current_sessions.add_session(amount_paid=setting.price, location=setting.location,
-										port="1", increment_size=setting.charge_time, increments=1)
+										port="", increment_size=setting.charge_time, increments=1)
 		flash('Session Added Successfully! You may start charging now.')
 
 	return redirect(url_for('kiosk_mode.home'))
