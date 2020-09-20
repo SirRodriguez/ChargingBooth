@@ -33,24 +33,27 @@
 	          <span class="close">&times;</span>
 	        </div>
 	        <div class="modal-body">
+	        	<br>
 	        	<!-- Session Price -->
 	        	{% if setting.price - ( ( setting.price // 10 ) * 10 ) > 0 %}
-	        		<p>Session cost: ${{ setting.price / 100}}</p>
+	        		<p>Session cost: <b>${{ setting.price / 100}}</b></p>
 	        	{% else %}
-	        		<p>Session cost: ${{ setting.price / 100}}0</p>
+	        		<p>Session cost: <b>${{ setting.price / 100}}0</b></p>
 	        	{% endif %}
 	        	<!-- Session Time -->
 				{% if hours > 0 %}
-					<p>Session Time: {{ hours }} hours, {{ minutes }} minutes, {{ seconds }} seconds</p>
+					<p>Session Time: <b>{{ hours }} hours, {{ minutes }} minutes, {{ seconds }} seconds</b></p>
 				{% elif minutes > 0 %}
-					<p>Session Time: {{ minutes }} minutes, {{ seconds }} seconds</p>
+					<p>Session Time: <b>{{ minutes }} minutes, {{ seconds }} seconds</b></p>
 				{% else %}
-					<p>Session Time: {{ seconds }} seconds</p>
+					<p>Session Time: <b>{{ seconds }} seconds</b></p>
 				{% endif %}
 	        </div>
 	        <div class="modal-footer">
 		        <!-- Need to change this to ask for a payment first before moving on to make a session -->
-		        <button id="confim" class="block_button"><a href="{{ url_for('kiosk_mode.confirm_payment') }}" style="color: black">Continue With Payment</a></button>
+		        <!-- <button id="confim" class="block_button"><a href="{{ url_for('kiosk_mode.confirm_payment') }}" style="color: black">Continue With Payment</a></button> -->
+		        <a href="{{ url_for('kiosk_mode.confirm_payment') }}" class="block_button" style="color: black;"><h3>Continue With Payment</h3></a>
+
 	        </div>
 	      </div>
 
@@ -62,11 +65,19 @@
 	          <span class="close">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p>Session Time: {{ setting.charge_time }} seconds</p>
+	        	<br>
+	          <!-- Session Time -->
+				{% if hours > 0 %}
+					<p>Session Time: <b>{{ hours }} hours, {{ minutes }} minutes, {{ seconds }} seconds</b></p>
+				{% elif minutes > 0 %}
+					<p>Session Time: <b>{{ minutes }} minutes, {{ seconds }} seconds</b></p>
+				{% else %}
+					<p>Session Time: <b>{{ seconds }} seconds</b></p>
+				{% endif %}
 	        </div>
 	        <div class="modal-footer">
 
-	          <button id="confim" class="block_button"><a href="{{ url_for('kiosk_mode.make_session') }}" style="color: black">Confirm</a></button>
+	          <a href="{{ url_for('kiosk_mode.confirm_payment') }}" class="block_button" style="color: black;"><h3>Confirm</h3></a>
 	        </div>
 	      </div>
 

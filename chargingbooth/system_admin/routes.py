@@ -256,7 +256,6 @@ def upload_image():
 
 	form = SlideShowPicsForm()
 	if form.validate_on_submit():
-		# TODO: iterate through all the files selected
 		for file in form.picture.data:
 			pic_files.save_file(file, Settings.query.first().aspect_ratio_width,
 								Settings.query.first().aspect_ratio_height)
