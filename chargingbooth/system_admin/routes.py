@@ -8,7 +8,7 @@ from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, Updat
 												SlideShowPicsForm, RemovePictureForm)
 from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated, 
 												create_csv_file_from_sessions, create_plot, 
-												get_min_sec)
+												get_min_sec, save_figure, remove_png)
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -211,6 +211,10 @@ def graph_data():
 	# variable that have numerical values that only work with graph are:
 	# {id, duration, power_used, amount_paid, date_initiated, increment_size, increments}
 
+	# Delete old pic files
+	remove_png()
+
+	# Grab the sessions
 	sessions = Session.query.all()
 
 	# CSV file comes out ready with session data inside of it.
@@ -223,9 +227,7 @@ def graph_data():
 	create_plot(df, x_label="date_initiated", y_label="duration")
 	
 	# Create the pic file to show
-	pic_name = "sessions_plot.png"
-	pic_path = os.path.join(current_app.root_path, 'static', 'data_files', pic_name)
-	plt.savefig(pic_path)
+	pic_name = save_figure()
 
 	return render_template("system_admin/graph_data.html", title="Graph Data", sessions=sessions, pic_name=pic_name)
 

@@ -1,2 +1,10 @@
 id,duration,power_used,amount_paid,date_initiated,location,port,increment_size,increments
 1,310,1.0,399,2020-09-20 01:08:04,No Location,No Port,310,1
+2,10,10.0,399,2020-09-20 03:49:31,Long Beach,No Port Assigned,10,1
+3,10,10.0,399,2020-09-20 03:56:06,Long Beach,No Port Assigned,10,1
+4,10,10.0,399,2020-09-20 04:08:26,Long Beach,No Port Assigned,10,1
+5,10,10.0,399,2020-09-20 04:15:47,Long Beach,No Port Assigned,10,1
+6,5,5.0,399,2020-09-20 06:45:45,Long Beach,No Port Assigned,5,1
+7,5,5.0,399,2020-09-20 06:45:52,Long Beach,No Port Assigned,5,1
+8,5,5.0,399,2020-09-20 06:46:03,Long Beach,No Port Assigned,5,1
+9,5,5.0,399,2020-09-20 06:46:19,Long Beach,No Port Assigned,5,1

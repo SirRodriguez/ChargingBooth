@@ -5,8 +5,11 @@ from datetime import datetime, timedelta
 from pytz import timezone
 import pytz
 import os
+from os import listdir
+from os.path import isfile, join
 import pandas as pd
 import matplotlib.pyplot as plt
+import secrets
 
 def send_reset_email(user, logged_in=False):
 	token = user.get_reset_token()
@@ -102,6 +105,22 @@ def create_plot(df, x_label, y_label):
 	plt.gcf().subplots_adjust(bottom=0.40)
 
 	ax.plot(x, y, color='black', alpha=0.75)
+
+def save_figure():
+	fig_name = secrets.token_hex(8) + ".png"
+	pic_path = os.path.join(current_app.root_path, 'static', 'data_files', fig_name)
+	plt.savefig(pic_path)
+
+	return fig_name
+
+def remove_png():
+	files_path = os.path.join(current_app.root_path, 'static', 'data_files')
+	files = [f for f in listdir(files_path) if isfile(join(files_path, f))]
+	for file in files:
+		f_name, f_ext = os.path.splitext(file)
+		if f_ext == ".png":
+			full_path = os.path.join(current_app.root_path, 'static', 'data_files', file)
+			os.remove(full_path)
 
 def get_min_sec(seconds):
 	minutes = seconds // 60
