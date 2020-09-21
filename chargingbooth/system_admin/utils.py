@@ -62,6 +62,13 @@ def create_bar_years(years):
 	# Create the bar plot
 	plt.bar(yrs, vls)
 
+	# Set the labels
+	plt.title("Number of Sessions for each year", fontsize=20)
+	plt.ylabel("Number of Sessions", fontsize=15)
+	plt.xlabel("Year", fontsize=15)
+
+
+
 def count_months(dates, year):
 	# initialize the months
 	months = {
@@ -82,7 +89,6 @@ def count_months(dates, year):
 	# Grab the sessions in each month
 	for date in dates:
 		date_list = date.split(" ")
-		print(date_list)
 		yr = date_list[2]
 
 		if yr == year:
@@ -99,6 +105,11 @@ def create_bar_months(months, year):
 
 	# Create the bar plot
 	plt.bar(mth, vls)
+
+	# Set the labels
+	plt.title("Number of Sessions for " + year, fontsize=20)
+	plt.ylabel("Number of Sessions", fontsize=15)
+	plt.xlabel("Month", fontsize=15)
 
 def count_days(dates, year, month):
 	# This is to get how many days each month has
@@ -143,6 +154,14 @@ def create_bar_days(days, month, year):
 
 	# Create the bar plot
 	plt.bar(dys, vls)
+
+	# Make sure all x ticks show
+	plt.xticks(dys)
+
+	# Set the labels
+	plt.title("Number of Sessions for " + month + ", " + year, fontsize=20)
+	plt.ylabel("Number of Sessions", fontsize=15)
+	plt.xlabel("Day", fontsize=15)
 
 def count_hours(dates, day, month, year):
 
@@ -197,6 +216,11 @@ def create_bar_hours(hours, day, month, year):
 
 	# Create the bar plot
 	plt.barh(hrs, vls)
+
+	# Set the labels
+	plt.title("Number of Sessions for " + month + " " + day + ", " + year, fontsize=20)
+	plt.ylabel("Hour", fontsize=15)
+	plt.xlabel("Number of Sessions", fontsize=15)
 
 def save_figure():
 	fig_name = secrets.token_hex(8) + ".png"
