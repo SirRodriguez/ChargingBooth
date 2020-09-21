@@ -5,10 +5,12 @@ from chargingbooth.models import User, Session, Settings, PFI
 from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
 												RequestRestForm, RequestRestForm, 
 												ResetPasswordForm, SettingsForm, 
-												SlideShowPicsForm, RemovePictureForm)
+												SlideShowPicsForm, RemovePictureForm,
+												YearForm, MonthForm, DayForm)
 from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated,
 												get_min_sec, save_figure, remove_png, count_years, 
-												create_bar_years)
+												create_bar_years, count_months, create_bar_months,
+												count_days, create_bar_days, count_hours, create_bar_hours)
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -230,29 +232,99 @@ def graph_all_years():
 
 	# For every year, count how many sessions occured
 	# Returns a dictionary
-	years = count_years(date_strings)
+	years = count_years(dates=date_strings)
 
-	create_bar_years(years)
+	create_bar_years(years=years)
 	
 	# Create the pic file to show
 	pic_name = save_figure()
 
 	return render_template("system_admin/graph_data_all_years.html", title="Years", pic_name=pic_name)
 
-@system_admin.route("/system_admin/graph_data/year")
+@system_admin.route("/system_admin/graph_data/year", methods=['GET', 'POST'])
 @login_required
 def graph_year():
-	return render_template("system_admin/graph_data_year.html", title="Year")
+	form = YearForm()
+	if form.validate_on_submit():
+		# Delete old pic files
+		remove_png()
 
-@system_admin.route("/system_admin/graph_data/month")
+		# Grab the sessions
+		sessions = Session.query.all()
+
+		# This is what will be used for the bar graph
+		date_strings = get_offset_dates_initiated(sessions=sessions,
+									time_offset=Settings.query.first().time_offset)
+
+		# For every month in the given year, count how many sessions occured
+		# returns a dictionary
+		months = count_months(dates=date_strings, year=form.year.data)
+
+		create_bar_months(months=months, year=form.year.data)
+
+		# Create the pic file to show
+		pic_name = save_figure()
+
+		return render_template("system_admin/graph_data_year.html", title="Year", form=form, pic_name=pic_name)
+
+	return render_template("system_admin/graph_data_year.html", title="Year", form=form)
+
+@system_admin.route("/system_admin/graph_data/month", methods=['GET', 'POST'])
 @login_required
 def graph_month():
-	return render_template("system_admin/graph_data_month.html", title="Year")
+	form = MonthForm()
+	if form.validate_on_submit():
+		# Delete old pic files
+		remove_png()
 
-@system_admin.route("/system_admin/graph_data/day")
+		# Grab the sessions
+		sessions = Session.query.all()
+
+		# This is what will be used for the bar graph
+		date_strings = get_offset_dates_initiated(sessions=sessions,
+									time_offset=Settings.query.first().time_offset)
+
+		# For every day in a given month of a given year, count how many sessions occured
+		# Returns a dictionary
+		days = count_days(dates=date_strings, year=form.year.data, month=form.month.data)
+
+		create_bar_days(days=days, month=form.month.data, year=form.year.data)
+
+		# Create the pic file to show
+		pic_name = save_figure()
+
+		return render_template("system_admin/graph_data_month.html", title="Month", form=form, pic_name=pic_name)
+	
+	return render_template("system_admin/graph_data_month.html", title="Month", form=form)
+
+@system_admin.route("/system_admin/graph_data/day", methods=['GET', 'POST'])
 @login_required
 def graph_day():
-	return render_template("system_admin/graph_data_day.html", title="Year")
+	form = DayForm()
+	if form.validate_on_submit():
+		# Delete old pic files
+		remove_png()
+
+		# Grab the sessions
+		sessions = Session.query.all()
+
+		# This is what will be used for the bar graph
+		date_strings = get_offset_dates_initiated(sessions=sessions,
+									time_offset=Settings.query.first().time_offset)
+
+
+		# For every hour in a given day of a given month of a given year, count the sessions
+		# Returns a dictionary
+		hours = count_hours(dates=date_strings, day=form.day.data, month=form.month.data, year=form.year.data)
+
+		create_bar_hours(hours=hours, day=form.day.data, month=form.month.data, year=form.year.data)
+
+		# Create the pic file to show
+		pic_name = save_figure()
+
+		return render_template("system_admin/graph_data_day.html", title="Day", form=form, pic_name=pic_name)
+
+	return render_template("system_admin/graph_data_day.html", title="Day", form=form)
 
 @system_admin.route("/system_admin/local_data")
 @login_required

@@ -39,9 +39,6 @@ def get_offset_dates_initiated(sessions, time_offset):
 		utc_time = pytz.utc.localize(session.date_initiated)
 		local_time = utc_time.astimezone(zone)
 
-		# print(zone)
-		# print(local_time.strftime(fmt))
-
 		dates.append(local_time.strftime(fmt))
 
 	return dates
@@ -65,7 +62,141 @@ def create_bar_years(years):
 	# Create the bar plot
 	plt.bar(yrs, vls)
 
+def count_months(dates, year):
+	# initialize the months
+	months = {
+		'Jan' : 0,
+		'Feb' : 0,
+		'Mar' : 0,
+		'Apr' : 0,
+		'May' : 0,
+		'Jun' : 0,
+		'Jul' : 0,
+		'Aug' : 0,
+		'Sep' : 0,
+		'Oct' : 0,
+		'Nov' : 0,
+		'Dec' : 0
+	}
 
+	# Grab the sessions in each month
+	for date in dates:
+		date_list = date.split(" ")
+		print(date_list)
+		yr = date_list[2]
+
+		if yr == year:
+			mth = date_list[0]
+			months[mth] += 1
+
+	return months
+
+def create_bar_months(months, year):
+	mth = list(months.keys())
+	vls = list(months.values())
+
+	fig = plt.figure(figsize = (10, 5))
+
+	# Create the bar plot
+	plt.bar(mth, vls)
+
+def count_days(dates, year, month):
+	# This is to get how many days each month has
+	days_of_months = {
+		'Jan' : 31,
+		'Feb' : 29, # Because of leap year, it has 29
+		'Mar' : 31,
+		'Apr' : 30,
+		'May' : 31,
+		'Jun' : 30,
+		'Jul' : 31,
+		'Aug' : 31,
+		'Sep' : 30,
+		'Oct' : 31,
+		'Nov' : 30,
+		'Dec' : 31
+	}
+
+	# initialize days
+	days = {}
+	for d in range(days_of_months[month]):
+		days[d+1] = 0
+
+	# Grab the sessions for the month
+	for date in dates:
+		date_list = date.split(" ")
+		yr = date_list[2]
+		mth = date_list[0]
+
+		if yr == year and mth == month:
+			dy = int(date_list[1][:-1])
+			days[dy] += 1
+
+
+	return days
+
+def create_bar_days(days, month, year):
+	dys = list(days.keys())
+	vls = list(days.values())
+
+	fig = plt.figure(figsize = (10, 5))
+
+	# Create the bar plot
+	plt.bar(dys, vls)
+
+def count_hours(dates, day, month, year):
+
+	hours = {
+		# Reversed AM and Pm so that the plot shows the right way
+		'11PM' : 0,
+		'10PM' : 0,
+		'09PM' : 0,
+		'08PM' : 0,
+		'07PM' : 0,
+		'06PM' : 0,
+		'05PM' : 0,
+		'04PM' : 0,
+		'03PM' : 0,
+		'02PM' : 0,
+		'01PM' : 0,
+		'12PM' : 0,
+		
+		'11AM' : 0,
+		'10AM' : 0,
+		'09AM' : 0,
+		'08AM' : 0,
+		'07AM' : 0,
+		'06AM' : 0,
+		'05AM' : 0,
+		'04AM' : 0,
+		'03AM' : 0,
+		'02AM' : 0,
+		'01AM' : 0,
+		'12AM' : 0,
+	}
+
+	for date in dates:
+		date_list = date.split(" ")
+		yr = date_list[2]
+		mth = date_list[0]
+		dy = date_list[1][:-1]
+
+		if yr == year and mth == month and dy == day:
+			hr = date.split(" ")[4].split(":")[0]
+			hrm = hr + date.split(" ")[5]
+			hours[hrm] += 1
+
+	return hours
+	
+
+def create_bar_hours(hours, day, month, year):
+	hrs = list(hours.keys())
+	vls = list(hours.values())
+
+	fig = plt.figure(figsize = (10, 5))
+
+	# Create the bar plot
+	plt.barh(hrs, vls)
 
 def save_figure():
 	fig_name = secrets.token_hex(8) + ".png"
