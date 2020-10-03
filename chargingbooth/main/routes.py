@@ -20,6 +20,15 @@ def home():
 			return redirect(url_for('register.home'))
 		else:
 			# Check here if id number is correct
-			pass
+			try:
+				payload = requests.get(service_ip + '/device_module/is_registered/' + devi_id.id_number)		
+			except:
+				flash("Unable to Connect to Server!", "danger")
+				return redirect(url_for('register.error'))
 
-	return redirect(url_for('kiosk_mode.home'))
+			if payload.json()["registered"]:
+				return redirect(url_for('kiosk_mode.home'))
+			else:
+				return redirect(url_for('register.home'))
+
+	return redirect(url_for('register.home'))
