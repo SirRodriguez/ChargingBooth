@@ -66,6 +66,9 @@ class Settings(db.Model):
 	aspect_ratio_width = db.Column(db.Float) # Screen Ratio Width
 	aspect_ratio_height = db.Column(db.Float) # Screen Ratio Height
 
+class Device_ID(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	id_number = db.Column(db.String(50), unique=True)
 
 ###############
 #### Local ####

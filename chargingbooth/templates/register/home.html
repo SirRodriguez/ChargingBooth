@@ -1,0 +1,13 @@
+{% extends "defualt_layout.html" %}
+
+{% block content %}
+
+	<div class="container">
+		<h3>You must register the device first before it can be used.</h3>
+	</div>
+
+	<a href="{{ url_for('register.register_device') }}">
+		<button id="Btn" class="btn btn-primary" style="text-align: center; margin:4px 2px; border-radius: 12px; width: 50%; height: 100%; font-size: 150%">Register Device</button>
+	</a>
+
+{% endblock content %}

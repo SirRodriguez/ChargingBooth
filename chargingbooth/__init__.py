@@ -11,6 +11,7 @@ login_manager = LoginManager()
 login_manager.login_view = 'system_admin.login'
 login_manager.login_message_category = 'info'
 mail = Mail()
+service_ip = "http://localhost:7000"
 
 from chargingbooth.models import Sessions_Container
 
@@ -30,9 +31,11 @@ def create_app(config_class=Config):
 	from chargingbooth.main.routes import main
 	from chargingbooth.system_admin.routes import system_admin
 	from chargingbooth.kiosk_mode.routes import kiosk_mode
+	from chargingbooth.register.routes import register
 
 	app.register_blueprint(main)
 	app.register_blueprint(system_admin)
 	app.register_blueprint(kiosk_mode)
+	app.register_blueprint(register)
 
 	return app
