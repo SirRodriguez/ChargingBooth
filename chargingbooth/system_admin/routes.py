@@ -10,7 +10,8 @@ from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, Updat
 from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated,
 												get_min_sec, save_figure, remove_png, count_years, 
 												create_bar_years, count_months, create_bar_months,
-												count_days, create_bar_days, count_hours, create_bar_hours)
+												count_days, create_bar_days, count_hours, create_bar_hours,
+												is_registered)
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -22,10 +23,18 @@ system_admin = Blueprint('system_admin', __name__)
 
 @system_admin.route("/system_admin")
 def home():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	return redirect(url_for('system_admin.login'))
 
 @system_admin.route("/system_admin/login", methods=['GET', 'POST'])
 def login():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	if current_user.is_authenticated:
 		return redirect(url_for('system_admin.main'))
 	form = LoginForm()
@@ -49,12 +58,20 @@ def logout():
 @system_admin.route("/system_admin/main")
 @login_required
 def main():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	return render_template('system_admin/main.html', title='System Admin Main')
 
 # This is needed to be removed after production
 # This is only used to adjust the database for an admin user
 @system_admin.route("/system_admin/register", methods=['GET', 'POST'])
 def register():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	if current_user.is_authenticated:
 		return redirect(url_for('system_admin.main'))
 	form = RegistrationForm()
@@ -71,6 +88,10 @@ def register():
 @system_admin.route("/system_admin/account", methods=['GET', 'POST'])
 @login_required
 def account():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	form = UpdateAccountForm()
 	if form.validate_on_submit():
 		current_user.username = form.username.data
@@ -87,6 +108,10 @@ def account():
 # When logged out and forgot password
 @system_admin.route("/system_admin/reset_password", methods=['GET', 'POST'])
 def reset_request():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	if current_user.is_authenticated:
 		return redirect(url_for('system_admin.home'))
 	form = RequestRestForm()
@@ -122,6 +147,10 @@ def reset_token(token):
 @system_admin.route("/system_admin/change_password", methods=['GET', 'POST'])
 @login_required
 def change_request():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+		
 	user = User.query.filter_by(email=current_user.email).first()
 	send_reset_email(user, logged_in=True)
 	flash('An email has been sent with instructions to reset your password.', 'info')
@@ -148,6 +177,10 @@ def change_token(token):
 @system_admin.route("/system_admin/settings", methods=['GET', 'POST'])
 @login_required
 def settings():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	form = SettingsForm()
 	if form.validate_on_submit():
 		Settings.query.first().toggle_pay = form.toggle_pay.data
@@ -191,11 +224,19 @@ def settings():
 @system_admin.route("/system_admin/data")
 @login_required
 def data():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	return render_template("system_admin/data.html", title="Data")
 
 @system_admin.route("/system_admin/list_data")
 @login_required
 def view_data():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	page = request.args.get('page', 1, type=int)
 
 	sessions = Session.query.order_by(Session.date_initiated.desc()).paginate(page=page, per_page=10)
@@ -208,11 +249,19 @@ def view_data():
 @system_admin.route("/system_admin/graph_data")
 @login_required
 def graph_data():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	return render_template("system_admin/graph_data.html", title="Graph Data")
 
 @system_admin.route("/system_admin/graph_data/all_years")
 @login_required
 def graph_all_years():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	# Sessions come with these variable:
 	# {id, duration, power_used, amount_paid, date_initiated, location, port, increment_size, increments}
 	# variable that have numerical values that only work with graph are:
@@ -244,6 +293,10 @@ def graph_all_years():
 @system_admin.route("/system_admin/graph_data/year", methods=['GET', 'POST'])
 @login_required
 def graph_year():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	form = YearForm()
 	if form.validate_on_submit():
 		# Delete old pic files
@@ -272,6 +325,10 @@ def graph_year():
 @system_admin.route("/system_admin/graph_data/month", methods=['GET', 'POST'])
 @login_required
 def graph_month():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	form = MonthForm()
 	if form.validate_on_submit():
 		# Delete old pic files
@@ -300,6 +357,10 @@ def graph_month():
 @system_admin.route("/system_admin/graph_data/day", methods=['GET', 'POST'])
 @login_required
 def graph_day():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	form = DayForm()
 	if form.validate_on_submit():
 		# Delete old pic files
@@ -329,6 +390,10 @@ def graph_day():
 @system_admin.route("/system_admin/local_data")
 @login_required
 def view_local_data():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	sessions = current_sessions.local_sessions.values()
 	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
 
@@ -339,6 +404,9 @@ def view_local_data():
 @system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
 @login_required
 def slide_show_pics():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
 
 	remove_pic_form = RemovePictureForm()
 	if remove_pic_form.validate_on_submit() and remove_pic_form.removals.data != "":
@@ -349,6 +417,10 @@ def slide_show_pics():
 @system_admin.route("/system_admin/add_slides", methods=['GET', 'POST'])
 @login_required
 def upload_image():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	pic_files = PFI()
 
 	form = SlideShowPicsForm()
@@ -366,6 +438,10 @@ def upload_image():
 @system_admin.route("/system_admin/remove_slides", methods=['GET', 'POST'])
 @login_required
 def remove_image():
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
+
 	pic_files = PFI()
 	pic_files_length = pic_files.get_length()
 

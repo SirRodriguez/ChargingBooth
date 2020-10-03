@@ -8,7 +8,7 @@ from chargingbooth import db, bcrypt, current_sessions
 from chargingbooth.models import Session, Settings
 # from chargingbooth.kiosk_mode.forms import
 from chargingbooth.kiosk_mode.utils import (start_route, get_offset_dates_initiated, get_offset_dates_end,
-											split_seconds)
+											split_seconds, is_registered)
 from chargingbooth.models import PFI
 
 kiosk_mode = Blueprint('kiosk_mode', __name__)
@@ -17,6 +17,10 @@ kiosk_mode = Blueprint('kiosk_mode', __name__)
 @kiosk_mode.route("/kiosk_mode", methods=['GET', 'POST'])
 def home():
 	start_route()
+
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
 
 	pic_files = PFI()
 	setting = Settings.query.first()
@@ -58,6 +62,10 @@ def confirm_payment():
 @kiosk_mode.route("/kiosk_mode/make_session")
 def make_session():
 	start_route()
+
+	# Check if registered
+	if not is_registered():
+		return redirect(url_for('register.home'))
 
 	# Only make a session if there is no session currently available
 	if not current_sessions.has_sessions():

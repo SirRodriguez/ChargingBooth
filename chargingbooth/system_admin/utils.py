@@ -1,6 +1,7 @@
 from flask import url_for, current_app
 from flask_mail import Message
-from chargingbooth import mail
+from chargingbooth import mail, service_ip,  db
+from chargingbooth.models import Device_ID
 from datetime import datetime, timedelta
 from pytz import timezone
 import pytz
@@ -10,6 +11,7 @@ from os.path import isfile, join
 import pandas as pd
 import matplotlib.pyplot as plt
 import secrets
+import requests
 
 def send_reset_email(user, logged_in=False):
 	token = user.get_reset_token()
@@ -242,3 +244,24 @@ def get_min_sec(seconds):
 	minutes = seconds // 60
 	sec = seconds - (minutes * 60)
 	return minutes, sec
+
+def is_registered():
+	devi_id = Device_ID.query.first()
+
+	if devi_id == None:
+		# return redirect(url_for('register.home'))
+		return False
+	else:
+		if devi_id.id_number == None:
+			# return redirect(url_for('register.home'))
+			return False
+		else:
+			# Check here if id number is correct
+			payload = requests.get(service_ip + '/device_module/is_registered/' + devi_id.id_number)		
+
+			if payload.json()["registered"]:
+				# return redirect(url_for('kiosk_mode.home'))
+				return True
+			else:
+				# return redirect(url_for('register.home'))
+				return False
