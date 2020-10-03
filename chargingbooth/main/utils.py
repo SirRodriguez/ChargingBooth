@@ -20,7 +20,7 @@ def is_registered():
 			return False
 		else:
 			# Check here if id number is correct
-			payload = requests.get(service_ip + '/device_module/is_registered/' + devi_id.id_number)		
+			payload = requests.get(service_ip + '/device/is_registered/' + devi_id.id_number)		
 
 			if payload.json()["registered"]:
 				# return redirect(url_for('kiosk_mode.home'))

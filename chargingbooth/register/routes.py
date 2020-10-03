@@ -21,7 +21,7 @@ def register_device():
 	# Register device here
 
 	try:
-		payload = requests.get(service_ip + '/device_module/register')		
+		payload = requests.get(service_ip + '/device/register')		
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))

@@ -1,8 +1,8 @@
 from flask import Blueprint, url_for, redirect
-from chargingbooth import service_ip,  db
+# from chargingbooth import service_ip,  db
 from chargingbooth.main.utils import start_route, is_registered
-from chargingbooth.models import Device_ID
-import requests
+# from chargingbooth.models import Device_ID
+# import requests
 
 main = Blueprint('main', __name__)
 
@@ -31,7 +31,7 @@ def home():
 	# 	else:
 	# 		# Check here if id number is correct
 	# 		try:
-	# 			payload = requests.get(service_ip + '/device_module/is_registered/' + devi_id.id_number)		
+	# 			payload = requests.get(service_ip + '/device/is_registered/' + devi_id.id_number)		
 	# 		except:
 	# 			flash("Unable to Connect to Server!", "danger")
 	# 			return redirect(url_for('register.error'))
