@@ -4,12 +4,13 @@ import time
 from datetime import datetime, timedelta
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from chargingbooth import db, login_manager
+from chargingbooth import db, login_manager, service_ip
 from flask_login import UserMixin
 from typing import List
 from os import listdir
 from os.path import isfile, join
 from PIL import Image
+import requests
 
 
 
@@ -241,13 +242,43 @@ class Sessions_Container:
 				time.sleep(1)
 
 				with self.app.app_context():
+					devi_id_number = Device_ID.query.first().id_number
+
+					# Send to the service here too
+					payload_send = {}
+
+					payload_send["duration"] = int(self.local_sessions[index].elapsed_time().total_seconds())
+					payload_send["power_used"] = self.local_sessions[index].power_used()
+					payload_send["amount_paid"] = self.local_sessions[index].amount_paid
+					# Datetime was not json serializable
+					payload_send["date_initiated_year"] = self.local_sessions[index].date_initiated.year
+					payload_send["date_initiated_month"] = self.local_sessions[index].date_initiated.month
+					payload_send["date_initiated_day"] = self.local_sessions[index].date_initiated.day
+					payload_send["date_initiated_hour"] = self.local_sessions[index].date_initiated.hour
+					payload_send["date_initiated_minute"] = self.local_sessions[index].date_initiated.minute
+					payload_send["date_initiated_second"] = self.local_sessions[index].date_initiated.second
+					payload_send["location"] = self.local_sessions[index].location
+					payload_send["port"] = self.local_sessions[index].port if self.local_sessions[index].port != "" else "No Port Assigned"
+					payload_send["increment_size"] = self.local_sessions[index].increment_size
+					payload_send["increments"] = self.local_sessions[index].increments
+
 					session = Session(duration=int(self.local_sessions[index].elapsed_time().total_seconds()), 
 									power_used=self.local_sessions[index].power_used(), 
-									amount_paid=self.local_sessions[index].amount_paid, 
+									amount_paid=self.local_sessions[index].amount_paid,
+									date_initiated=self.local_sessions[index].date_initiated,
 									location=self.local_sessions[index].location, 
 									port=self.local_sessions[index].port if self.local_sessions[index].port != "" else "No Port Assigned",
 									increment_size=self.local_sessions[index].increment_size, 
 									increments=self.local_sessions[index].increments)
+
+					response = requests.put(service_ip + '/device/add_session/' + devi_id_number, json=payload_send)
+
+					# if response.status_code == 204 or response.status_code == 200:
+					# 	flash('Settings have been updated!', 'success')
+					# elif response.status_code == 400:
+					# 	flash('Server could not find device!', 'danger')
+					# else:
+					# 	flash('Something happened and settings were not updated.', 'danger')
 
 					db.session.add(session)
 					db.session.commit()
