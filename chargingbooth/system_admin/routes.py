@@ -1,7 +1,7 @@
 from flask import render_template, Blueprint, redirect, url_for, flash, request, current_app
 from flask_login import login_user, current_user, logout_user, login_required
-from chargingbooth import db, bcrypt, current_sessions
-from chargingbooth.models import User, Session, Settings, PFI
+from chargingbooth import db, bcrypt, current_sessions, service_ip
+from chargingbooth.models import User, Session, Settings, PFI, Device_ID
 from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
 												RequestRestForm, RequestRestForm, 
 												ResetPasswordForm, SettingsForm, 
@@ -17,7 +17,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
-
+import requests
 
 system_admin = Blueprint('system_admin', __name__)
 
@@ -181,43 +181,68 @@ def settings():
 	if not is_registered():
 		return redirect(url_for('register.home'))
 
+	devi_id_number = Device_ID.query.first().id_number
+	# Grab settings from site
+	try:
+		payload = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	# setting = Settings.query.first()
+	setting = payload.json()
+
 	form = SettingsForm()
 	if form.validate_on_submit():
-		Settings.query.first().toggle_pay = form.toggle_pay.data
-		Settings.query.first().price = form.price.data
+		pl_send = {}
+
+		pl_send["toggle_pay"] = form.toggle_pay.data
+		pl_send["price"] = form.price.data
 		# Settings.query.first().charge_time = form.charge_time.data
 		minutes = form.charge_time_min.data
 		seconds = form.charge_time_sec.data
-		Settings.query.first().charge_time = minutes*60 + seconds;
-		Settings.query.first().time_offset = form.time_zone.data
-		Settings.query.first().location = form.location.data
+		pl_send["charge_time"] = minutes*60 + seconds;
+		pl_send["time_offset"] = form.time_zone.data
+		pl_send["location"] = form.location.data
 
 		# Check if aspect ration is different so that it can resize all images
 		resize = False
-		if Settings.query.first().aspect_ratio_width != float(form.aspect_ratio.data.split(":")[0]) and \
-			Settings.query.first().aspect_ratio_height != float(form.aspect_ratio.data.split(":")[1]):
+		if setting["aspect_ratio_width"] != float(form.aspect_ratio.data.split(":")[0]) and \
+			setting["aspect_ratio_height"] != float(form.aspect_ratio.data.split(":")[1]):
 			resize = True
 
-		Settings.query.first().aspect_ratio_width = float(form.aspect_ratio.data.split(":")[0])
-		Settings.query.first().aspect_ratio_height = float(form.aspect_ratio.data.split(":")[1])
+		pl_send["aspect_ratio_width"] = float(form.aspect_ratio.data.split(":")[0])
+		pl_send["aspect_ratio_height"] = float(form.aspect_ratio.data.split(":")[1])
 
 		if resize:
 			pic_files = PFI()
-			pic_files.resize_all(Settings.query.first().aspect_ratio_width, Settings.query.first().aspect_ratio_height)
+			pic_files.resize_all(pl_send["aspect_ratio_width"], pl_send["aspect_ratio_height"])
 
-		db.session.commit()
-		flash('Settings have been updated!', 'success')
+
+		response = requests.put(service_ip + '/device/update_setting/' + devi_id_number, json=pl_send)
+
+		if response.status_code == 204 or response.status_code == 200:
+			flash('Settings have been updated!', 'success')
+		elif response.status_code == 400:
+			flash('Server could not find device!', 'danger')
+		else:
+			flash('Something happened and settings were not updated.', 'danger')
+
+		# db.session.commit()
+		# flash('Settings have been updated!', 'success')
 		return redirect(url_for('system_admin.settings'))
 	elif request.method == 'GET':
-		form.toggle_pay.data = Settings.query.first().toggle_pay
-		form.price.data = Settings.query.first().price
+		form.toggle_pay.data = setting["toggle_pay"]
+		form.price.data = setting["price"]
 		# form.charge_time.data = Settings.query.first().charge_time
-		minutes, seconds = get_min_sec(seconds=Settings.query.first().charge_time)
+		minutes, seconds = get_min_sec(seconds=setting["charge_time"])
 		form.charge_time_min.data = minutes
 		form.charge_time_sec.data = seconds
-		form.time_zone.data = Settings.query.first().time_offset
-		form.location.data = Settings.query.first().location
-		form.aspect_ratio.data = str(Settings.query.first().aspect_ratio_width) + ":" + str(Settings.query.first().aspect_ratio_height)
+		form.time_zone.data = setting["time_offset"]
+		form.location.data = setting["location"]
+		# form.aspect_ratio.data = str(setting["aspect_ratio_width"]) + ":" + str(setting["aspect_ratio_height"])
+		form.aspect_ratio.data = str( int(setting["aspect_ratio_width"]) if (setting["aspect_ratio_width"]).is_integer() else setting["aspect_ratio_width"] ) \
+									+ ":" + str( int(setting["aspect_ratio_height"]) if (setting["aspect_ratio_height"]).is_integer() else setting["aspect_ratio_height"] ) 
 
 	return render_template('system_admin/settings.html', title='Settings', form=form)
 

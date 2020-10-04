@@ -35,8 +35,6 @@ def home():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	print(payload.json())
-
 	# setting = Settings.query.first()
 	setting = payload.json()
 
