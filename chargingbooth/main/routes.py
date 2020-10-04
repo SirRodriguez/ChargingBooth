@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, redirect
+from flask import Blueprint, url_for, redirect, flash
 # from chargingbooth import service_ip,  db
 from chargingbooth.main.utils import start_route, is_registered
 # from chargingbooth.models import Device_ID
