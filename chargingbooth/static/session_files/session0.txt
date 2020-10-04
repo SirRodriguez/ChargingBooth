@@ -1,0 +1,2 @@
+Start:2020-10-04 06:25:36.781705, Duration:60, End:2020-10-04 06:26:36.781705, Amount Paid:100, Location:29, Port:, Increment Size:60, Increments:1
+Seconds elapsed: 36.430971

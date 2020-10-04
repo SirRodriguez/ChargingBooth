@@ -25,7 +25,7 @@
   	<div id="myModal" class="modal">
 
 	    <!-- Modal content -->
-	    {% if setting.toggle_pay %}
+	    {% if setting["toggle_pay"] %}
 
 	      <div class="modal-content">
 	        <div class="modal-header">
@@ -35,10 +35,10 @@
 	        <div class="modal-body">
 	        	<br>
 	        	<!-- Session Price -->
-	        	{% if setting.price - ( ( setting.price // 10 ) * 10 ) > 0 %}
-	        		<p>Session cost: <b>${{ setting.price / 100}}</b></p>
+	        	{% if setting["price"] - ( ( setting["price"] // 10 ) * 10 ) > 0 %}
+	        		<p>Session cost: <b>${{ setting["price"] / 100}}</b></p>
 	        	{% else %}
-	        		<p>Session cost: <b>${{ setting.price / 100}}0</b></p>
+	        		<p>Session cost: <b>${{ setting["price"] / 100}}0</b></p>
 	        	{% endif %}
 	        	<!-- Session Time -->
 				{% if hours > 0 %}
