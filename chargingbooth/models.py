@@ -257,6 +257,7 @@ class Sessions_Container:
 					payload_send["date_initiated_hour"] = self.local_sessions[index].date_initiated.hour
 					payload_send["date_initiated_minute"] = self.local_sessions[index].date_initiated.minute
 					payload_send["date_initiated_second"] = self.local_sessions[index].date_initiated.second
+					
 					payload_send["location"] = self.local_sessions[index].location
 					payload_send["port"] = self.local_sessions[index].port if self.local_sessions[index].port != "" else "No Port Assigned"
 					payload_send["increment_size"] = self.local_sessions[index].increment_size

@@ -8,25 +8,25 @@
 		<article class="media content-section">
 			<div class="media-body">
 				<div class="article-metadata">
-					<h5 class="mr-2">Session ID: {{ session.id }}</h5>
+					<h5 class="mr-2">Session ID: {{ session["id"] }}</h5>
 				</div>
 
 				<p class="article-content">Date Initiated: {{date}}</p>
-				<p class="article-content">Duration: {{ session.duration }} Seconds</p>
-				<p class="article-content">Power Consumed: {{ session.power_used }} Watt Hours</p>
-				<p class="article-content">Amount Paid: {{ session.amount_paid }} Cents</p>
-				<p class="article-content">Location: {{ session.location }}</p>
-				<p class="article-content">Port: {{ session.port }}</p>
-				<p class="article-content">Increment Size: {{session.increment_size }} Seconds</p>
-				<p class="article-content">Increments: {{ session.increments }}</p>
+				<p class="article-content">Duration: {{ session["duration"] }} Seconds</p>
+				<p class="article-content">Power Consumed: {{ session["power_used"] }} Watt Hours</p>
+				<p class="article-content">Amount Paid: {{ session["amount_paid"] }} Cents</p>
+				<p class="article-content">Location: {{ session["location"] }}</p>
+				<p class="article-content">Port: {{ session["port"] }}</p>
+				<p class="article-content">Increment Size: {{session["increment_size"] }} Seconds</p>
+				<p class="article-content">Increments: {{ session["increments"] }}</p>
 			</div>	
 		</article>
 
 	{% endfor %}
 
-	{% for page_num in sessions.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-      {% if page_num %}
-        {% if sessions.page == page_num %}
+	{% for page_num in iter_pages %}
+      {% if page_num > 0 %}
+        {% if page == page_num %}
           <a class="btn btn-info mb-4" href="{{ url_for('system_admin.view_data', page=page_num) }}">{{ page_num }}</a>
         {% else %}
           <a class="btn btn-outline-info mb-4" href="{{ url_for('system_admin.view_data', page=page_num) }}">{{ page_num }}</a>

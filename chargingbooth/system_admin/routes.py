@@ -262,14 +262,34 @@ def view_data():
 	if not is_registered():
 		return redirect(url_for('register.home'))
 
+	devi_id_number = Device_ID.query.first().id_number
+
 	page = request.args.get('page', 1, type=int)
 
 	sessions = Session.query.order_by(Session.date_initiated.desc()).paginate(page=page, per_page=10)
-	date_strings = get_offset_dates_initiated(sessions=sessions.items,
+
+	try:
+		payload = requests.get(service_ip + '/device/sessions/' + devi_id_number + '/' + str(page))
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	pl_json = payload.json()
+	sess_list = pl_json["sessions"]
+	iter_pages = pl_json["iter_pages"]
+
+	# print(sess_map)
+	# print(iter_pages)
+
+
+	# date_strings = get_offset_dates_initiated(sessions=sessions.items,
+	# 								time_offset=Settings.query.first().time_offset)
+	date_strings = get_offset_dates_initiated(sessions=sess_list,
 									time_offset=Settings.query.first().time_offset)
 
-	sessions_and_dates = zip(sessions.items, date_strings) # Pack them together to iterate simultaniously
-	return render_template("system_admin/list_data.html", title="List Data", sessions=sessions, sessions_and_dates=sessions_and_dates)
+	sessions_and_dates = zip(sess_list, date_strings) # Pack them together to iterate simultaniously
+	return render_template("system_admin/list_data.html", title="List Data", iter_pages=iter_pages, 
+							page=page, sessions_and_dates=sessions_and_dates)
 
 @system_admin.route("/system_admin/graph_data")
 @login_required

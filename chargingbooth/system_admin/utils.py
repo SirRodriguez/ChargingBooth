@@ -38,7 +38,17 @@ def get_offset_dates_initiated(sessions, time_offset):
 
 	zone = timezone(time_offset)
 	for session in sessions:
-		utc_time = pytz.utc.localize(session.date_initiated)
+		# utc_time = pytz.utc.localize(session.date_initiated)
+		date_initiated=datetime(
+			year=session["date_initiated_year"],
+			month=session["date_initiated_month"],
+			day=session["date_initiated_day"], 
+			hour=session["date_initiated_hour"], 
+			minute=session["date_initiated_minute"],
+			second=session["date_initiated_second"]
+			)
+
+		utc_time = pytz.utc.localize(date_initiated)
 		local_time = utc_time.astimezone(zone)
 
 		dates.append(local_time.strftime(fmt))
