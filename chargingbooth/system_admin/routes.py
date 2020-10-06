@@ -266,10 +266,17 @@ def view_data():
 
 	page = request.args.get('page', 1, type=int)
 
-	sessions = Session.query.order_by(Session.date_initiated.desc()).paginate(page=page, per_page=10)
+	# sessions = Session.query.order_by(Session.date_initiated.desc()).paginate(page=page, per_page=10)
 
 	try:
 		payload = requests.get(service_ip + '/device/sessions/' + devi_id_number + '/' + str(page))
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	# Later combine the two requests to speed up
+	try:
+		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
@@ -278,6 +285,9 @@ def view_data():
 	sess_list = pl_json["sessions"]
 	iter_pages = pl_json["iter_pages"]
 
+	# Get the settings
+	settings = payload_sett.json()
+
 	# print(sess_map)
 	# print(iter_pages)
 
@@ -285,7 +295,7 @@ def view_data():
 	# date_strings = get_offset_dates_initiated(sessions=sessions.items,
 	# 								time_offset=Settings.query.first().time_offset)
 	date_strings = get_offset_dates_initiated(sessions=sess_list,
-									time_offset=Settings.query.first().time_offset)
+									time_offset=settings["time_offset"])
 
 	sessions_and_dates = zip(sess_list, date_strings) # Pack them together to iterate simultaniously
 	return render_template("system_admin/list_data.html", title="List Data", iter_pages=iter_pages, 
@@ -545,10 +555,6 @@ def slide_show_pics():
 	# Check if registered
 	if not is_registered():
 		return redirect(url_for('register.home'))
-
-	remove_pic_form = RemovePictureForm()
-	if remove_pic_form.validate_on_submit() and remove_pic_form.removals.data != "":
-		flash('Picture Files have been removed', 'success')
 
 	return render_template("system_admin/slide_show_pics.html", title="Slide Show Pictures")
 
