@@ -314,15 +314,36 @@ def graph_all_years():
 
 	
 
+	devi_id_number = Device_ID.query.first().id_number
+
+	# Grab the sessions
+	# sessions = Session.query.all()
+	try:
+		payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	# Later combine the two requests to speed up
+	try:
+		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	
+	# Get the sessions
+	sess_list = payload.json()["sessions"]
+
+	# Get the settings
+	settings = payload_sett.json()
+
 	# Delete old pic files
 	remove_png()
 
-	# Grab the sessions
-	sessions = Session.query.all()
-
 	# This is what will be used for the bar graph
-	date_strings = get_offset_dates_initiated(sessions=sessions,
-									time_offset=Settings.query.first().time_offset)
+	date_strings = get_offset_dates_initiated(sessions=sess_list,
+									time_offset=settings["time_offset"])
 
 	# For every year, count how many sessions occured
 	# Returns a dictionary
@@ -344,15 +365,38 @@ def graph_year():
 
 	form = YearForm()
 	if form.validate_on_submit():
+
+		devi_id_number = Device_ID.query.first().id_number
+
+		# Grab the sessions
+		# sessions = Session.query.all()
+		try:
+			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
+		# Later combine the two requests to speed up
+		try:
+			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
+		
+		# Get the sessions
+		sess_list = payload.json()["sessions"]
+
+		# Get the settings
+		settings = payload_sett.json()
+
+
 		# Delete old pic files
 		remove_png()
 
-		# Grab the sessions
-		sessions = Session.query.all()
-
 		# This is what will be used for the bar graph
-		date_strings = get_offset_dates_initiated(sessions=sessions,
-									time_offset=Settings.query.first().time_offset)
+		date_strings = get_offset_dates_initiated(sessions=sess_list,
+									time_offset=settings["time_offset"])
 
 		# For every month in the given year, count how many sessions occured
 		# returns a dictionary
@@ -376,15 +420,38 @@ def graph_month():
 
 	form = MonthForm()
 	if form.validate_on_submit():
+
+		devi_id_number = Device_ID.query.first().id_number
+
+		# Grab the sessions
+		# sessions = Session.query.all()
+		try:
+			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
+		# Later combine the two requests to speed up
+		try:
+			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
+		
+		# Get the sessions
+		sess_list = payload.json()["sessions"]
+
+		# Get the settings
+		settings = payload_sett.json()
+
+
 		# Delete old pic files
 		remove_png()
 
-		# Grab the sessions
-		sessions = Session.query.all()
-
 		# This is what will be used for the bar graph
-		date_strings = get_offset_dates_initiated(sessions=sessions,
-									time_offset=Settings.query.first().time_offset)
+		date_strings = get_offset_dates_initiated(sessions=sess_list,
+									time_offset=settings["time_offset"])
 
 		# For every day in a given month of a given year, count how many sessions occured
 		# Returns a dictionary
@@ -408,16 +475,42 @@ def graph_day():
 
 	form = DayForm()
 	if form.validate_on_submit():
+
+		devi_id_number = Device_ID.query.first().id_number
+
+		# Grab the sessions
+		# sessions = Session.query.all()
+		try:
+			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
+		# Later combine the two requests to speed up
+		try:
+			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
+		
+		# Get the sessions
+		sess_list = payload.json()["sessions"]
+
+		# Get the settings
+		settings = payload_sett.json()
+
 		# Delete old pic files
 		remove_png()
 
-		# Grab the sessions
-		sessions = Session.query.all()
-
 		# This is what will be used for the bar graph
-		date_strings = get_offset_dates_initiated(sessions=sessions,
-									time_offset=Settings.query.first().time_offset)
+		date_strings = get_offset_dates_initiated(sessions=sess_list,
+									time_offset=settings["time_offset"])
 
+
+		# fix form.day.data (ex from 4 to 04)
+		if int(form.day.data) < 10:
+			form.day.data = '0' + str(int(form.day.data))
 
 		# For every hour in a given day of a given month of a given year, count the sessions
 		# Returns a dictionary
