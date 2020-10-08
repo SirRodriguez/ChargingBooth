@@ -16,7 +16,9 @@
 
 	<title>Kisok Mode</title>
 
-
+	<!-- Refresh the page every 10 seconds -->
+	<!-- To check for any updates for the server -->
+	<!-- <meta http-equiv="refresh" content="10"> -->
 
 </head>
 <body style="background-color: dodgerblue">
@@ -123,10 +125,16 @@
 
 			<div class="slideshow-container">
 				<!-- Image  -->
-				{% for pic_file in pic_files %}
+				<!-- {% for pic_file in pic_files %}
 				<div class="slides">
 					<img src="{{ url_for('static', filename='picture_files/resized/' + pic_file) }}" style="width: 100%; height: 75vh; display: block">
 				</div>
+				{% endfor %} -->
+
+				{% for i in range(img_count) %}
+					<div class="slides">
+						<img src="{{service_ip}}/device/grab_image/{{devi_id_number}}/{{i}}/{{random_hex}}" style="width: 100%; height: 75vh; display: block">
+					</div>
 				{% endfor %}
 
 				<!-- Left and Right arrows for the Slideshow -->
@@ -136,7 +144,10 @@
 				<!-- Dots under the Image -->
 				<!-- Needs a css style in order to be shown -->
 				<div style="text-align:left">
-					{% for _ in pic_files %}
+					<!-- {% for _ in pic_files %}
+					  <span class="dot"></span>
+					{% endfor %} -->
+					{% for _ in range(img_count) %}
 					  <span class="dot"></span>
 					{% endfor %}
 				</div>

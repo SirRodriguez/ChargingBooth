@@ -1,6 +1,7 @@
 import string
 import math
 import random
+import secrets
 from datetime import datetime
 from flask import render_template, Blueprint, redirect, url_for, flash, request
 from flask_login import current_user, logout_user
@@ -24,8 +25,6 @@ def home():
 
 	pic_files = PFI()
 
-	# TODO: make settings obtainable form service
-
 	devi_id_number = Device_ID.query.first().id_number
 
 	# Grab settings from site
@@ -38,9 +37,17 @@ def home():
 	# setting = Settings.query.first()
 	setting = payload.json()
 
+	# Grab the number of images the service has
+	try:
+		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	img_count = payload.json()["image_count"]
+
 	sessions = current_sessions.local_sessions.values()
-	# date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
-	# date_end_str = get_offset_dates_end(sessions=sessions, time_offset=Settings.query.first().time_offset)
+
 	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=setting["time_offset"])
 	date_end_str = get_offset_dates_end(sessions=sessions, time_offset=setting["time_offset"])
 
@@ -50,15 +57,19 @@ def home():
 	# hours, minutes, seconds = split_seconds(setting.charge_time)
 	hours, minutes, seconds = split_seconds(setting["charge_time"])
 
-	# return render_template('kiosk_mode/home.html', title='Kiosk Mode', 
-	# 						current_sessions=current_sessions,
-	# 						sessions_and_dates=sessions_and_dates,
-	# 						pic_files=pic_files.get_resized_copy(), setting=setting)
+	# Random hex, used in the url of the images in order to reset the cache of the browser
+	random_hex = secrets.token_hex(8)
 
-	return render_template('kiosk_mode/homeV2.html', title='Kiosk Mode', 
+	return render_template('kiosk_mode/homeV2.html', 
+							title='Kiosk Mode', 
 							current_sessions=current_sessions,
 							sessions_and_dates=sessions_and_dates,
-							pic_files=pic_files.get_resized_copy(), setting=setting, 
+							pic_files=pic_files.get_resized_copy(),
+							service_ip=service_ip,
+							devi_id_number=devi_id_number,
+							img_count=img_count,
+							random_hex=random_hex,
+							setting=setting, 
 							hours=hours, minutes=minutes, seconds=seconds)
 
 
