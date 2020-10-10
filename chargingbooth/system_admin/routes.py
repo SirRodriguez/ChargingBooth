@@ -17,6 +17,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
+import secrets
 import requests
 
 system_admin = Blueprint('system_admin', __name__)
@@ -565,19 +566,48 @@ def upload_image():
 	if not is_registered():
 		return redirect(url_for('register.home'))
 
-	pic_files = PFI()
+	# pic_files = PFI()
+
+	devi_id_number = Device_ID.query.first().id_number
 
 	form = SlideShowPicsForm()
 	if form.validate_on_submit():
+		# for file in form.picture.data:
+		# 	pic_files.save_file(file, Settings.query.first().aspect_ratio_width,
+		# 						Settings.query.first().aspect_ratio_height)
+
+
+		image_files = []
 		for file in form.picture.data:
-			pic_files.save_file(file, Settings.query.first().aspect_ratio_width,
-								Settings.query.first().aspect_ratio_height)
+			image_files.append(('image', ( file.filename, file.read() )  ))
+
+		# Do the post here
+		response = requests.post(service_ip + '/device/images/upload/' + devi_id_number, files=image_files)
 
 		flash('Pictures has been uploaded', 'success')
 		return redirect(url_for('system_admin.upload_image'))
 
-	return render_template("system_admin/upload_image.html", title="Upload Image", form=form,
-							pic_files=pic_files.get_resized_copy())
+	
+
+	# Grab the number of images the service has
+	try:
+		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	img_count = payload.json()["image_count"]
+
+	random_hex = secrets.token_hex(8)
+
+	return render_template("system_admin/upload_image.html", 
+							title="Upload Image", 
+							form=form,
+							service_ip=service_ip,
+							devi_id_number=devi_id_number,
+							img_count=img_count,
+							random_hex=random_hex)
+							# pic_files=pic_files.get_resized_copy())
 
 @system_admin.route("/system_admin/remove_slides", methods=['GET', 'POST'])
 @login_required
@@ -586,14 +616,49 @@ def remove_image():
 	if not is_registered():
 		return redirect(url_for('register.home'))
 
+	devi_id_number = Device_ID.query.first().id_number
+
 	pic_files = PFI()
 	pic_files_length = pic_files.get_length()
 
 	form = RemovePictureForm()
 	if form.validate_on_submit():
-		pic_files.remove_images(form.removals.data)
-		flash("Images have been deleted!", 'success')
-		return redirect(url_for('system_admin.remove_image'))
+		# pic_files.remove_images(form.removals.data)
+		try:
+			response = requests.delete(service_ip + '/device/remove_images/' + devi_id_number + '/' + form.removals.data)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('main.error'))
 
-	return render_template("system_admin/remove_image.html", title="Remove Images", form=form,
-							pic_files=pic_files.get_resized_copy(), pic_files_length=pic_files_length)
+		if response.status_code == 204:
+			flash('Images have been successfuly removed!', 'success')
+		elif response.status_code == 400:
+			flash('Image was not found in the server!', 'danger')
+		else:
+			flash("Oops! Something happened and the images were not deleted.", "danger")
+
+		# flash("Images have been deleted!", 'success')
+		# return redirect(url_for('system_admin.remove_image'))
+
+
+	# Grab the number of images the service has
+	try:
+		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	img_count = payload.json()["image_count"]
+
+	random_hex = secrets.token_hex(8)
+
+
+	return render_template("system_admin/remove_image.html", 
+							title="Remove Images", 
+							form=form,
+							service_ip=service_ip,
+							devi_id_number=devi_id_number,
+							img_count=img_count,
+							random_hex=random_hex,
+							pic_files=pic_files.get_resized_copy(), 
+							pic_files_length=pic_files_length)

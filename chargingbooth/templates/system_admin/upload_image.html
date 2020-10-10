@@ -25,11 +25,11 @@
 
 	<div class="row">
 
-      {% for pic_file in pic_files %}
+      {% for i in range(img_count) %}
         
         <ul>
           <div>
-            <img src="{{ url_for('static', filename='picture_files/' + pic_file) }}" style="width: 100%; max-width: 300px; height: auto">
+            <img src="{{service_ip}}/device/grab_image/{{devi_id_number}}/{{i}}/{{random_hex}}" style="width: 100%; max-width: 300px; height: auto">
           </div>
       	</ul>
         
