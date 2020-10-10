@@ -199,26 +199,13 @@ def settings():
 
 		pl_send["toggle_pay"] = form.toggle_pay.data
 		pl_send["price"] = form.price.data
-		# Settings.query.first().charge_time = form.charge_time.data
 		minutes = form.charge_time_min.data
 		seconds = form.charge_time_sec.data
 		pl_send["charge_time"] = minutes*60 + seconds;
 		pl_send["time_offset"] = form.time_zone.data
 		pl_send["location"] = form.location.data
-
-		# Check if aspect ration is different so that it can resize all images
-		# resize = False
-		# if setting["aspect_ratio_width"] != float(form.aspect_ratio.data.split(":")[0]) or \
-		# 	setting["aspect_ratio_height"] != float(form.aspect_ratio.data.split(":")[1]):
-		# 	resize = True
-
 		pl_send["aspect_ratio_width"] = float(form.aspect_ratio.data.split(":")[0])
 		pl_send["aspect_ratio_height"] = float(form.aspect_ratio.data.split(":")[1])
-
-		# if resize:
-		# 	pic_files = PFI()
-		# 	pic_files.resize_all(pl_send["aspect_ratio_width"], pl_send["aspect_ratio_height"])
-
 
 		response = requests.put(service_ip + '/device/update_setting/' + devi_id_number, json=pl_send)
 
@@ -229,19 +216,15 @@ def settings():
 		else:
 			flash('Something happened and settings were not updated.', 'danger')
 
-		# db.session.commit()
-		# flash('Settings have been updated!', 'success')
 		return redirect(url_for('system_admin.settings'))
 	elif request.method == 'GET':
 		form.toggle_pay.data = setting["toggle_pay"]
 		form.price.data = setting["price"]
-		# form.charge_time.data = Settings.query.first().charge_time
 		minutes, seconds = get_min_sec(seconds=setting["charge_time"])
 		form.charge_time_min.data = minutes
 		form.charge_time_sec.data = seconds
 		form.time_zone.data = setting["time_offset"]
 		form.location.data = setting["location"]
-		# form.aspect_ratio.data = str(setting["aspect_ratio_width"]) + ":" + str(setting["aspect_ratio_height"])
 		form.aspect_ratio.data = str( int(setting["aspect_ratio_width"]) if (setting["aspect_ratio_width"]).is_integer() else setting["aspect_ratio_width"] ) \
 									+ ":" + str( int(setting["aspect_ratio_height"]) if (setting["aspect_ratio_height"]).is_integer() else setting["aspect_ratio_height"] ) 
 
@@ -267,8 +250,6 @@ def view_data():
 
 	page = request.args.get('page', 1, type=int)
 
-	# sessions = Session.query.order_by(Session.date_initiated.desc()).paginate(page=page, per_page=10)
-
 	try:
 		payload = requests.get(service_ip + '/device/sessions/' + devi_id_number + '/' + str(page))
 	except:
@@ -289,12 +270,6 @@ def view_data():
 	# Get the settings
 	settings = payload_sett.json()
 
-	# print(sess_map)
-	# print(iter_pages)
-
-
-	# date_strings = get_offset_dates_initiated(sessions=sessions.items,
-	# 								time_offset=Settings.query.first().time_offset)
 	date_strings = get_offset_dates_initiated(sessions=sess_list,
 									time_offset=settings["time_offset"])
 
@@ -322,13 +297,11 @@ def graph_all_years():
 	# {id, duration, power_used, amount_paid, date_initiated, location, port, increment_size, increments}
 	# variable that have numerical values that only work with graph are:
 	# {id, duration, power_used, amount_paid, date_initiated, increment_size, increments}
-
 	
 
 	devi_id_number = Device_ID.query.first().id_number
 
 	# Grab the sessions
-	# sessions = Session.query.all()
 	try:
 		payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
 	except:
@@ -380,7 +353,6 @@ def graph_year():
 		devi_id_number = Device_ID.query.first().id_number
 
 		# Grab the sessions
-		# sessions = Session.query.all()
 		try:
 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
 		except:
@@ -435,7 +407,6 @@ def graph_month():
 		devi_id_number = Device_ID.query.first().id_number
 
 		# Grab the sessions
-		# sessions = Session.query.all()
 		try:
 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
 		except:
@@ -490,7 +461,6 @@ def graph_day():
 		devi_id_number = Device_ID.query.first().id_number
 
 		# Grab the sessions
-		# sessions = Session.query.all()
 		try:
 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
 		except:
@@ -566,16 +536,10 @@ def upload_image():
 	if not is_registered():
 		return redirect(url_for('register.home'))
 
-	# pic_files = PFI()
-
 	devi_id_number = Device_ID.query.first().id_number
 
 	form = SlideShowPicsForm()
 	if form.validate_on_submit():
-		# for file in form.picture.data:
-		# 	pic_files.save_file(file, Settings.query.first().aspect_ratio_width,
-		# 						Settings.query.first().aspect_ratio_height)
-
 
 		image_files = []
 		for file in form.picture.data:
@@ -623,7 +587,6 @@ def remove_image():
 
 	form = RemovePictureForm()
 	if form.validate_on_submit():
-		# pic_files.remove_images(form.removals.data)
 		try:
 			response = requests.delete(service_ip + '/device/remove_images/' + devi_id_number + '/' + form.removals.data)
 		except:
@@ -636,9 +599,6 @@ def remove_image():
 			flash('Image was not found in the server!', 'danger')
 		else:
 			flash("Oops! Something happened and the images were not deleted.", "danger")
-
-		# flash("Images have been deleted!", 'success')
-		# return redirect(url_for('system_admin.remove_image'))
 
 
 	# Grab the number of images the service has
