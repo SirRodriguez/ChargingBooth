@@ -207,17 +207,17 @@ def settings():
 		pl_send["location"] = form.location.data
 
 		# Check if aspect ration is different so that it can resize all images
-		resize = False
-		if setting["aspect_ratio_width"] != float(form.aspect_ratio.data.split(":")[0]) or \
-			setting["aspect_ratio_height"] != float(form.aspect_ratio.data.split(":")[1]):
-			resize = True
+		# resize = False
+		# if setting["aspect_ratio_width"] != float(form.aspect_ratio.data.split(":")[0]) or \
+		# 	setting["aspect_ratio_height"] != float(form.aspect_ratio.data.split(":")[1]):
+		# 	resize = True
 
 		pl_send["aspect_ratio_width"] = float(form.aspect_ratio.data.split(":")[0])
 		pl_send["aspect_ratio_height"] = float(form.aspect_ratio.data.split(":")[1])
 
-		if resize:
-			pic_files = PFI()
-			pic_files.resize_all(pl_send["aspect_ratio_width"], pl_send["aspect_ratio_height"])
+		# if resize:
+		# 	pic_files = PFI()
+		# 	pic_files.resize_all(pl_send["aspect_ratio_width"], pl_send["aspect_ratio_height"])
 
 
 		response = requests.put(service_ip + '/device/update_setting/' + devi_id_number, json=pl_send)
