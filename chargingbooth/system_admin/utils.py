@@ -250,10 +250,10 @@ def remove_png():
 			full_path = os.path.join(current_app.root_path, 'static', 'data_files', file)
 			os.remove(full_path)
 
-def get_min_sec(seconds):
-	minutes = seconds // 60
-	sec = seconds - (minutes * 60)
-	return minutes, sec
+# def get_min_sec(seconds):
+# 	minutes = seconds // 60
+# 	sec = seconds - (minutes * 60)
+# 	return minutes, sec
 
 def is_registered():
 	devi_id = Device_ID.query.first()

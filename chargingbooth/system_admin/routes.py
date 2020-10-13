@@ -7,16 +7,23 @@ from chargingbooth.models import User, Session, Settings, PFI, Device_ID
 # 												ResetPasswordForm, SettingsForm, 
 # 												SlideShowPicsForm, RemovePictureForm,
 # 												YearForm, MonthForm, DayForm)
-from chargingbooth.system_admin.forms import (SettingsForm, 
-												SlideShowPicsForm, RemovePictureForm,
+# from chargingbooth.system_admin.forms import (SettingsForm, 
+# 												SlideShowPicsForm, RemovePictureForm,
+# 												YearForm, MonthForm, DayForm)
+from chargingbooth.system_admin.forms import (SlideShowPicsForm, RemovePictureForm,
 												YearForm, MonthForm, DayForm)
 # from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated,
 # 												get_min_sec, save_figure, remove_png, count_years, 
 # 												create_bar_years, count_months, create_bar_months,
 # 												count_days, create_bar_days, count_hours, create_bar_hours,
 # 												is_registered)
+# from chargingbooth.system_admin.utils import (get_offset_dates_initiated,
+# 												get_min_sec, save_figure, remove_png, count_years, 
+# 												create_bar_years, count_months, create_bar_months,
+# 												count_days, create_bar_days, count_hours, create_bar_hours,
+# 												is_registered)
 from chargingbooth.system_admin.utils import (get_offset_dates_initiated,
-												get_min_sec, save_figure, remove_png, count_years, 
+												save_figure, remove_png, count_years, 
 												create_bar_years, count_months, create_bar_months,
 												count_days, create_bar_days, count_hours, create_bar_hours,
 												is_registered)
@@ -183,59 +190,59 @@ def main():
 # 	return render_template('system_admin/account/reset_token.html', title='Reset Password', form=form)
 
 
-@system_admin.route("/system_admin/settings", methods=['GET', 'POST'])
-@login_required
-def settings():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/settings", methods=['GET', 'POST'])
+# @login_required
+# def settings():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	devi_id_number = Device_ID.query.first().id_number
-	# Grab settings from site
-	try:
-		payload = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+# 	devi_id_number = Device_ID.query.first().id_number
+# 	# Grab settings from site
+# 	try:
+# 		payload = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+# 	except:
+# 		flash("Unable to Connect to Server!", "danger")
+# 		return redirect(url_for('register.error'))
 
-	setting = payload.json()
+# 	setting = payload.json()
 
-	form = SettingsForm()
-	if form.validate_on_submit():
-		pl_send = {}
+# 	form = SettingsForm()
+# 	if form.validate_on_submit():
+# 		pl_send = {}
 
-		pl_send["toggle_pay"] = form.toggle_pay.data
-		pl_send["price"] = form.price.data
-		minutes = form.charge_time_min.data
-		seconds = form.charge_time_sec.data
-		pl_send["charge_time"] = minutes*60 + seconds;
-		pl_send["time_offset"] = form.time_zone.data
-		pl_send["location"] = form.location.data
-		pl_send["aspect_ratio_width"] = float(form.aspect_ratio.data.split(":")[0])
-		pl_send["aspect_ratio_height"] = float(form.aspect_ratio.data.split(":")[1])
+# 		pl_send["toggle_pay"] = form.toggle_pay.data
+# 		pl_send["price"] = form.price.data
+# 		minutes = form.charge_time_min.data
+# 		seconds = form.charge_time_sec.data
+# 		pl_send["charge_time"] = minutes*60 + seconds;
+# 		pl_send["time_offset"] = form.time_zone.data
+# 		pl_send["location"] = form.location.data
+# 		pl_send["aspect_ratio_width"] = float(form.aspect_ratio.data.split(":")[0])
+# 		pl_send["aspect_ratio_height"] = float(form.aspect_ratio.data.split(":")[1])
 
-		response = requests.put(service_ip + '/device/update_setting/' + devi_id_number, json=pl_send)
+# 		response = requests.put(service_ip + '/device/update_setting/' + devi_id_number, json=pl_send)
 
-		if response.status_code == 204 or response.status_code == 200:
-			flash('Settings have been updated!', 'success')
-		elif response.status_code == 400:
-			flash('Server could not find device!', 'danger')
-		else:
-			flash('Something happened and settings were not updated.', 'danger')
+# 		if response.status_code == 204 or response.status_code == 200:
+# 			flash('Settings have been updated!', 'success')
+# 		elif response.status_code == 400:
+# 			flash('Server could not find device!', 'danger')
+# 		else:
+# 			flash('Something happened and settings were not updated.', 'danger')
 
-		return redirect(url_for('system_admin.settings'))
-	elif request.method == 'GET':
-		form.toggle_pay.data = setting["toggle_pay"]
-		form.price.data = setting["price"]
-		minutes, seconds = get_min_sec(seconds=setting["charge_time"])
-		form.charge_time_min.data = minutes
-		form.charge_time_sec.data = seconds
-		form.time_zone.data = setting["time_offset"]
-		form.location.data = setting["location"]
-		form.aspect_ratio.data = str( int(setting["aspect_ratio_width"]) if (setting["aspect_ratio_width"]).is_integer() else setting["aspect_ratio_width"] ) \
-									+ ":" + str( int(setting["aspect_ratio_height"]) if (setting["aspect_ratio_height"]).is_integer() else setting["aspect_ratio_height"] ) 
+# 		return redirect(url_for('system_admin_settings.settings'))
+# 	elif request.method == 'GET':
+# 		form.toggle_pay.data = setting["toggle_pay"]
+# 		form.price.data = setting["price"]
+# 		minutes, seconds = get_min_sec(seconds=setting["charge_time"])
+# 		form.charge_time_min.data = minutes
+# 		form.charge_time_sec.data = seconds
+# 		form.time_zone.data = setting["time_offset"]
+# 		form.location.data = setting["location"]
+# 		form.aspect_ratio.data = str( int(setting["aspect_ratio_width"]) if (setting["aspect_ratio_width"]).is_integer() else setting["aspect_ratio_width"] ) \
+# 									+ ":" + str( int(setting["aspect_ratio_height"]) if (setting["aspect_ratio_height"]).is_integer() else setting["aspect_ratio_height"] ) 
 
-	return render_template('system_admin/settings.html', title='Settings', form=form)
+# 	return render_template('system_admin/settings/settings.html', title='Settings', form=form)
 
 @system_admin.route("/system_admin/data")
 @login_required
