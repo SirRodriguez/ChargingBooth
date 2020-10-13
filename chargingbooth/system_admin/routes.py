@@ -37,13 +37,13 @@ import requests
 
 system_admin = Blueprint('system_admin', __name__)
 
-@system_admin.route("/system_admin")
-def home():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin")
+# def home():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	return redirect(url_for('system_admin_account.login'))
+# 	return redirect(url_for('system_admin_account.login'))
 
 # @system_admin.route("/system_admin/login", methods=['GET', 'POST'])
 # def login():
@@ -52,14 +52,14 @@ def home():
 # 		return redirect(url_for('register.home'))
 
 # 	if current_user.is_authenticated:
-# 		return redirect(url_for('system_admin.main'))
+# 		return redirect(url_for('system_admin_main.main'))
 # 	form = LoginForm()
 # 	if form.validate_on_submit():
 # 		user = User.query.filter_by(username=form.username.data).first()
 # 		if user and bcrypt.check_password_hash(user.password, form.password.data):
 # 			login_user(user)
 # 			next_page = request.args.get('next')
-# 			return redirect(url_for('system_admin.main'))
+# 			return redirect(url_for('system_admin_main.main'))
 # 		else:
 # 			flash('Loging Unsuccessful. Please check username and password', 'danger')
 # 	return render_template('system_admin/account/login.html', title='System Admin Login', form=form)
@@ -68,17 +68,17 @@ def home():
 # @login_required
 # def logout():
 # 	logout_user()
-# 	return redirect(url_for('system_admin.home'))
+# 	return redirect(url_for('system_admin_main.home'))
 
 
-@system_admin.route("/system_admin/main")
-@login_required
-def main():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/main")
+# @login_required
+# def main():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	return render_template('system_admin/main.html', title='System Admin Main')
+# 	return render_template('system_admin/main/main.html', title='System Admin Main')
 
 # # This is needed to be removed after production
 # # This is only used to adjust the database for an admin user
@@ -89,7 +89,7 @@ def main():
 # 		return redirect(url_for('register.home'))
 
 # 	if current_user.is_authenticated:
-# 		return redirect(url_for('system_admin.main'))
+# 		return redirect(url_for('system_admin_main.main'))
 # 	form = RegistrationForm()
 # 	if form.validate_on_submit():
 # 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -129,7 +129,7 @@ def main():
 # 		return redirect(url_for('register.home'))
 
 # 	if current_user.is_authenticated:
-# 		return redirect(url_for('system_admin.home'))
+# 		return redirect(url_for('system_admin_main.home'))
 # 	form = RequestRestForm()
 # 	if form.validate_on_submit():
 # 		user = User.query.filter_by(email=form.email.data).first()
@@ -141,7 +141,7 @@ def main():
 # @system_admin.route("/system_admin/reset_password/<token>", methods=['GET', 'POST'])
 # def reset_token(token):
 # 	if current_user.is_authenticated:
-# 		return redirect(url_for('system_admin.home'))
+# 		return redirect(url_for('system_admin_main.home'))
 
 # 	user = User.verify_reset_token(token)
 # 	if user is None:

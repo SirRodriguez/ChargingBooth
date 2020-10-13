@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user, logout_user, login_user, current_user
 from chargingbooth import bcrypt, db
 from chargingbooth.models import User
-from chargingbooth.system_admin.account.utils import is_registered, send_reset_email
+from chargingbooth.utils import is_registered
+from chargingbooth.system_admin.account.utils import send_reset_email
 from chargingbooth.system_admin.account.forms import (LoginForm, RegistrationForm, UpdateAccountForm, 
 														RequestRestForm, ResetPasswordForm)
 
@@ -16,14 +17,14 @@ def login():
 		return redirect(url_for('register.home'))
 
 	if current_user.is_authenticated:
-		return redirect(url_for('system_admin.main'))
+		return redirect(url_for('system_admin_main.main'))
 	form = LoginForm()
 	if form.validate_on_submit():
 		user = User.query.filter_by(username=form.username.data).first()
 		if user and bcrypt.check_password_hash(user.password, form.password.data):
 			login_user(user)
 			next_page = request.args.get('next')
-			return redirect(url_for('system_admin.main'))
+			return redirect(url_for('system_admin_main.main'))
 		else:
 			flash('Loging Unsuccessful. Please check username and password', 'danger')
 	return render_template('system_admin/account/login.html', title='System Admin Login', form=form)
@@ -32,7 +33,7 @@ def login():
 @login_required
 def logout():
 	logout_user()
-	return redirect(url_for('system_admin.home'))
+	return redirect(url_for('system_admin_main.home'))
 
 # This is needed to be removed after production
 # This is only used to adjust the database for an admin user
@@ -43,7 +44,7 @@ def register():
 		return redirect(url_for('register.home'))
 
 	if current_user.is_authenticated:
-		return redirect(url_for('system_admin.main'))
+		return redirect(url_for('system_admin_main.main'))
 	form = RegistrationForm()
 	if form.validate_on_submit():
 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -83,7 +84,7 @@ def reset_request():
 		return redirect(url_for('register.home'))
 
 	if current_user.is_authenticated:
-		return redirect(url_for('system_admin.home'))
+		return redirect(url_for('system_admin_main.home'))
 	form = RequestRestForm()
 	if form.validate_on_submit():
 		user = User.query.filter_by(email=form.email.data).first()
@@ -95,7 +96,7 @@ def reset_request():
 @system_admin_account.route("/system_admin/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
 	if current_user.is_authenticated:
-		return redirect(url_for('system_admin.home'))
+		return redirect(url_for('system_admin_main.home'))
 
 	user = User.verify_reset_token(token)
 	if user is None:

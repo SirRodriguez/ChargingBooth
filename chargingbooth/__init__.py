@@ -31,6 +31,7 @@ def create_app(config_class=Config):
 	from chargingbooth.main.routes import main
 
 	from chargingbooth.system_admin.routes import system_admin
+	from chargingbooth.system_admin.main.routes import system_admin_main
 	from chargingbooth.system_admin.account.routes import system_admin_account
 	from chargingbooth.system_admin.settings.routes import system_admin_settings
 
@@ -41,6 +42,7 @@ def create_app(config_class=Config):
 	app.register_blueprint(main)
 
 	app.register_blueprint(system_admin)
+	app.register_blueprint(system_admin_main)
 	app.register_blueprint(system_admin_account)
 	app.register_blueprint(system_admin_settings)
 
