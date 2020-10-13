@@ -2,12 +2,20 @@ from flask import render_template, Blueprint, redirect, url_for, flash, request,
 from flask_login import login_user, current_user, logout_user, login_required
 from chargingbooth import db, bcrypt, current_sessions, service_ip
 from chargingbooth.models import User, Session, Settings, PFI, Device_ID
-from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
-												RequestRestForm, RequestRestForm, 
-												ResetPasswordForm, SettingsForm, 
+# from chargingbooth.system_admin.forms import (LoginForm, RegistrationForm, UpdateAccountForm,
+# 												RequestRestForm, RequestRestForm, 
+# 												ResetPasswordForm, SettingsForm, 
+# 												SlideShowPicsForm, RemovePictureForm,
+# 												YearForm, MonthForm, DayForm)
+from chargingbooth.system_admin.forms import (SettingsForm, 
 												SlideShowPicsForm, RemovePictureForm,
 												YearForm, MonthForm, DayForm)
-from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated,
+# from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated,
+# 												get_min_sec, save_figure, remove_png, count_years, 
+# 												create_bar_years, count_months, create_bar_months,
+# 												count_days, create_bar_days, count_hours, create_bar_hours,
+# 												is_registered)
+from chargingbooth.system_admin.utils import (get_offset_dates_initiated,
 												get_min_sec, save_figure, remove_png, count_years, 
 												create_bar_years, count_months, create_bar_months,
 												count_days, create_bar_days, count_hours, create_bar_hours,
@@ -28,32 +36,32 @@ def home():
 	if not is_registered():
 		return redirect(url_for('register.home'))
 
-	return redirect(url_for('system_admin.login'))
+	return redirect(url_for('system_admin_account.login'))
 
-@system_admin.route("/system_admin/login", methods=['GET', 'POST'])
-def login():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/login", methods=['GET', 'POST'])
+# def login():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	if current_user.is_authenticated:
-		return redirect(url_for('system_admin.main'))
-	form = LoginForm()
-	if form.validate_on_submit():
-		user = User.query.filter_by(username=form.username.data).first()
-		if user and bcrypt.check_password_hash(user.password, form.password.data):
-			login_user(user)
-			next_page = request.args.get('next')
-			return redirect(url_for('system_admin.main'))
-		else:
-			flash('Loging Unsuccessful. Please check username and password', 'danger')
-	return render_template('system_admin/login.html', title='System Admin Login', form=form)
+# 	if current_user.is_authenticated:
+# 		return redirect(url_for('system_admin.main'))
+# 	form = LoginForm()
+# 	if form.validate_on_submit():
+# 		user = User.query.filter_by(username=form.username.data).first()
+# 		if user and bcrypt.check_password_hash(user.password, form.password.data):
+# 			login_user(user)
+# 			next_page = request.args.get('next')
+# 			return redirect(url_for('system_admin.main'))
+# 		else:
+# 			flash('Loging Unsuccessful. Please check username and password', 'danger')
+# 	return render_template('system_admin/account/login.html', title='System Admin Login', form=form)
 
-@system_admin.route("/system_admin/logout")
-@login_required
-def logout():
-	logout_user()
-	return redirect(url_for('system_admin.home'))
+# @system_admin.route("/system_admin/logout")
+# @login_required
+# def logout():
+# 	logout_user()
+# 	return redirect(url_for('system_admin.home'))
 
 
 @system_admin.route("/system_admin/main")
@@ -65,114 +73,114 @@ def main():
 
 	return render_template('system_admin/main.html', title='System Admin Main')
 
-# This is needed to be removed after production
-# This is only used to adjust the database for an admin user
-@system_admin.route("/system_admin/register", methods=['GET', 'POST'])
-def register():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# # This is needed to be removed after production
+# # This is only used to adjust the database for an admin user
+# @system_admin.route("/system_admin/register", methods=['GET', 'POST'])
+# def register():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	if current_user.is_authenticated:
-		return redirect(url_for('system_admin.main'))
-	form = RegistrationForm()
-	if form.validate_on_submit():
-		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-		db.session.add(user)
-		db.session.commit()
-		flash('Your account has been created! You are now able to log in', 'success')
-		return redirect(url_for('system_admin.login'))
-	return render_template('system_admin/register.html', title='Register', form=form)
-
-
-@system_admin.route("/system_admin/account", methods=['GET', 'POST'])
-@login_required
-def account():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
-	form = UpdateAccountForm()
-	if form.validate_on_submit():
-		current_user.username = form.username.data
-		current_user.email = form.email.data
-		db.session.commit()
-		flash('Your account has been updated!', 'success')
-		return redirect(url_for('system_admin.account'))
-	elif request.method == 'GET':
-		form.username.data = current_user.username
-		form.email.data = current_user.email
-	return render_template('system_admin/account.html', title='Account', form=form)
+# 	if current_user.is_authenticated:
+# 		return redirect(url_for('system_admin.main'))
+# 	form = RegistrationForm()
+# 	if form.validate_on_submit():
+# 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+# 		user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+# 		db.session.add(user)
+# 		db.session.commit()
+# 		flash('Your account has been created! You are now able to log in', 'success')
+# 		return redirect(url_for('system_admin_account.login'))
+# 	return render_template('system_admin/account/register.html', title='Register', form=form)
 
 
-# When logged out and forgot password
-@system_admin.route("/system_admin/reset_password", methods=['GET', 'POST'])
-def reset_request():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/account", methods=['GET', 'POST'])
+# @login_required
+# def account():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	if current_user.is_authenticated:
-		return redirect(url_for('system_admin.home'))
-	form = RequestRestForm()
-	if form.validate_on_submit():
-		user = User.query.filter_by(email=form.email.data).first()
-		send_reset_email(user, logged_in=False)
-		flash('An email has been sent with instructions to reset your password.', 'info')
-		return redirect(url_for('system_admin.login'))
-	return render_template('system_admin/reset_request.html', title='Reset Password', form=form)
-
-@system_admin.route("/system_admin/reset_password/<token>", methods=['GET', 'POST'])
-def reset_token(token):
-	if current_user.is_authenticated:
-		return redirect(url_for('system_admin.home'))
-
-	user = User.verify_reset_token(token)
-	if user is None:
-		flash('That is an invalid or expired token', 'warning')
-		return redirect(url_for('system_admin.reset_request'))
-
-	form = ResetPasswordForm()
-	if form.validate_on_submit():
-		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		user.password = hashed_password
-		db.session.commit()
-		flash('Your password has been updated! You are now able to log in.', 'success')
-		return redirect(url_for('system_admin.login'))
-	return render_template('system_admin/reset_token.html', title='Reset Password', form=form)
+# 	form = UpdateAccountForm()
+# 	if form.validate_on_submit():
+# 		current_user.username = form.username.data
+# 		current_user.email = form.email.data
+# 		db.session.commit()
+# 		flash('Your account has been updated!', 'success')
+# 		return redirect(url_for('system_admin_account.account'))
+# 	elif request.method == 'GET':
+# 		form.username.data = current_user.username
+# 		form.email.data = current_user.email
+# 	return render_template('system_admin/account/account.html', title='Account', form=form)
 
 
+# # When logged out and forgot password
+# @system_admin.route("/system_admin/reset_password", methods=['GET', 'POST'])
+# def reset_request():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-#When logged in and changing password
-@system_admin.route("/system_admin/change_password", methods=['GET', 'POST'])
-@login_required
-def change_request():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# 	if current_user.is_authenticated:
+# 		return redirect(url_for('system_admin.home'))
+# 	form = RequestRestForm()
+# 	if form.validate_on_submit():
+# 		user = User.query.filter_by(email=form.email.data).first()
+# 		send_reset_email(user, logged_in=False)
+# 		flash('An email has been sent with instructions to reset your password.', 'info')
+# 		return redirect(url_for('system_admin_account.login'))
+# 	return render_template('system_admin/account/reset_request.html', title='Reset Password', form=form)
+
+# @system_admin.route("/system_admin/reset_password/<token>", methods=['GET', 'POST'])
+# def reset_token(token):
+# 	if current_user.is_authenticated:
+# 		return redirect(url_for('system_admin.home'))
+
+# 	user = User.verify_reset_token(token)
+# 	if user is None:
+# 		flash('That is an invalid or expired token', 'warning')
+# 		return redirect(url_for('system_admin_account.reset_request'))
+
+# 	form = ResetPasswordForm()
+# 	if form.validate_on_submit():
+# 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+# 		user.password = hashed_password
+# 		db.session.commit()
+# 		flash('Your password has been updated! You are now able to log in.', 'success')
+# 		return redirect(url_for('system_admin_account.login'))
+# 	return render_template('system_admin/account/reset_token.html', title='Reset Password', form=form)
+
+
+
+# #When logged in and changing password
+# @system_admin.route("/system_admin/change_password", methods=['GET', 'POST'])
+# @login_required
+# def change_request():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 		
-	user = User.query.filter_by(email=current_user.email).first()
-	send_reset_email(user, logged_in=True)
-	flash('An email has been sent with instructions to reset your password.', 'info')
-	return redirect(url_for('system_admin.account'))
+# 	user = User.query.filter_by(email=current_user.email).first()
+# 	send_reset_email(user, logged_in=True)
+# 	flash('An email has been sent with instructions to reset your password.', 'info')
+# 	return redirect(url_for('system_admin_account.account'))
 
-@system_admin.route("/system_admin/change_password/<token>", methods=['GET', 'POST'])
-@login_required 
-def change_token(token):
-	user = User.verify_reset_token(token)
-	if user is None:
-		flash('That is an invalid or expired token', 'warning')
-		return redirect(url_for('system_admin.reset_request'))
+# @system_admin.route("/system_admin/change_password/<token>", methods=['GET', 'POST'])
+# @login_required 
+# def change_token(token):
+# 	user = User.verify_reset_token(token)
+# 	if user is None:
+# 		flash('That is an invalid or expired token', 'warning')
+# 		return redirect(url_for('system_admin_account.reset_request'))
 
-	form = ResetPasswordForm()
-	if form.validate_on_submit():
-		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		user.password = hashed_password
-		db.session.commit()
-		flash('Your password has been updated!', 'success')
-		return redirect(url_for('system_admin.login'))
-	return render_template('system_admin/reset_token.html', title='Reset Password', form=form)
+# 	form = ResetPasswordForm()
+# 	if form.validate_on_submit():
+# 		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+# 		user.password = hashed_password
+# 		db.session.commit()
+# 		flash('Your password has been updated!', 'success')
+# 		return redirect(url_for('system_admin_account.login'))
+# 	return render_template('system_admin/account/reset_token.html', title='Reset Password', form=form)
 
 
 @system_admin.route("/system_admin/settings", methods=['GET', 'POST'])
@@ -190,7 +198,6 @@ def settings():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	# setting = Settings.query.first()
 	setting = payload.json()
 
 	form = SettingsForm()

@@ -34,7 +34,6 @@ def home():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	# setting = Settings.query.first()
 	setting = payload.json()
 
 	# Grab the number of images the service has
@@ -104,11 +103,8 @@ def make_session():
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('register.error'))
 
-		# setting = Settings.query.first()
 		setting = payload.json()
 
-		# current_sessions.add_session(amount_paid=setting.price, location=setting.location,
-		# 								port="", increment_size=setting.charge_time, increments=1)
 		current_sessions.add_session(amount_paid=setting["price"], location=setting["location"],
 										port="", increment_size=setting["charge_time"], increments=1)
 		flash('Session Added Successfully! You may start charging now.')

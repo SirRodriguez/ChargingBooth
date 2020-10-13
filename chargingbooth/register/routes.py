@@ -19,7 +19,6 @@ def home():
 @register.route("/register/register_device")
 def register_device():
 	# Register device here
-
 	try:
 		payload = requests.get(service_ip + '/device/register')		
 	except:
