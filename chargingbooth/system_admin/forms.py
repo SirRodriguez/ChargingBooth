@@ -82,21 +82,21 @@ aspect_ratio_list = ['1:1', '5:4', '3:2', '16:10', '16:9', '1.85:1', '2.35:1']
 
 # 	submit = SubmitField('Update Settings')
 
-# Slide Show Pictures
-class SlideShowPicsForm(FlaskForm):
-	picture = MultipleFileField('Upload Pictures', validators=[DataRequired(), FileAllowed(['jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'png'])])
-	submit = SubmitField('Upload Picture')
+# # Slide Show Pictures
+# class SlideShowPicsForm(FlaskForm):
+# 	picture = MultipleFileField('Upload Pictures', validators=[DataRequired(), FileAllowed(['jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'png'])])
+# 	submit = SubmitField('Upload Picture')
 
-# Remove Picture Form
-class RemovePictureForm(FlaskForm):
-	removals = StringField('Image Files to be Removed.\
-		(Use the image numbers separated by commas)', validators=[DataRequired()])
-	submit = SubmitField('Remove Images')
+# # Remove Picture Form
+# class RemovePictureForm(FlaskForm):
+# 	removals = StringField('Image Files to be Removed.\
+# 		(Use the image numbers separated by commas)', validators=[DataRequired()])
+# 	submit = SubmitField('Remove Images')
 
-	def validate_removals(self, removals):
-		valid_characters = set(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ','])
-		if not all(x in valid_characters for x in removals.data):
-			raise ValidationError("Characters must only be numbers and commas. No white spaces")
+# 	def validate_removals(self, removals):
+# 		valid_characters = set(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ','])
+# 		if not all(x in valid_characters for x in removals.data):
+# 			raise ValidationError("Characters must only be numbers and commas. No white spaces")
 
 # # Graph Year form
 # class YearForm(FlaskForm):

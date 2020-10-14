@@ -1,0 +1,17 @@
+{% extends "defualt_layout.html" %}
+
+{% block content %}
+
+  <div class="col-md">
+    <div class="content-section">
+      <h3>Slide Show Options</h3>
+      <p>
+        <ul class="list-group">
+          <a href="{{ url_for('system_admin_slide_show.upload_image') }}"><li class="list-group-item list-group-item-light">Upload Images</li></a>
+          <a href="{{ url_for('system_admin_slide_show.remove_image') }}"><li class="list-group-item list-group-item-light">Remove Images</li></a>
+        </ul>
+      </p>
+    </div>
+  </div>
+
+{% endblock content %}

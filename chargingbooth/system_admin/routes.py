@@ -13,7 +13,7 @@ from chargingbooth.models import User, Session, Settings, PFI, Device_ID
 # from chargingbooth.system_admin.forms import (SlideShowPicsForm, RemovePictureForm,
 # from chargingbooth.system_admin.forms import (SlideShowPicsForm, RemovePictureForm,
 # 												MonthForm, DayForm)
-from chargingbooth.system_admin.forms import SlideShowPicsForm, RemovePictureForm
+# from chargingbooth.system_admin.forms import SlideShowPicsForm, RemovePictureForm
 # 												YearForm, MonthForm, DayForm)
 # from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated,
 # 												get_min_sec, save_figure, remove_png, count_years, 
@@ -554,105 +554,105 @@ system_admin = Blueprint('system_admin', __name__)
 # 	return render_template("system_admin/data/local_data.html", title="Local Data", 
 # 							current_sessions=current_sessions, sessions_and_dates=sessions_and_dates)
 
-@system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
-@login_required
-def slide_show_pics():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
+# @login_required
+# def slide_show_pics():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	return render_template("system_admin/slide_show_pics.html", title="Slide Show Pictures")
+# 	return render_template("system_admin/slide_show/slide_show_pics.html", title="Slide Show Pictures")
 
-@system_admin.route("/system_admin/add_slides", methods=['GET', 'POST'])
-@login_required
-def upload_image():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/add_slides", methods=['GET', 'POST'])
+# @login_required
+# def upload_image():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	devi_id_number = Device_ID.query.first().id_number
+# 	devi_id_number = Device_ID.query.first().id_number
 
-	form = SlideShowPicsForm()
-	if form.validate_on_submit():
+# 	form = SlideShowPicsForm()
+# 	if form.validate_on_submit():
 
-		image_files = []
-		for file in form.picture.data:
-			image_files.append(('image', ( file.filename, file.read() )  ))
+# 		image_files = []
+# 		for file in form.picture.data:
+# 			image_files.append(('image', ( file.filename, file.read() )  ))
 
-		# Do the post here
-		response = requests.post(service_ip + '/device/images/upload/' + devi_id_number, files=image_files)
+# 		# Do the post here
+# 		response = requests.post(service_ip + '/device/images/upload/' + devi_id_number, files=image_files)
 
-		flash('Pictures has been uploaded', 'success')
-		return redirect(url_for('system_admin.upload_image'))
+# 		flash('Pictures has been uploaded', 'success')
+# 		return redirect(url_for('system_admin_slide_show.upload_image'))
 
 	
 
-	# Grab the number of images the service has
-	try:
-		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+# 	# Grab the number of images the service has
+# 	try:
+# 		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
+# 	except:
+# 		flash("Unable to Connect to Server!", "danger")
+# 		return redirect(url_for('register.error'))
 
-	img_count = payload.json()["image_count"]
+# 	img_count = payload.json()["image_count"]
 
-	random_hex = secrets.token_hex(8)
+# 	random_hex = secrets.token_hex(8)
 
-	return render_template("system_admin/upload_image.html", 
-							title="Upload Image", 
-							form=form,
-							service_ip=service_ip,
-							devi_id_number=devi_id_number,
-							img_count=img_count,
-							random_hex=random_hex)
-							# pic_files=pic_files.get_resized_copy())
+# 	return render_template("system_admin/slide_show/upload_image.html", 
+# 							title="Upload Image", 
+# 							form=form,
+# 							service_ip=service_ip,
+# 							devi_id_number=devi_id_number,
+# 							img_count=img_count,
+# 							random_hex=random_hex)
+# 							# pic_files=pic_files.get_resized_copy())
 
-@system_admin.route("/system_admin/remove_slides", methods=['GET', 'POST'])
-@login_required
-def remove_image():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/remove_slides", methods=['GET', 'POST'])
+# @login_required
+# def remove_image():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	devi_id_number = Device_ID.query.first().id_number
+# 	devi_id_number = Device_ID.query.first().id_number
 
-	pic_files = PFI()
-	pic_files_length = pic_files.get_length()
+# 	pic_files = PFI()
+# 	pic_files_length = pic_files.get_length()
 
-	form = RemovePictureForm()
-	if form.validate_on_submit():
-		try:
-			response = requests.delete(service_ip + '/device/remove_images/' + devi_id_number + '/' + form.removals.data)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('main.error'))
+# 	form = RemovePictureForm()
+# 	if form.validate_on_submit():
+# 		try:
+# 			response = requests.delete(service_ip + '/device/remove_images/' + devi_id_number + '/' + form.removals.data)
+# 		except:
+# 			flash("Unable to Connect to Server!", "danger")
+# 			return redirect(url_for('main.error'))
 
-		if response.status_code == 204:
-			flash('Images have been successfuly removed!', 'success')
-		elif response.status_code == 400:
-			flash('Image was not found in the server!', 'danger')
-		else:
-			flash("Oops! Something happened and the images were not deleted.", "danger")
-
-
-	# Grab the number of images the service has
-	try:
-		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
-
-	img_count = payload.json()["image_count"]
-
-	random_hex = secrets.token_hex(8)
+# 		if response.status_code == 204:
+# 			flash('Images have been successfuly removed!', 'success')
+# 		elif response.status_code == 400:
+# 			flash('Image was not found in the server!', 'danger')
+# 		else:
+# 			flash("Oops! Something happened and the images were not deleted.", "danger")
 
 
-	return render_template("system_admin/remove_image.html", 
-							title="Remove Images", 
-							form=form,
-							service_ip=service_ip,
-							devi_id_number=devi_id_number,
-							img_count=img_count,
-							random_hex=random_hex,
-							pic_files=pic_files.get_resized_copy(), 
-							pic_files_length=pic_files_length)
+# 	# Grab the number of images the service has
+# 	try:
+# 		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
+# 	except:
+# 		flash("Unable to Connect to Server!", "danger")
+# 		return redirect(url_for('register.error'))
+
+# 	img_count = payload.json()["image_count"]
+
+# 	random_hex = secrets.token_hex(8)
+
+
+# 	return render_template("system_admin/slide_show/remove_image.html", 
+# 							title="Remove Images", 
+# 							form=form,
+# 							service_ip=service_ip,
+# 							devi_id_number=devi_id_number,
+# 							img_count=img_count,
+# 							random_hex=random_hex,
+# 							pic_files=pic_files.get_resized_copy(), 
+# 							pic_files_length=pic_files_length)
