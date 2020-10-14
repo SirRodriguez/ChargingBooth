@@ -1,0 +1,23 @@
+{% extends "defualt_layout.html" %}
+
+{% block content %}
+	<h1>Charging Booth: Graph Data</h1>
+
+
+	<div class="col-md">
+    <div class="content-section">
+      <h3>Graph Options</h3>
+      <p>
+        <ul class="list-group">
+          <a href="{{ url_for('system_admin_data.graph_all_years') }}"><li class="list-group-item list-group-item-light">All Years</li></a>
+          <a href="{{ url_for('system_admin_data.graph_year') }}"><li class="list-group-item list-group-item-light">By Year</li></a>
+          <a href="{{ url_for('system_admin_data.graph_month') }}"><li class="list-group-item list-group-item-light">By Month</li></a>
+          <a href="{{ url_for('system_admin_data.graph_day') }}"><li class="list-group-item list-group-item-light">By Day</li></a>
+        </ul>
+      </p>
+    </div>
+  </div>
+  	
+
+
+{% endblock content %}

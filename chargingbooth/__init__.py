@@ -34,6 +34,7 @@ def create_app(config_class=Config):
 	from chargingbooth.system_admin.main.routes import system_admin_main
 	from chargingbooth.system_admin.account.routes import system_admin_account
 	from chargingbooth.system_admin.settings.routes import system_admin_settings
+	from chargingbooth.system_admin.data.routes import system_admin_data
 
 	from chargingbooth.kiosk_mode.routes import kiosk_mode
 
@@ -45,6 +46,7 @@ def create_app(config_class=Config):
 	app.register_blueprint(system_admin_main)
 	app.register_blueprint(system_admin_account)
 	app.register_blueprint(system_admin_settings)
+	app.register_blueprint(system_admin_data)
 
 	app.register_blueprint(kiosk_mode)
 

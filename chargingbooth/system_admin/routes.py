@@ -10,8 +10,11 @@ from chargingbooth.models import User, Session, Settings, PFI, Device_ID
 # from chargingbooth.system_admin.forms import (SettingsForm, 
 # 												SlideShowPicsForm, RemovePictureForm,
 # 												YearForm, MonthForm, DayForm)
-from chargingbooth.system_admin.forms import (SlideShowPicsForm, RemovePictureForm,
-												YearForm, MonthForm, DayForm)
+# from chargingbooth.system_admin.forms import (SlideShowPicsForm, RemovePictureForm,
+# from chargingbooth.system_admin.forms import (SlideShowPicsForm, RemovePictureForm,
+# 												MonthForm, DayForm)
+from chargingbooth.system_admin.forms import SlideShowPicsForm, RemovePictureForm
+# 												YearForm, MonthForm, DayForm)
 # from chargingbooth.system_admin.utils import (send_reset_email, get_offset_dates_initiated,
 # 												get_min_sec, save_figure, remove_png, count_years, 
 # 												create_bar_years, count_months, create_bar_months,
@@ -22,11 +25,28 @@ from chargingbooth.system_admin.forms import (SlideShowPicsForm, RemovePictureFo
 # 												create_bar_years, count_months, create_bar_months,
 # 												count_days, create_bar_days, count_hours, create_bar_hours,
 # 												is_registered)
-from chargingbooth.system_admin.utils import (get_offset_dates_initiated,
-												save_figure, remove_png, count_years, 
-												create_bar_years, count_months, create_bar_months,
-												count_days, create_bar_days, count_hours, create_bar_hours,
-												is_registered)
+# from chargingbooth.system_admin.utils import (get_offset_dates_initiated,
+# 												save_figure, remove_png, count_years, 
+# 												create_bar_years, count_months, create_bar_months,
+# 												count_days, create_bar_days, count_hours, create_bar_hours,
+# 												is_registered)
+# from chargingbooth.system_admin.utils import (save_figure, remove_png, count_years, 
+# 												create_bar_years, count_months, create_bar_months,
+# 												count_days, create_bar_days, count_hours, create_bar_hours,
+# 												is_registered)
+# from chargingbooth.system_admin.utils import (save_figure, count_years, 
+# 												create_bar_years, count_months, create_bar_months,
+# 												count_days, create_bar_days, count_hours, create_bar_hours,
+# 												is_registered)
+# from chargingbooth.system_admin.utils import (save_figure, count_months, create_bar_months,
+# 												count_days, create_bar_days, count_hours, create_bar_hours,
+# 												is_registered)
+# from chargingbooth.system_admin.utils import (count_months, create_bar_months,
+# 												count_days, create_bar_days, count_hours, create_bar_hours,
+# 												is_registered)
+# from chargingbooth.system_admin.utils import (count_days, create_bar_days, count_hours, create_bar_hours,
+# 												is_registered)
+from chargingbooth.system_admin.utils import is_registered
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -244,295 +264,295 @@ system_admin = Blueprint('system_admin', __name__)
 
 # 	return render_template('system_admin/settings/settings.html', title='Settings', form=form)
 
-@system_admin.route("/system_admin/data")
-@login_required
-def data():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/data")
+# @login_required
+# def data():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	return render_template("system_admin/data.html", title="Data")
+# 	return render_template("system_admin/data/data.html", title="Data")
 
-@system_admin.route("/system_admin/list_data")
-@login_required
-def view_data():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/list_data")
+# @login_required
+# def view_data():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	devi_id_number = Device_ID.query.first().id_number
+# 	devi_id_number = Device_ID.query.first().id_number
 
-	page = request.args.get('page', 1, type=int)
+# 	page = request.args.get('page', 1, type=int)
 
-	try:
-		payload = requests.get(service_ip + '/device/sessions/' + devi_id_number + '/' + str(page))
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+# 	try:
+# 		payload = requests.get(service_ip + '/device/sessions/' + devi_id_number + '/' + str(page))
+# 	except:
+# 		flash("Unable to Connect to Server!", "danger")
+# 		return redirect(url_for('register.error'))
 
-	# Later combine the two requests to speed up
-	try:
-		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+# 	# Later combine the two requests to speed up
+# 	try:
+# 		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+# 	except:
+# 		flash("Unable to Connect to Server!", "danger")
+# 		return redirect(url_for('register.error'))
 
-	pl_json = payload.json()
-	sess_list = pl_json["sessions"]
-	iter_pages = pl_json["iter_pages"]
+# 	pl_json = payload.json()
+# 	sess_list = pl_json["sessions"]
+# 	iter_pages = pl_json["iter_pages"]
 
-	# Get the settings
-	settings = payload_sett.json()
+# 	# Get the settings
+# 	settings = payload_sett.json()
 
-	date_strings = get_offset_dates_initiated(sessions=sess_list,
-									time_offset=settings["time_offset"])
+# 	date_strings = get_offset_dates_initiated(sessions=sess_list,
+# 									time_offset=settings["time_offset"])
 
-	sessions_and_dates = zip(sess_list, date_strings) # Pack them together to iterate simultaniously
-	return render_template("system_admin/list_data.html", title="List Data", iter_pages=iter_pages, 
-							page=page, sessions_and_dates=sessions_and_dates)
+# 	sessions_and_dates = zip(sess_list, date_strings) # Pack them together to iterate simultaniously
+# 	return render_template("system_admin/data/list_data.html", title="List Data", iter_pages=iter_pages, 
+# 							page=page, sessions_and_dates=sessions_and_dates)
 
-@system_admin.route("/system_admin/graph_data")
-@login_required
-def graph_data():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/graph_data")
+# @login_required
+# def graph_data():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	return render_template("system_admin/graph_data.html", title="Graph Data")
+# 	return render_template("system_admin/data/graph_data.html", title="Graph Data")
 
-@system_admin.route("/system_admin/graph_data/all_years")
-@login_required
-def graph_all_years():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/graph_data/all_years")
+# @login_required
+# def graph_all_years():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	# Sessions come with these variable:
-	# {id, duration, power_used, amount_paid, date_initiated, location, port, increment_size, increments}
-	# variable that have numerical values that only work with graph are:
-	# {id, duration, power_used, amount_paid, date_initiated, increment_size, increments}
+# 	# Sessions come with these variable:
+# 	# {id, duration, power_used, amount_paid, date_initiated, location, port, increment_size, increments}
+# 	# variable that have numerical values that only work with graph are:
+# 	# {id, duration, power_used, amount_paid, date_initiated, increment_size, increments}
 	
 
-	devi_id_number = Device_ID.query.first().id_number
+# 	devi_id_number = Device_ID.query.first().id_number
 
-	# Grab the sessions
-	try:
-		payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+# 	# Grab the sessions
+# 	try:
+# 		payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+# 	except:
+# 		flash("Unable to Connect to Server!", "danger")
+# 		return redirect(url_for('register.error'))
 
-	# Later combine the two requests to speed up
-	try:
-		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+# 	# Later combine the two requests to speed up
+# 	try:
+# 		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+# 	except:
+# 		flash("Unable to Connect to Server!", "danger")
+# 		return redirect(url_for('register.error'))
 
 	
-	# Get the sessions
-	sess_list = payload.json()["sessions"]
+# 	# Get the sessions
+# 	sess_list = payload.json()["sessions"]
 
-	# Get the settings
-	settings = payload_sett.json()
+# 	# Get the settings
+# 	settings = payload_sett.json()
 
-	# Delete old pic files
-	remove_png()
+# 	# Delete old pic files
+# 	remove_png()
 
-	# This is what will be used for the bar graph
-	date_strings = get_offset_dates_initiated(sessions=sess_list,
-									time_offset=settings["time_offset"])
+# 	# This is what will be used for the bar graph
+# 	date_strings = get_offset_dates_initiated(sessions=sess_list,
+# 									time_offset=settings["time_offset"])
 
-	# For every year, count how many sessions occured
-	# Returns a dictionary
-	years = count_years(dates=date_strings)
+# 	# For every year, count how many sessions occured
+# 	# Returns a dictionary
+# 	years = count_years(dates=date_strings)
 
-	create_bar_years(years=years)
+# 	create_bar_years(years=years)
 	
-	# Create the pic file to show
-	pic_name = save_figure()
+# 	# Create the pic file to show
+# 	pic_name = save_figure()
 
-	return render_template("system_admin/graph_data_all_years.html", title="Years", pic_name=pic_name)
+# 	return render_template("system_admin/data/graph_data_all_years.html", title="Years", pic_name=pic_name)
 
-@system_admin.route("/system_admin/graph_data/year", methods=['GET', 'POST'])
-@login_required
-def graph_year():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/graph_data/year", methods=['GET', 'POST'])
+# @login_required
+# def graph_year():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	form = YearForm()
-	if form.validate_on_submit():
+# 	form = YearForm()
+# 	if form.validate_on_submit():
 
-		devi_id_number = Device_ID.query.first().id_number
+# 		devi_id_number = Device_ID.query.first().id_number
 
-		# Grab the sessions
-		try:
-			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+# 		# Grab the sessions
+# 		try:
+# 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+# 		except:
+# 			flash("Unable to Connect to Server!", "danger")
+# 			return redirect(url_for('register.error'))
 
-		# Later combine the two requests to speed up
-		try:
-			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+# 		# Later combine the two requests to speed up
+# 		try:
+# 			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+# 		except:
+# 			flash("Unable to Connect to Server!", "danger")
+# 			return redirect(url_for('register.error'))
 
 		
-		# Get the sessions
-		sess_list = payload.json()["sessions"]
+# 		# Get the sessions
+# 		sess_list = payload.json()["sessions"]
 
-		# Get the settings
-		settings = payload_sett.json()
+# 		# Get the settings
+# 		settings = payload_sett.json()
 
 
-		# Delete old pic files
-		remove_png()
+# 		# Delete old pic files
+# 		remove_png()
 
-		# This is what will be used for the bar graph
-		date_strings = get_offset_dates_initiated(sessions=sess_list,
-									time_offset=settings["time_offset"])
+# 		# This is what will be used for the bar graph
+# 		date_strings = get_offset_dates_initiated(sessions=sess_list,
+# 									time_offset=settings["time_offset"])
 
-		# For every month in the given year, count how many sessions occured
-		# returns a dictionary
-		months = count_months(dates=date_strings, year=form.year.data)
+# 		# For every month in the given year, count how many sessions occured
+# 		# returns a dictionary
+# 		months = count_months(dates=date_strings, year=form.year.data)
 
-		create_bar_months(months=months, year=form.year.data)
+# 		create_bar_months(months=months, year=form.year.data)
 
-		# Create the pic file to show
-		pic_name = save_figure()
+# 		# Create the pic file to show
+# 		pic_name = save_figure()
 
-		return render_template("system_admin/graph_data_year.html", title="Year", form=form, pic_name=pic_name)
+# 		return render_template("system_admin/data/graph_data_year.html", title="Year", form=form, pic_name=pic_name)
 
-	return render_template("system_admin/graph_data_year.html", title="Year", form=form)
+# 	return render_template("system_admin/data/graph_data_year.html", title="Year", form=form)
 
-@system_admin.route("/system_admin/graph_data/month", methods=['GET', 'POST'])
-@login_required
-def graph_month():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/graph_data/month", methods=['GET', 'POST'])
+# @login_required
+# def graph_month():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	form = MonthForm()
-	if form.validate_on_submit():
+# 	form = MonthForm()
+# 	if form.validate_on_submit():
 
-		devi_id_number = Device_ID.query.first().id_number
+# 		devi_id_number = Device_ID.query.first().id_number
 
-		# Grab the sessions
-		try:
-			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+# 		# Grab the sessions
+# 		try:
+# 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+# 		except:
+# 			flash("Unable to Connect to Server!", "danger")
+# 			return redirect(url_for('register.error'))
 
-		# Later combine the two requests to speed up
-		try:
-			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+# 		# Later combine the two requests to speed up
+# 		try:
+# 			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+# 		except:
+# 			flash("Unable to Connect to Server!", "danger")
+# 			return redirect(url_for('register.error'))
 
 		
-		# Get the sessions
-		sess_list = payload.json()["sessions"]
+# 		# Get the sessions
+# 		sess_list = payload.json()["sessions"]
 
-		# Get the settings
-		settings = payload_sett.json()
+# 		# Get the settings
+# 		settings = payload_sett.json()
 
 
-		# Delete old pic files
-		remove_png()
+# 		# Delete old pic files
+# 		remove_png()
 
-		# This is what will be used for the bar graph
-		date_strings = get_offset_dates_initiated(sessions=sess_list,
-									time_offset=settings["time_offset"])
+# 		# This is what will be used for the bar graph
+# 		date_strings = get_offset_dates_initiated(sessions=sess_list,
+# 									time_offset=settings["time_offset"])
 
-		# For every day in a given month of a given year, count how many sessions occured
-		# Returns a dictionary
-		days = count_days(dates=date_strings, year=form.year.data, month=form.month.data)
+# 		# For every day in a given month of a given year, count how many sessions occured
+# 		# Returns a dictionary
+# 		days = count_days(dates=date_strings, year=form.year.data, month=form.month.data)
 
-		create_bar_days(days=days, month=form.month.data, year=form.year.data)
+# 		create_bar_days(days=days, month=form.month.data, year=form.year.data)
 
-		# Create the pic file to show
-		pic_name = save_figure()
+# 		# Create the pic file to show
+# 		pic_name = save_figure()
 
-		return render_template("system_admin/graph_data_month.html", title="Month", form=form, pic_name=pic_name)
+# 		return render_template("system_admin/data/graph_data_month.html", title="Month", form=form, pic_name=pic_name)
 	
-	return render_template("system_admin/graph_data_month.html", title="Month", form=form)
+# 	return render_template("system_admin/data/graph_data_month.html", title="Month", form=form)
 
-@system_admin.route("/system_admin/graph_data/day", methods=['GET', 'POST'])
-@login_required
-def graph_day():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/graph_data/day", methods=['GET', 'POST'])
+# @login_required
+# def graph_day():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	form = DayForm()
-	if form.validate_on_submit():
+# 	form = DayForm()
+# 	if form.validate_on_submit():
 
-		devi_id_number = Device_ID.query.first().id_number
+# 		devi_id_number = Device_ID.query.first().id_number
 
-		# Grab the sessions
-		try:
-			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+# 		# Grab the sessions
+# 		try:
+# 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+# 		except:
+# 			flash("Unable to Connect to Server!", "danger")
+# 			return redirect(url_for('register.error'))
 
-		# Later combine the two requests to speed up
-		try:
-			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+# 		# Later combine the two requests to speed up
+# 		try:
+# 			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+# 		except:
+# 			flash("Unable to Connect to Server!", "danger")
+# 			return redirect(url_for('register.error'))
 
 		
-		# Get the sessions
-		sess_list = payload.json()["sessions"]
+# 		# Get the sessions
+# 		sess_list = payload.json()["sessions"]
 
-		# Get the settings
-		settings = payload_sett.json()
+# 		# Get the settings
+# 		settings = payload_sett.json()
 
-		# Delete old pic files
-		remove_png()
+# 		# Delete old pic files
+# 		remove_png()
 
-		# This is what will be used for the bar graph
-		date_strings = get_offset_dates_initiated(sessions=sess_list,
-									time_offset=settings["time_offset"])
+# 		# This is what will be used for the bar graph
+# 		date_strings = get_offset_dates_initiated(sessions=sess_list,
+# 									time_offset=settings["time_offset"])
 
 
-		# fix form.day.data (ex from 4 to 04)
-		if int(form.day.data) < 10:
-			form.day.data = '0' + str(int(form.day.data))
+# 		# fix form.day.data (ex from 4 to 04)
+# 		if int(form.day.data) < 10:
+# 			form.day.data = '0' + str(int(form.day.data))
 
-		# For every hour in a given day of a given month of a given year, count the sessions
-		# Returns a dictionary
-		hours = count_hours(dates=date_strings, day=form.day.data, month=form.month.data, year=form.year.data)
+# 		# For every hour in a given day of a given month of a given year, count the sessions
+# 		# Returns a dictionary
+# 		hours = count_hours(dates=date_strings, day=form.day.data, month=form.month.data, year=form.year.data)
 
-		create_bar_hours(hours=hours, day=form.day.data, month=form.month.data, year=form.year.data)
+# 		create_bar_hours(hours=hours, day=form.day.data, month=form.month.data, year=form.year.data)
 
-		# Create the pic file to show
-		pic_name = save_figure()
+# 		# Create the pic file to show
+# 		pic_name = save_figure()
 
-		return render_template("system_admin/graph_data_day.html", title="Day", form=form, pic_name=pic_name)
+# 		return render_template("system_admin/data/graph_data_day.html", title="Day", form=form, pic_name=pic_name)
 
-	return render_template("system_admin/graph_data_day.html", title="Day", form=form)
+# 	return render_template("system_admin/data/graph_data_day.html", title="Day", form=form)
 
-@system_admin.route("/system_admin/local_data")
-@login_required
-def view_local_data():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
+# @system_admin.route("/system_admin/local_data")
+# @login_required
+# def view_local_data():
+# 	# Check if registered
+# 	if not is_registered():
+# 		return redirect(url_for('register.home'))
 
-	sessions = current_sessions.local_sessions.values()
-	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
+# 	sessions = current_sessions.local_sessions.values()
+# 	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=Settings.query.first().time_offset)
 
-	sessions_and_dates = zip(sessions, date_strings)
-	return render_template("system_admin/local_data.html", title="Local Data", 
-							current_sessions=current_sessions, sessions_and_dates=sessions_and_dates)
+# 	sessions_and_dates = zip(sessions, date_strings)
+# 	return render_template("system_admin/data/local_data.html", title="Local Data", 
+# 							current_sessions=current_sessions, sessions_and_dates=sessions_and_dates)
 
 @system_admin.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
 @login_required
