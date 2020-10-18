@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user, logout_user, login_user, current_user
-from chargingbooth import bcrypt, db
+from chargingbooth import bcrypt, db, service_ip
 from chargingbooth.models import User
 from chargingbooth.utils import is_registered
 from chargingbooth.system_admin.account.utils import send_reset_email
 from chargingbooth.system_admin.account.forms import (LoginForm, RegistrationForm, UpdateAccountForm, 
 														RequestRestForm, ResetPasswordForm)
+import requests
 
 system_admin_account = Blueprint('system_admin_account', __name__)
 
@@ -20,8 +21,14 @@ def login():
 		return redirect(url_for('system_admin_main.main'))
 	form = LoginForm()
 	if form.validate_on_submit():
-		user = User.query.filter_by(username=form.username.data).first()
-		if user and bcrypt.check_password_hash(user.password, form.password.data):
+		try:
+			payload = requests.get(service_ip + '/device/admin_user/verify_user/' + form.username.data + '/' + form.password.data)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
+		user = User.query.first()
+		if payload.json()["user_verified"]:
 			login_user(user)
 			next_page = request.args.get('next')
 			return redirect(url_for('system_admin_main.main'))
@@ -63,17 +70,44 @@ def account():
 	if not is_registered():
 		return redirect(url_for('register.home'))
 
+
+	# Get account info from service
+	try:
+		payload = requests.get(service_ip + '/device/admin_user/account_info')
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+
+
 	form = UpdateAccountForm()
 	if form.validate_on_submit():
-		current_user.username = form.username.data
-		current_user.email = form.email.data
-		db.session.commit()
-		flash('Your account has been updated!', 'success')
+
+		payload = {}
+
+		# pack the updated account info
+		payload["username"] = form.username.data
+		payload["email"] = form.email.data
+
+		# Send the updated account
+		try:
+			response = requests.put(service_ip + '/device/admin_user/update_account/', json=payload)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
+		# Check response
+		if response.status_code == 204 or response.status_code == 200:
+			flash('Account has been updated!', 'success')
+		else:
+			flash('Something happened and settings were not updated.', 'danger')
+
 		return redirect(url_for('system_admin_account.account'))
+
 	elif request.method == 'GET':
-		form.username.data = current_user.username
-		form.email.data = current_user.email
-	return render_template('system_admin/account/account.html', title='Account', form=form)
+		form.username.data = payload.json()["username"]
+		form.email.data = payload.json()["email"]
+	return render_template('system_admin/account/account.html', title='Account', form=form, payload=payload)
 
 
 # When logged out and forgot password

@@ -29,29 +29,21 @@ def create_app(config_class=Config):
 	current_sessions.init_app(app)
 
 	from chargingbooth.main.routes import main
-
-	# from chargingbooth.system_admin.routes import system_admin
 	from chargingbooth.system_admin.main.routes import system_admin_main
 	from chargingbooth.system_admin.account.routes import system_admin_account
 	from chargingbooth.system_admin.settings.routes import system_admin_settings
 	from chargingbooth.system_admin.data.routes import system_admin_data
 	from chargingbooth.system_admin.slide_show.routes import system_admin_slide_show
-
 	from chargingbooth.kiosk_mode.routes import kiosk_mode
-
 	from chargingbooth.register.routes import register
 
 	app.register_blueprint(main)
-
-	# app.register_blueprint(system_admin)
 	app.register_blueprint(system_admin_main)
 	app.register_blueprint(system_admin_account)
 	app.register_blueprint(system_admin_settings)
 	app.register_blueprint(system_admin_data)
 	app.register_blueprint(system_admin_slide_show)
-
 	app.register_blueprint(kiosk_mode)
-
 	app.register_blueprint(register)
 
 	return app
