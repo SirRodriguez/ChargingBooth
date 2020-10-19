@@ -61,6 +61,7 @@
     			var t = duration.toString()
     			document.getElementById("time").innerHTML = t;
     		}else{
+                clearInterval(timer);
     			window.location.replace("/kiosk_mode");
     		}
     	}
