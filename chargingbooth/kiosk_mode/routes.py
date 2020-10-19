@@ -23,7 +23,7 @@ def home():
 	if not is_registered():
 		return redirect(url_for('register.home'))
 
-	pic_files = PFI()
+	# pic_files = PFI()
 
 	devi_id_number = Device_ID.query.first().id_number
 
@@ -63,7 +63,7 @@ def home():
 							title='Kiosk Mode', 
 							current_sessions=current_sessions,
 							sessions_and_dates=sessions_and_dates,
-							pic_files=pic_files.get_resized_copy(),
+							# pic_files=pic_files.get_resized_copy(),
 							service_ip=service_ip,
 							devi_id_number=devi_id_number,
 							img_count=img_count,

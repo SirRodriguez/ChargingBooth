@@ -119,13 +119,20 @@ def reset_request():
 
 	if current_user.is_authenticated:
 		return redirect(url_for('system_admin_main.home'))
-	form = RequestRestForm()
-	if form.validate_on_submit():
-		user = User.query.filter_by(email=form.email.data).first()
-		send_reset_email(user, logged_in=False)
-		flash('An email has been sent with instructions to reset your password.', 'info')
-		return redirect(url_for('system_admin_account.login'))
-	return render_template('system_admin/account/reset_request.html', title='Reset Password', form=form)
+
+	# Get account info from service
+	try:
+		payload = requests.get(service_ip + '/device/admin_user/account_info')
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	user = User.query.first()
+	send_reset_email(email=payload.json()["email"], user=user, logged_in=False)	
+
+	flash('An email has been sent with instructions to reset your password.', 'info')
+
+	return redirect(url_for('system_admin_account.login'))
 
 @system_admin_account.route("/system_admin/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
@@ -135,13 +142,19 @@ def reset_token(token):
 	user = User.verify_reset_token(token)
 	if user is None:
 		flash('That is an invalid or expired token', 'warning')
-		return redirect(url_for('system_admin_account.reset_request'))
+		return redirect(url_for('system_admin_account.login'))
 
 	form = ResetPasswordForm()
 	if form.validate_on_submit():
-		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		user.password = hashed_password
-		db.session.commit()
+		payload = {}
+		payload["hashed_password"] = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+
+		try:
+			response = requests.put(service_ip + '/device/admin_user/update_password/', json=payload)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
 		flash('Your password has been updated! You are now able to log in.', 'success')
 		return redirect(url_for('system_admin_account.login'))
 	return render_template('system_admin/account/reset_token.html', title='Reset Password', form=form)
@@ -155,9 +168,17 @@ def change_request():
 	# Check if registered
 	if not is_registered():
 		return redirect(url_for('register.home'))
-		
-	user = User.query.filter_by(email=current_user.email).first()
-	send_reset_email(user, logged_in=True)
+
+	# Get account info from service
+	try:
+		payload = requests.get(service_ip + '/device/admin_user/account_info')
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('register.error'))
+
+	user = User.query.first()
+	send_reset_email(email=payload.json()["email"], user=user, logged_in=True)	
+
 	flash('An email has been sent with instructions to reset your password.', 'info')
 	return redirect(url_for('system_admin_account.account'))
 
@@ -167,13 +188,19 @@ def change_token(token):
 	user = User.verify_reset_token(token)
 	if user is None:
 		flash('That is an invalid or expired token', 'warning')
-		return redirect(url_for('system_admin_account.reset_request'))
+		return redirect(url_for('system_admin_account.login'))
 
 	form = ResetPasswordForm()
 	if form.validate_on_submit():
-		hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-		user.password = hashed_password
-		db.session.commit()
+		payload = {}
+		payload["hashed_password"] = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+
+		try:
+			response = requests.put(service_ip + '/device/admin_user/update_password/', json=payload)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('register.error'))
+
 		flash('Your password has been updated!', 'success')
 		return redirect(url_for('system_admin_account.login'))
 	return render_template('system_admin/account/reset_token.html', title='Reset Password', form=form)

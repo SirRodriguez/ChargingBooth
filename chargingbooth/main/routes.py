@@ -18,3 +18,4 @@ def home():
 		return redirect(url_for('register.error'))
 
 	return redirect(url_for('register.home'))
+	# return redirect(url_for('system_admin_account.login'))
