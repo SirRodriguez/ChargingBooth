@@ -1,2 +1,0 @@
-Start:2020-10-21 05:05:41.635580, Duration:60, End:2020-10-21 05:06:41.635580, Amount Paid:100, Location:LapTop, Port:, Increment Size:60, Increments:1
-Seconds elapsed: 14.233299
