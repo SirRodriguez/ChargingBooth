@@ -13,10 +13,6 @@ system_admin_settings = Blueprint('system_admin_settings', __name__)
 @system_admin_settings.route("/system_admin/settings", methods=['GET', 'POST'])
 @login_required
 def settings():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	devi_id_number = Device_ID.query.first().id_number
 	# Grab settings from site
 	try:
@@ -24,6 +20,10 @@ def settings():
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
+
+	# Check if registered
+	if not payload.json()["registered"]:
+		return redirect(url_for('register.home'))
 
 	setting = payload.json()
 

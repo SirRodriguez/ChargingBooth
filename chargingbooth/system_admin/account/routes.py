@@ -13,10 +13,6 @@ system_admin_account = Blueprint('system_admin_account', __name__)
 
 @system_admin_account.route("/system_admin/login", methods=['GET', 'POST'])
 def login():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	if current_user.is_authenticated:
 		return redirect(url_for('system_admin_main.main'))
 	form = LoginForm()
@@ -66,19 +62,12 @@ def register():
 @system_admin_account.route("/system_admin/account", methods=['GET', 'POST'])
 @login_required
 def account():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
-
 	# Get account info from service
 	try:
 		payload = requests.get(service_ip + '/device/admin_user/account_info')
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
-
-
 
 	form = UpdateAccountForm()
 	if form.validate_on_submit():
@@ -113,10 +102,6 @@ def account():
 # When logged out and forgot password
 @system_admin_account.route("/system_admin/reset_password", methods=['GET', 'POST'])
 def reset_request():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	if current_user.is_authenticated:
 		return redirect(url_for('system_admin_main.home'))
 
@@ -165,10 +150,6 @@ def reset_token(token):
 @system_admin_account.route("/system_admin/change_password", methods=['GET', 'POST'])
 @login_required
 def change_request():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	# Get account info from service
 	try:
 		payload = requests.get(service_ip + '/device/admin_user/account_info')

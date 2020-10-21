@@ -13,21 +13,14 @@ system_admin_slide_show = Blueprint('system_admin_slide_show', __name__)
 @system_admin_slide_show.route("/system_admin/slide_show_pics", methods=['GET', 'POST'])
 @login_required
 def slide_show_pics():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	return render_template("system_admin/slide_show/slide_show_pics.html", title="Slide Show Pictures")
 
 @system_admin_slide_show.route("/system_admin/add_slides", methods=['GET', 'POST'])
 @login_required
 def upload_image():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	devi_id_number = Device_ID.query.first().id_number
 
+	# Validate must be done first to allow the change of images before grabbing them again
 	form = SlideShowPicsForm()
 	if form.validate_on_submit():
 
@@ -40,9 +33,7 @@ def upload_image():
 
 		flash('Pictures has been uploaded', 'success')
 		return redirect(url_for('system_admin_slide_show.upload_image'))
-
 	
-
 	# Grab the number of images the service has
 	try:
 		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
@@ -50,7 +41,13 @@ def upload_image():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	img_count = payload.json()["image_count"]
+	pl_json = payload.json()
+
+	# Check if registered
+	if not pl_json["registered"]:
+		return redirect(url_for('register.home')) 
+
+	img_count = pl_json["image_count"]
 
 	random_hex = secrets.token_hex(8)
 
@@ -65,10 +62,6 @@ def upload_image():
 @system_admin_slide_show.route("/system_admin/remove_slides", methods=['GET', 'POST'])
 @login_required
 def remove_image():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	devi_id_number = Device_ID.query.first().id_number
 
 	form = RemovePictureForm()
@@ -94,7 +87,13 @@ def remove_image():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	img_count = payload.json()["image_count"]
+	pl_json = payload.json()
+
+	# Check if registered
+	if not pl_json["registered"]:
+		return redirect(url_for('register.home')) 
+
+	img_count = pl_json["image_count"]
 
 	random_hex = secrets.token_hex(8)
 

@@ -16,18 +16,11 @@ system_admin_data = Blueprint('system_admin_data', __name__)
 @system_admin_data.route("/system_admin/data")
 @login_required
 def data():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	return render_template("system_admin/data/data.html", title="Data")
 
 @system_admin_data.route("/system_admin/list_data")
 @login_required
 def view_data():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
 
 	devi_id_number = Device_ID.query.first().id_number
 
@@ -39,19 +32,15 @@ def view_data():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	# Later combine the two requests to speed up
-	try:
-		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
-
 	pl_json = payload.json()
+
+	# Check if registered
+	if not pl_json["registered"]:
+		return redirect(url_for('register.home'))
+
 	sess_list = pl_json["sessions"]
 	iter_pages = pl_json["iter_pages"]
-
-	# Get the settings
-	settings = payload_sett.json()
+	settings = pl_json["settings"]
 
 	date_strings = get_offset_dates_initiated(sessions=sess_list,
 									time_offset=settings["time_offset"])
@@ -63,19 +52,11 @@ def view_data():
 @system_admin_data.route("/system_admin/graph_data")
 @login_required
 def graph_data():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	return render_template("system_admin/data/graph_data.html", title="Graph Data")
 
 @system_admin_data.route("/system_admin/graph_data/all_years")
 @login_required
 def graph_all_years():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	# Sessions come with these variable:
 	# {id, duration, power_used, amount_paid, date_initiated, location, port, increment_size, increments}
 	# variable that have numerical values that only work with graph are:
@@ -91,19 +72,15 @@ def graph_all_years():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	# Later combine the two requests to speed up
-	try:
-		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+	pl_json = payload.json()
 
-	
+	# Check if registered
+	if not pl_json["registered"]:
+		return redirect(url_for('register.home'))
+
 	# Get the sessions
-	sess_list = payload.json()["sessions"]
-
-	# Get the settings
-	settings = payload_sett.json()
+	sess_list = pl_json["sessions"]
+	settings = pl_json["settings"]
 
 	# Delete old pic files
 	remove_png()
@@ -126,10 +103,6 @@ def graph_all_years():
 @system_admin_data.route("/system_admin/graph_data/year", methods=['GET', 'POST'])
 @login_required
 def graph_year():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	form = YearForm()
 	if form.validate_on_submit():
 
@@ -141,21 +114,16 @@ def graph_year():
 		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('register.error'))
-
-		# Later combine the two requests to speed up
-		try:
-			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
-
 		
+		pl_json = payload.json()
+
+		# Check if registered
+		if not pl_json["registered"]:
+			return redirect(url_for('register.home'))
+
 		# Get the sessions
-		sess_list = payload.json()["sessions"]
-
-		# Get the settings
-		settings = payload_sett.json()
-
+		sess_list = pl_json["sessions"]
+		settings = pl_json["settings"]
 
 		# Delete old pic files
 		remove_png()
@@ -180,10 +148,6 @@ def graph_year():
 @system_admin_data.route("/system_admin/graph_data/month", methods=['GET', 'POST'])
 @login_required
 def graph_month():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	form = MonthForm()
 	if form.validate_on_submit():
 
@@ -196,20 +160,15 @@ def graph_month():
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('register.error'))
 
-		# Later combine the two requests to speed up
-		try:
-			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+		pl_json = payload.json()
 
-		
+		# Check if registered
+		if not pl_json["registered"]:
+			return redirect(url_for('register.home'))
+
 		# Get the sessions
-		sess_list = payload.json()["sessions"]
-
-		# Get the settings
-		settings = payload_sett.json()
-
+		sess_list = pl_json["sessions"]
+		settings = pl_json["settings"]
 
 		# Delete old pic files
 		remove_png()
@@ -234,10 +193,6 @@ def graph_month():
 @system_admin_data.route("/system_admin/graph_data/day", methods=['GET', 'POST'])
 @login_required
 def graph_day():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	form = DayForm()
 	if form.validate_on_submit():
 
@@ -249,20 +204,16 @@ def graph_day():
 		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('register.error'))
-
-		# Later combine the two requests to speed up
-		try:
-			payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-		except:
-			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
-
 		
-		# Get the sessions
-		sess_list = payload.json()["sessions"]
+		pl_json = payload.json()
 
-		# Get the settings
-		settings = payload_sett.json()
+		# Check if registered
+		if not pl_json["registered"]:
+			return redirect(url_for('register.home'))
+
+		# Get the sessions
+		sess_list = pl_json["sessions"]
+		settings = pl_json["settings"]
 
 		# Delete old pic files
 		remove_png()
@@ -292,20 +243,22 @@ def graph_day():
 @system_admin_data.route("/system_admin/local_data")
 @login_required
 def view_local_data():
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	devi_id_number = Device_ID.query.first().id_number
 
 	# Later combine the two requests to speed up
 	try:
-		payload_sett = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
+		payload = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	settings = payload_sett.json()
+	pl_json = payload.json()
+
+	# Check if registered
+	if not pl_json["registered"]:
+		return redirect(url_for('register.home'))
+
+	settings = pl_json
 
 	sessions = current_sessions.local_sessions.values()
 	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=settings["time_offset"], from_local_sess=True)
