@@ -19,29 +19,23 @@ kiosk_mode = Blueprint('kiosk_mode', __name__)
 def home():
 	start_route()
 
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	devi_id_number = Device_ID.query.first().id_number
 
-	# Grab settings from site
-	try:
-		payload = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
-
-	setting = payload.json()
-
-	# Grab the number of images the service has
+	# Grab the number of images the service has, also settings
 	try:
 		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('register.error'))
 
-	img_count = payload.json()["image_count"]
+	pl_json = payload.json()
+
+	# Check if registered
+	if not pl_json["registered"]:
+		return redirect(url_for('register.home'))
+
+	img_count = pl_json["image_count"]
+	setting = pl_json["settings"]
 
 	sessions = current_sessions.local_sessions.values()
 
@@ -86,10 +80,6 @@ def confirm_payment():
 def make_session():
 	start_route()
 
-	# Check if registered
-	if not is_registered():
-		return redirect(url_for('register.home'))
-
 	# Only make a session if there is no session currently available
 	if not current_sessions.has_sessions():
 		devi_id_number = Device_ID.query.first().id_number
@@ -99,6 +89,10 @@ def make_session():
 		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('register.error'))
+
+		# Check if registered
+		if not payload.json()["registered"]:
+			return redirect(url_for('register.home'))
 
 		setting = payload.json()
 
