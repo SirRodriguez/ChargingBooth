@@ -39,7 +39,7 @@ def upload_image():
 		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	pl_json = payload.json()
 
@@ -85,7 +85,7 @@ def remove_image():
 		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	pl_json = payload.json()
 

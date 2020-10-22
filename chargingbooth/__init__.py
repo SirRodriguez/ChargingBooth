@@ -36,6 +36,7 @@ def create_app(config_class=Config):
 	from chargingbooth.system_admin.slide_show.routes import system_admin_slide_show
 	from chargingbooth.kiosk_mode.routes import kiosk_mode
 	from chargingbooth.register.routes import register
+	from chargingbooth.error.routes import error
 
 	app.register_blueprint(main)
 	app.register_blueprint(system_admin_main)
@@ -45,5 +46,6 @@ def create_app(config_class=Config):
 	app.register_blueprint(system_admin_slide_show)
 	app.register_blueprint(kiosk_mode)
 	app.register_blueprint(register)
+	app.register_blueprint(error)
 
 	return app

@@ -5,11 +5,6 @@ import requests
 
 register = Blueprint('register', __name__)
 
-# Error
-@register.route("/register/error")
-def error():
-	return render_template("register/error.html")
-
 # Main Register
 @register.route("/register/home")
 def home():
@@ -23,7 +18,7 @@ def register_device():
 		payload = requests.get(service_ip + '/device/register')		
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 	
 	pl_json = payload.json()
 	device_id = pl_json["device_id"]

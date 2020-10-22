@@ -26,7 +26,7 @@ def home():
 		payload = requests.get(service_ip + '/device/img_count/' + devi_id_number)
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	pl_json = payload.json()
 
@@ -88,7 +88,7 @@ def make_session():
 			payload = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+			return redirect(url_for('error.register'))
 
 		# Check if registered
 		if not payload.json()["registered"]:

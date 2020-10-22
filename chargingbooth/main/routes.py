@@ -15,7 +15,7 @@ def home():
 			return redirect(url_for('register.home'))
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	return redirect(url_for('register.home'))
 	# return redirect(url_for('system_admin_account.login'))

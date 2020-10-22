@@ -30,7 +30,7 @@ def view_data():
 		payload = requests.get(service_ip + '/device/sessions/' + devi_id_number + '/' + str(page))
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	pl_json = payload.json()
 
@@ -70,7 +70,7 @@ def graph_all_years():
 		payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	pl_json = payload.json()
 
@@ -113,7 +113,7 @@ def graph_year():
 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+			return redirect(url_for('error.register'))
 		
 		pl_json = payload.json()
 
@@ -158,7 +158,7 @@ def graph_month():
 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+			return redirect(url_for('error.register'))
 
 		pl_json = payload.json()
 
@@ -203,7 +203,7 @@ def graph_day():
 			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+			return redirect(url_for('error.register'))
 		
 		pl_json = payload.json()
 
@@ -250,7 +250,7 @@ def view_local_data():
 		payload = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	pl_json = payload.json()
 

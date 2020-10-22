@@ -21,7 +21,7 @@ def login():
 			payload = requests.get(service_ip + '/device/admin_user/verify_user/' + form.username.data + '/' + form.password.data)
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+			return redirect(url_for('error.register'))
 
 		user = User.query.first()
 		if payload.json()["user_verified"]:
@@ -67,7 +67,7 @@ def account():
 		payload = requests.get(service_ip + '/device/admin_user/account_info')
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	form = UpdateAccountForm()
 	if form.validate_on_submit():
@@ -83,7 +83,7 @@ def account():
 			response = requests.put(service_ip + '/device/admin_user/update_account/', json=payload)
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+			return redirect(url_for('error.register'))
 
 		# Check response
 		if response.status_code == 204 or response.status_code == 200:
@@ -110,7 +110,7 @@ def reset_request():
 		payload = requests.get(service_ip + '/device/admin_user/account_info')
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	user = User.query.first()
 	send_reset_email(email=payload.json()["email"], user=user, logged_in=False)	
@@ -138,7 +138,7 @@ def reset_token(token):
 			response = requests.put(service_ip + '/device/admin_user/update_password/', json=payload)
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+			return redirect(url_for('error.register'))
 
 		flash('Your password has been updated! You are now able to log in.', 'success')
 		return redirect(url_for('system_admin_account.login'))
@@ -155,7 +155,7 @@ def change_request():
 		payload = requests.get(service_ip + '/device/admin_user/account_info')
 	except:
 		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('register.error'))
+		return redirect(url_for('error.register'))
 
 	user = User.query.first()
 	send_reset_email(email=payload.json()["email"], user=user, logged_in=True)	
@@ -180,7 +180,7 @@ def change_token(token):
 			response = requests.put(service_ip + '/device/admin_user/update_password/', json=payload)
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('register.error'))
+			return redirect(url_for('error.register'))
 
 		flash('Your password has been updated!', 'success')
 		return redirect(url_for('system_admin_account.login'))
