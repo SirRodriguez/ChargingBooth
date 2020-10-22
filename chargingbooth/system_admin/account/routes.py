@@ -17,8 +17,12 @@ def login():
 		return redirect(url_for('system_admin_main.main'))
 	form = LoginForm()
 	if form.validate_on_submit():
+		json_send = {}
+		json_send["username"] = form.username.data
+		json_send["password"] = form.password.data
+
 		try:
-			payload = requests.get(service_ip + '/device/admin_user/verify_user/' + form.username.data + '/' + form.password.data)
+			payload = requests.get(service_ip + '/device/admin_user/verify_user', json=json_send)
 		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('error.register'))
