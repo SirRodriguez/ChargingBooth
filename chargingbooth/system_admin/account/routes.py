@@ -70,7 +70,7 @@ def account():
 
 		# Send the updated account
 		try:
-			response = requests.put(service_ip + '/device/admin_user/update_account/', json=payload)
+			response = requests.put(service_ip + '/device/admin_user/update_account/' + admin_key.get_key(), json=payload)
 		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('error.register'))
