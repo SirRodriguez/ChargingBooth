@@ -13,8 +13,8 @@ login_manager.login_message_category = 'info'
 mail = Mail()
 service_ip = "http://localhost:7000"
 
-from chargingbooth.models import Sessions_Container
-
+from chargingbooth.models import Sessions_Container, AdminKey
+admin_key = AdminKey()
 current_sessions = Sessions_Container()
 
 

@@ -75,6 +75,15 @@ class Device_ID(db.Model):
 #### Local ####
 ###############
 
+class AdminKey():
+	def __init__(self):
+		self.admin_key = "None"
+
+	def set_key(self, key):
+		self.admin_key = key
+
+	def get_key(self):
+		return self.admin_key
 
 class Local_Session:
 	def __init__(self, amount_paid, location, port, increment_size, increments, index):
@@ -273,13 +282,6 @@ class Sessions_Container:
 									increments=self.local_sessions[index].increments)
 
 					response = requests.put(service_ip + '/device/add_session/' + devi_id_number, json=payload_send)
-
-					# if response.status_code == 204 or response.status_code == 200:
-					# 	flash('Settings have been updated!', 'success')
-					# elif response.status_code == 400:
-					# 	flash('Server could not find device!', 'danger')
-					# else:
-					# 	flash('Something happened and settings were not updated.', 'danger')
 
 					db.session.add(session)
 					db.session.commit()

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user, logout_user, login_user, current_user
-from chargingbooth import bcrypt, db, service_ip
+from chargingbooth import bcrypt, db, service_ip, admin_key
 from chargingbooth.models import User
 from chargingbooth.utils import is_registered
 from chargingbooth.system_admin.account.utils import send_reset_email
@@ -29,6 +29,7 @@ def login():
 
 		user = User.query.first()
 		if payload.json()["user_verified"]:
+			admin_key.set_key(payload.json()["admin_key"])
 			login_user(user)
 			next_page = request.args.get('next')
 			return redirect(url_for('system_admin_main.main'))
@@ -42,6 +43,7 @@ def logout():
 	logout_user()
 	return redirect(url_for('system_admin_main.home'))
 
+# Depretiated
 # This is needed to be removed after production
 # This is only used to adjust the database for an admin user
 @system_admin_account.route("/system_admin/register", methods=['GET', 'POST'])
@@ -68,10 +70,16 @@ def register():
 def account():
 	# Get account info from service
 	try:
-		payload = requests.get(service_ip + '/device/admin_user/account_info')
+		payload = requests.get(service_ip + '/device/admin_user/account_info/' + admin_key.get_key())
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('error.register'))
+
+	if payload.status_code == 401:
+		if current_user.is_authenticated:
+			logout_user()
+		flash('Please login to access this page.', 'info')
+		return redirect(url_for('system_admin_account.login'))
 
 	form = UpdateAccountForm()
 	if form.validate_on_submit():
@@ -109,20 +117,23 @@ def reset_request():
 	if current_user.is_authenticated:
 		return redirect(url_for('system_admin_main.home'))
 
-	# Get account info from service
-	try:
-		payload = requests.get(service_ip + '/device/admin_user/account_info')
-	except:
-		flash("Unable to Connect to Server!", "danger")
-		return redirect(url_for('error.register'))
+	return redirect(service_ip + '/reset_password')
 
-	user = User.query.first()
-	send_reset_email(email=payload.json()["email"], user=user, logged_in=False)	
+	# # Get account info from service
+	# try:
+	# 	payload = requests.get(service_ip + '/device/admin_user/account_info')
+	# except:
+	# 	flash("Unable to Connect to Server!", "danger")
+	# 	return redirect(url_for('error.register'))
 
-	flash('An email has been sent with instructions to reset your password.', 'info')
+	# user = User.query.first()
+	# send_reset_email(email=payload.json()["email"], user=user, logged_in=False)	
 
-	return redirect(url_for('system_admin_account.login'))
+	# flash('An email has been sent with instructions to reset your password.', 'info')
 
+	# return redirect(url_for('system_admin_account.login'))
+
+# Depretiated
 @system_admin_account.route("/system_admin/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
 	if current_user.is_authenticated:
@@ -156,10 +167,16 @@ def reset_token(token):
 def change_request():
 	# Get account info from service
 	try:
-		payload = requests.get(service_ip + '/device/admin_user/account_info')
+		payload = requests.get(service_ip + '/device/admin_user/account_info/' + admin_key.get_key())
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('error.register'))
+
+	if payload.status_code == 401:
+		if current_user.is_authenticated:
+			logout_user()
+		flash('Please login to access this page.', 'info')
+		return redirect(url_for('system_admin_account.login'))
 
 	user = User.query.first()
 	send_reset_email(email=payload.json()["email"], user=user, logged_in=True)	
