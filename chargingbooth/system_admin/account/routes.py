@@ -40,6 +40,13 @@ def login():
 @system_admin_account.route("/system_admin/logout")
 @login_required
 def logout():
+	# Logout from service
+	try:
+		payload = requests.get(service_ip + '/device/admin_user/logout')
+	except:
+		flash("Unable to Connect to Server!", "danger")
+		return redirect(url_for('error.register'))
+
 	logout_user()
 	return redirect(url_for('system_admin_main.home'))
 
@@ -137,8 +144,7 @@ def change_token(token):
 
 		try:
 			response = requests.put(service_ip + '/device/admin_user/update_password/' + admin_key.get_key(), json=payload)
-		except Exception as e:
-			print(e)
+		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('error.register'))
 
