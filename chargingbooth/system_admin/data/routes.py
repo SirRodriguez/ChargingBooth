@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from flask_login import login_required
-from chargingbooth import service_ip, current_sessions
+from flask_login import login_required, current_user, logout_user
+from chargingbooth import service_ip, current_sessions, admin_key
 from chargingbooth.utils import is_registered
 from chargingbooth.models import Device_ID
 from chargingbooth.system_admin.data.forms import YearForm, MonthForm, DayForm
@@ -27,10 +27,17 @@ def view_data():
 	page = request.args.get('page', 1, type=int)
 
 	try:
-		payload = requests.get(service_ip + '/device/sessions/' + devi_id_number + '/' + str(page))
+		payload = requests.get(service_ip + '/device/sessions/' + devi_id_number + '/' + str(page) + '/' + admin_key.get_key())
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('error.register'))
+
+	# Verify admin key
+	if payload.status_code == 401:
+		if current_user.is_authenticated:
+			logout_user()
+		flash('Please login to access this page.', 'info')
+		return redirect(url_for('system_admin_account.login'))
 
 	pl_json = payload.json()
 
@@ -67,10 +74,17 @@ def graph_all_years():
 
 	# Grab the sessions
 	try:
-		payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+		payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number + '/' + admin_key.get_key())
 	except:
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('error.register'))
+
+	# Verify admin key
+	if payload.status_code == 401:
+		if current_user.is_authenticated:
+			logout_user()
+		flash('Please login to access this page.', 'info')
+		return redirect(url_for('system_admin_account.login'))
 
 	pl_json = payload.json()
 
@@ -110,11 +124,18 @@ def graph_year():
 
 		# Grab the sessions
 		try:
-			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number + '/' + admin_key.get_key())
 		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('error.register'))
 		
+		# Verify admin key
+		if payload.status_code == 401:
+			if current_user.is_authenticated:
+				logout_user()
+			flash('Please login to access this page.', 'info')
+			return redirect(url_for('system_admin_account.login'))
+
 		pl_json = payload.json()
 
 		# Check if registered
@@ -155,10 +176,17 @@ def graph_month():
 
 		# Grab the sessions
 		try:
-			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number + '/' + admin_key.get_key())
 		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('error.register'))
+
+		# Verify admin key
+		if payload.status_code == 401:
+			if current_user.is_authenticated:
+				logout_user()
+			flash('Please login to access this page.', 'info')
+			return redirect(url_for('system_admin_account.login'))
 
 		pl_json = payload.json()
 
@@ -200,11 +228,18 @@ def graph_day():
 
 		# Grab the sessions
 		try:
-			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number)
+			payload = requests.get(service_ip + '/device/all_sessions/' + devi_id_number + '/' + admin_key.get_key())
 		except:
 			flash("Unable to Connect to Server!", "danger")
 			return redirect(url_for('error.register'))
 		
+		# Verify admin key
+		if payload.status_code == 401:
+			if current_user.is_authenticated:
+				logout_user()
+			flash('Please login to access this page.', 'info')
+			return redirect(url_for('system_admin_account.login'))
+
 		pl_json = payload.json()
 
 		# Check if registered
