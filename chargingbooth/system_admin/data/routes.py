@@ -245,7 +245,6 @@ def graph_day():
 def view_local_data():
 	devi_id_number = Device_ID.query.first().id_number
 
-	# Later combine the two requests to speed up
 	try:
 		payload = requests.get(service_ip + '/device/get_settings/' + devi_id_number)
 	except:

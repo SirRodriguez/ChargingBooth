@@ -60,6 +60,7 @@ def account():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('error.register'))
 
+	# Verify admin key
 	if payload.status_code == 401:
 		if current_user.is_authenticated:
 			logout_user()
