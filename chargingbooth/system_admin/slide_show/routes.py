@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, render_template, flash
-from flask_login import login_required
-from chargingbooth import service_ip
+from flask_login import login_required, current_user, logout_user
+from chargingbooth import service_ip, admin_key
 from chargingbooth.utils import is_registered
 from chargingbooth.models import Device_ID
 from chargingbooth.system_admin.slide_show.forms import SlideShowPicsForm, RemovePictureForm
@@ -29,7 +29,18 @@ def upload_image():
 			image_files.append(('image', ( file.filename, file.read() )  ))
 
 		# Do the post here
-		response = requests.post(service_ip + '/device/images/upload/' + devi_id_number, files=image_files)
+		try:
+			response = requests.post(service_ip + '/device/images/upload/' + devi_id_number  + '/' + admin_key.get_key(), files=image_files)
+		except:
+			flash("Unable to Connect to Server!", "danger")
+			return redirect(url_for('error.register'))
+
+		# Verify admin key
+		if response.status_code == 401:
+			if current_user.is_authenticated:
+				logout_user()
+			flash('Please login to access this page.', 'info')
+			return redirect(url_for('system_admin_account.login'))
 
 		flash('Pictures has been uploaded', 'success')
 		return redirect(url_for('system_admin_slide_show.upload_image'))
@@ -67,10 +78,17 @@ def remove_image():
 	form = RemovePictureForm()
 	if form.validate_on_submit():
 		try:
-			response = requests.delete(service_ip + '/device/remove_images/' + devi_id_number + '/' + form.removals.data)
+			response = requests.delete(service_ip + '/device/remove_images/' + devi_id_number + '/' + form.removals.data + '/' + admin_key.get_key())
 		except:
 			flash("Unable to Connect to Server!", "danger")
-			return redirect(url_for('main.error'))
+			return redirect(url_for('error.register'))
+
+		# Verify admin key
+		if response.status_code == 401:
+			if current_user.is_authenticated:
+				logout_user()
+			flash('Please login to access this page.', 'info')
+			return redirect(url_for('system_admin_account.login'))
 
 		if response.status_code == 204:
 			flash('Images have been successfuly removed!', 'success')
