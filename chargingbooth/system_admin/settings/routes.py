@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, redirect, url_for, request, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user, logout_user
 from chargingbooth import service_ip, admin_key
 from chargingbooth.utils import is_registered
 from chargingbooth.models import Device_ID
@@ -48,7 +48,7 @@ def settings():
 			return redirect(url_for('error.register'))
 
 		# Verify admin key
-		if payload.status_code == 401:
+		if response.status_code == 401:
 			if current_user.is_authenticated:
 				logout_user()
 			flash('Please login to access this page.', 'info')
@@ -57,7 +57,7 @@ def settings():
 		if response.status_code == 204 or response.status_code == 200:
 			flash('Settings have been updated!', 'success')
 		elif response.status_code == 400:
-			flash('Server could not find device!', 'danger')
+			flash('There was an error and settings were not updated', 'danger')
 		else:
 			flash('Something happened and settings were not updated.', 'danger')
 
