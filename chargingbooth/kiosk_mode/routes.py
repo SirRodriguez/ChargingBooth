@@ -6,7 +6,6 @@ from datetime import datetime
 from flask import render_template, Blueprint, redirect, url_for, flash, request
 from flask_login import current_user, logout_user
 from chargingbooth import db, bcrypt, current_sessions, service_ip
-from chargingbooth.models import Session, Settings
 from chargingbooth.kiosk_mode.utils import (start_route, get_offset_dates_initiated, get_offset_dates_end,
 											split_seconds, is_registered)
 from chargingbooth.models import PFI, Device_ID
