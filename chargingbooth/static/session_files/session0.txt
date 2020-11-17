@@ -1,0 +1,2 @@
+Start:2020-11-17 05:47:38.007512, Duration:15, End:2020-11-17 05:47:53.007512, Amount Paid:5990, Location:Laptop, Port:, Increment Size:15, Increments:1
+Seconds elapsed: 7.2398

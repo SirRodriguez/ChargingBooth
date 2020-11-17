@@ -375,3 +375,43 @@ class PFI:
 			result = Image.new(img.mode, (int(new_width), img_height), background_color)
 			result.paste(img, ( (int(new_width) - img_width) // 2, 0))
 			return result
+
+class Settings_Cache():
+	def __init__(self):
+		self.toggle_pay = True
+		self.price = 10000
+		self.charge_time = 1
+		self.time_offset = 'UTC'
+		self.location = 'N/A'
+		self.aspect_ratio_width = 1.0
+		self.aspect_ratio_height = 1.0
+
+	def set_values(self, toggle_pay, price, charge_time, time_offset, location, aspect_ratio_width, aspect_ratio_height):
+		self.toggle_pay = toggle_pay
+		self.price = price
+		self.charge_time = charge_time
+		self.time_offset = time_offset
+		self.location = location
+		self.aspect_ratio_width = aspect_ratio_width
+		self.aspect_ratio_height = aspect_ratio_height
+
+	def get_toggle_pay(self):
+		return self.toggle_pay
+
+	def get_price(self):
+		return self.price
+
+	def get_charge_time(self):
+		return self.charge_time
+
+	def get_time_offset(self):
+		return self.time_offset
+
+	def get_location(self):
+		return self.location
+
+	def get_aspect_ratio_width(self):
+		return self.aspect_ratio_width
+
+	def get_aspect_ratio_height(self):
+		return self.aspect_ratio_height
