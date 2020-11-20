@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from chargingbooth.config import Config
+import os
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -11,7 +12,7 @@ login_manager = LoginManager()
 login_manager.login_view = 'system_admin_account.login'
 login_manager.login_message_category = 'info'
 mail = Mail()
-service_ip = "http://localhost:7000"
+service_ip = os.environ.get('SERVICE_IP')
 
 from chargingbooth.models import Sessions_Container, AdminKey, Settings_Cache
 admin_key = AdminKey()
