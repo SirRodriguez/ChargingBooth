@@ -24,6 +24,18 @@ def create_app(config_class=Config):
 	app = Flask(__name__)
 	app.config.from_object(Config)
 
+	print("secret key: ", os.environ.get('SECRET_KEY'))
+	print("sql uri: ", os.environ.get('SQLALCHEMY_DATABASE_URI'))
+	print("email user: ", os.environ.get('EMAIL_USER'))
+	print("email pass: ", os.environ.get('EMAIL_PASS'))
+	print("service ip: ", os.environ.get('SERVICE_IP'))
+
+	print("secret key type: ", type(os.environ.get('SECRET_KEY')))
+	print("sql uri type: ", type(os.environ.get('SQLALCHEMY_DATABASE_URI')))
+	print("email user type: ", type(os.environ.get('EMAIL_USER')))
+	print("email pass type: ", type(os.environ.get('EMAIL_PASS')))
+	print("service ip type: ", type(os.environ.get('SERVICE_IP')))
+
 	db.init_app(app)
 	bcrypt.init_app(app)
 	login_manager.init_app(app)
