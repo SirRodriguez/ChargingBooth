@@ -96,10 +96,21 @@ def account():
 		form.email.data = payload.json()["email"]
 	return render_template('system_admin/account/account.html', title='Account', form=form, payload=payload)
 
+@system_admin_account.route("/system_admin/reset_password")
+def reset_request():
+	return redirect(service_ip + '/reset_password')
+
+################################
+# Old depreciated routes below #
+################################
 
 # When logged out and forgot password
-@system_admin_account.route("/system_admin/reset_password", methods=['GET', 'POST'])
-def reset_request():
+@system_admin_account.route("/system_admin/reset_password_OLD", methods=['GET', 'POST'])
+def reset_request_OLD():
+	# !!!
+	# These routes are depreciated because of non-working email
+	return redirect(url_for('main.home'))
+
 	if current_user.is_authenticated:
 		return redirect(url_for('system_admin_main.home'))
 
@@ -107,9 +118,13 @@ def reset_request():
 
 
 #When logged in and changing password
-@system_admin_account.route("/system_admin/change_password", methods=['GET', 'POST'])
+@system_admin_account.route("/system_admin/change_password_OLD", methods=['GET', 'POST'])
 @login_required
-def change_request():
+def change_request_OLD():
+	# !!!
+	# These routes are depreciated because of non-working email
+	return redirect(url_for('main.home'))
+
 	# Get account info from service
 	try:
 		payload = requests.get(service_ip + '/device/admin_user/account_info/' + admin_key.get_key())
@@ -130,9 +145,13 @@ def change_request():
 	flash('An email has been sent with instructions to reset your password.', 'info')
 	return redirect(url_for('system_admin_account.account'))
 
-@system_admin_account.route("/system_admin/change_password/<token>", methods=['GET', 'POST'])
+@system_admin_account.route("/system_admin/change_password_OLD/<token>", methods=['GET', 'POST'])
 @login_required 
-def change_token(token):
+def change_token_OLD(token):
+	# !!!
+	# These routes are depreciated because of non-working email
+	return redirect(url_for('main.home'))
+
 	user = User.verify_reset_token(token)
 	if user is None:
 		flash('That is an invalid or expired token', 'warning')
