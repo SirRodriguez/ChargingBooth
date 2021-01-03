@@ -169,4 +169,5 @@ def make_session():
 										port="", increment_size=setting["charge_time"], increments=1)
 		flash('Session Added Successfully! You may start charging now.')
 
-	return redirect(url_for('kiosk_mode.home_fast', image_count=img_count))
+	# return redirect(url_for('kiosk_mode.home_fast', image_count=img_count))
+	return redirect(url_for('kiosk_mode.home', image_count=img_count))
