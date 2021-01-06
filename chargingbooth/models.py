@@ -445,9 +445,9 @@ class USB_Power_Controller():
 		self.power_off()
 
 	def power_off(self):
-		if disabled == False:
+		if self.disabled == False:
 			self.device_interface.power_off_usb()
 
 	def power_on(self):
-		if disabled == False:
+		if self.disabled == False:
 			self.device_interface.power_on_usb()
