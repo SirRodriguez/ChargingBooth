@@ -131,6 +131,8 @@ class Sessions_Container:
 		self.local_sessions = dict()
 		self.index = 0
 		self.thread_pool = list()
+		# Usb controler
+		self.usb_controller = USB_Power_Controller()
 
 	def init_app(self, application):
 		self.app = application
@@ -210,6 +212,9 @@ class Sessions_Container:
 		sess.start()
 		self.thread_pool.append(sess)
 
+		# Tell the usb controller to turn on the usb
+		usb_controller.power_on()
+
 
 	# Handler for the sessions
 	def handler(self, index):
@@ -254,6 +259,9 @@ class Sessions_Container:
 
 				# delete the file
 				os.remove(file_path)
+
+				# Tell the usb controller to turn off
+				usb_controller.power_off()
 
 			# This is where the file will be written too and updated for checkpoints
 			else:
@@ -412,3 +420,34 @@ class Settings_Cache():
 
 	def get_aspect_ratio_height(self):
 		return self.aspect_ratio_height
+
+
+####
+## This is the interface for the raspberry pi 3b, used for the usb power controller class
+####
+class Raspberry_pi_3b_interface():
+	def __init__(self):
+		pass
+
+	def power_off_usb(self):
+		os.system("echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/unbind")
+
+	def power_on_usb(self):
+		os.system("echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/bind")
+
+####
+## This is the usb power cobntroller class. Used to send commands about the device usb
+####
+class USB_Power_Controller():
+	def __init__(self, disable=False):
+		self.device_interface = Raspberry_pi_3b_interface()
+		self.disabled = disable
+		self.power_off()
+
+	def power_off(self):
+		if disabled == False:
+			self.device_interface.power_off_usb()
+
+	def power_on(self):
+		if disabled == False:
+			self.device_interface.power_on_usb()
