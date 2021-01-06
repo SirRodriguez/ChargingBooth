@@ -213,7 +213,7 @@ class Sessions_Container:
 		self.thread_pool.append(sess)
 
 		# Tell the usb controller to turn on the usb
-		usb_controller.power_on()
+		self.usb_controller.power_on()
 
 
 	# Handler for the sessions
@@ -261,7 +261,7 @@ class Sessions_Container:
 				os.remove(file_path)
 
 				# Tell the usb controller to turn off
-				usb_controller.power_off()
+				self.usb_controller.power_off()
 
 			# This is where the file will be written too and updated for checkpoints
 			else:
