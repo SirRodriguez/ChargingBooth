@@ -2,6 +2,7 @@ import string
 import math
 import random
 import secrets
+import os
 from datetime import datetime
 from flask import render_template, Blueprint, redirect, url_for, flash, request
 from flask_login import current_user, logout_user
@@ -10,8 +11,61 @@ from chargingbooth.kiosk_mode.utils import (start_route, get_offset_dates_initia
 											split_seconds, is_registered)
 from chargingbooth.models import PFI, Device_ID
 import requests
+from requests.auth import HTTPBasicAuth
 
 kiosk_mode = Blueprint('kiosk_mode', __name__)
+
+## Test routes
+
+
+@kiosk_mode.route("/setup")
+def setup():
+	return render_template("paypal/setup.html")
+
+@kiosk_mode.route("/paypal_test")
+def paypal():
+	# Authenticate token
+	try:
+		# url
+		url = "https://api-m.sandbox.paypal.com/v1/oauth2/token"
+		# header
+		headers = {
+			"Accept": "application/json",
+			"Accept-Language": "en_US"
+		}
+		# Basic Auth
+		Client_ID = os.environ.get('CLIENT_ID')
+		SECRET = os.environ.get('SECRET')
+		auth = HTTPBasicAuth(Client_ID, SECRET)
+		# Data
+		data = {
+			"grant_type": "client_credentials"
+		}
+		# POST
+		payload = requests.post(url, headers=headers, auth=auth, data=data)
+		access_token = payload.json()['access_token']
+	except Exception as e:
+		print("In Exception")
+		print(e)
+
+	# generate token
+	try:
+		url = "https://api-m.sandbox.paypal.com/v1/identity/generate-token"
+		headers = {
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + access_token,
+			"Accept-Language": "en_US"
+		}
+		payload = requests.post(url, headers=headers)
+		client_token = payload.json()["client_token"]
+	except Exception as e:
+		print("In Exception")
+		print(e)
+
+
+	return render_template("paypal/Checkout.html", client_ID=os.environ.get('CLIENT_ID'), client_token=client_token)
+
+## End test routes
 
 @kiosk_mode.route("/kiosk_mode", methods=['GET', 'POST'])
 def home():
