@@ -63,7 +63,7 @@ def paypal():
 		print(e)
 
 
-	return render_template("paypal/Checkout.html", client_ID=os.environ.get('CLIENT_ID'), client_token=client_token)
+	return render_template("paypal/test.html", client_ID=os.environ.get('CLIENT_ID'), client_token=client_token)
 
 ## End test routes
 

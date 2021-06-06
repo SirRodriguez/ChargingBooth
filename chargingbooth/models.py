@@ -11,6 +11,7 @@ from os import listdir
 from os.path import isfile, join
 from PIL import Image
 import requests
+import json
 
 
 
@@ -451,3 +452,77 @@ class USB_Power_Controller():
 	def power_on(self):
 		if self.disabled == False:
 			self.device_interface.power_on_usb()
+
+
+####
+## This is the model for the websocket to run
+####
+
+class CardTerminalWebSocket():
+
+	def __init__(self):
+		self.ready = False
+		self.thread_pool = list()
+
+		websocket.enableTrace(True)
+		ws = websocket.WebSocketApp("ws://localhost:8080/middleware",
+			on_open = on_open,
+			on_message = on_message,
+			on_error = on_error,
+			on_close = on_close
+			)
+		ws.run_forever()
+
+		webSocketSession = threading.Thread(target=ws.run_forever, args=[])
+		webSocketSession.start()
+		self.thread_pool.append(webSocketSession)
+
+
+	##
+	## Web Socket methods
+	##
+	def on_message(ws, message):
+		jsonMessage = json.loads(message)
+
+		if(jsonMessage['Type'] == "RES_ON_WS_INIT_REQUIRED"):
+			payload = {
+				"type": "REQ_WS_INIT",
+				"data": {
+					"mode": "TEST",
+					"logLevel": "LEVEL_FULL"
+				}
+			}
+			ws.send(json.dumps(payload))
+
+		elif(jsonMessage['type'] == "RES_ON_WS_INIT"):
+			payload = {
+				"type": "REQ_INIT_WITH_CONFIGURATION",
+				"data": {
+					"terminalId": "4387001",
+					"processOfflineWhenCommsDown": False
+				}
+			}
+			ws.send(json.dumps(payload))
+
+		elif(jsonMessage['type'] == "RES_ON_SETTINGS_RETRIEVED")
+			payload = {
+				"type": "REQ_INIT_DEVICE",
+                    "data": {
+                        "device": "IDTECH",
+                        "inputMethod": "SWIPE_OR_INSERT_OR_TAP",
+                        "connectionType": "USB",
+                        "emvType": "STANDARD"
+                    }
+			}
+
+		elif(jsonMessage['type'] == "RES_ON_DEVICE_CONNECTED")
+			slef.ready = True
+
+	def on_error(ws, error):
+		pass
+
+	def on_close(ws):
+		pass
+
+	def on_open(ws):
+		pass
