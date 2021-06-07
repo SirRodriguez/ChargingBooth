@@ -482,7 +482,7 @@ class CardTerminalWebSocket():
 	##
 	## Web Socket methods
 	##
-	def on_message(ws, message):
+	def on_message(slef, ws, message):
 		jsonMessage = json.loads(message)
 
 		if(jsonMessage['Type'] == "RES_ON_WS_INIT_REQUIRED"):
@@ -519,11 +519,11 @@ class CardTerminalWebSocket():
 		elif(jsonMessage['type'] == "RES_ON_DEVICE_CONNECTED"):
 			slef.ready = True
 
-	def on_error(ws, error):
+	def on_error(self, ws, error):
 		pass
 
-	def on_close(ws):
+	def on_close(self, ws):
 		pass
 
-	def on_open(ws):
+	def on_open(slef, ws):
 		pass
