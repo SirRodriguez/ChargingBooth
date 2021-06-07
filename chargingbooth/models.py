@@ -504,7 +504,7 @@ class CardTerminalWebSocket():
 			}
 			ws.send(json.dumps(payload))
 
-		elif(jsonMessage['type'] == "RES_ON_SETTINGS_RETRIEVED")
+		elif(jsonMessage['type'] == "RES_ON_SETTINGS_RETRIEVED"):
 			payload = {
 				"type": "REQ_INIT_DEVICE",
                     "data": {
@@ -515,7 +515,7 @@ class CardTerminalWebSocket():
                     }
 			}
 
-		elif(jsonMessage['type'] == "RES_ON_DEVICE_CONNECTED")
+		elif(jsonMessage['type'] == "RES_ON_DEVICE_CONNECTED"):
 			slef.ready = True
 
 	def on_error(ws, error):
