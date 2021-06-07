@@ -14,10 +14,11 @@ login_manager.login_message_category = 'info'
 mail = Mail()
 service_ip = os.environ.get('SERVICE_IP')
 
-from chargingbooth.models import Sessions_Container, AdminKey, Settings_Cache
+from chargingbooth.models import Sessions_Container, AdminKey, Settings_Cache, CardTerminalWebSocket
 admin_key = AdminKey()
 current_sessions = Sessions_Container()
 settings_cache = Settings_Cache()
+cardTerminal = CardTerminalWebSocket()
 
 
 def create_app(config_class=Config):
