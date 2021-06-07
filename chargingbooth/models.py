@@ -133,7 +133,7 @@ class Sessions_Container:
 		self.index = 0
 		self.thread_pool = list()
 		# Usb controler
-		self.usb_controller = USB_Power_Controller()
+		self.usb_controller = USB_Power_Controller(disable=True)
 
 	def init_app(self, application):
 		self.app = application
