@@ -472,7 +472,6 @@ class CardTerminalWebSocket():
 			on_error = self.on_error,
 			on_close = self.on_close
 			)
-		ws.run_forever()
 
 		webSocketSession = threading.Thread(target=ws.run_forever, args=[])
 		webSocketSession.start()
