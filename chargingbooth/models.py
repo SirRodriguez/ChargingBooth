@@ -485,7 +485,7 @@ class CardTerminalWebSocket():
 	def on_message(slef, ws, message):
 		jsonMessage = json.loads(message)
 
-		if(jsonMessage['Type'] == "RES_ON_WS_INIT_REQUIRED"):
+		if(jsonMessage['type'] == "RES_ON_WS_INIT_REQUIRED"):
 			payload = {
 				"type": "REQ_WS_INIT",
 				"data": {
