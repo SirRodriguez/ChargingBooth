@@ -516,7 +516,7 @@ class CardTerminalWebSocket():
 			}
 
 		elif(jsonMessage['type'] == "RES_ON_DEVICE_CONNECTED"):
-			slef.ready = True
+			self.ready = True
 
 	def on_error(self, ws, error):
 		pass
