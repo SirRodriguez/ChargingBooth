@@ -12,6 +12,7 @@ from os.path import isfile, join
 from PIL import Image
 import requests
 import json
+import websocket
 
 
 
