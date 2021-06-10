@@ -466,14 +466,14 @@ class CardTerminalWebSocket():
 		self.thread_pool = list()
 
 		websocket.enableTrace(True)
-		ws = websocket.WebSocketApp("ws://localhost:8080/middleware",
+		self.ws = websocket.WebSocketApp("ws://localhost:8080/middleware",
 			on_open = self.on_open,
 			on_message = self.on_message,
 			on_error = self.on_error,
 			on_close = self.on_close
 			)
 
-		webSocketSession = threading.Thread(target=ws.run_forever, args=[])
+		webSocketSession = threading.Thread(target=self.ws.run_forever, args=[])
 		webSocketSession.start()
 		self.thread_pool.append(webSocketSession)
 
@@ -526,3 +526,10 @@ class CardTerminalWebSocket():
 
 	def on_open(slef, ws):
 		pass
+
+
+	##
+	## Internal methods that make the websocket run
+	##
+
+	
