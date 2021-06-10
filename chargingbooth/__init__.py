@@ -17,7 +17,6 @@ service_ip = os.environ.get('SERVICE_IP')
 from chargingbooth.models import Sessions_Container, AdminKey, CardTerminalWebSocket
 admin_key = AdminKey()
 current_sessions = Sessions_Container()
-# settings_cache = Settings_Cache()
 cardTerminal = CardTerminalWebSocket()
 
 
