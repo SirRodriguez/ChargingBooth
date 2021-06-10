@@ -537,6 +537,9 @@ class CardTerminalWebSocket():
 			time.sleep(0.5)
 
 	def startPayment(self, price_in_cents):
+		self.waitForReady()
+
+		
 		dollars = price_in_cents // 100
 		cents = price_in_cents % 100
 		strAmount = str(dollars) + '.' + str(cents)
