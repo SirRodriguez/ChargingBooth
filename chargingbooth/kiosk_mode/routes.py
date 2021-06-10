@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 from flask import render_template, Blueprint, redirect, url_for, flash, request
 from flask_login import current_user, logout_user
-from chargingbooth import db, bcrypt, current_sessions, service_ip
+from chargingbooth import db, bcrypt, current_sessions, service_ip, cardTerminal
 from chargingbooth.kiosk_mode.utils import (start_route, get_offset_dates_initiated, get_offset_dates_end,
 											split_seconds, is_registered, get_min_sec)
 from chargingbooth.models import PFI, Device_ID
@@ -143,6 +143,9 @@ def confirm_payment():
 	location = setting["location"]
 	aspect_ratio = str( int(setting["aspect_ratio_width"]) if (setting["aspect_ratio_width"]).is_integer() else setting["aspect_ratio_width"] ) \
 								+ ":" + str( int(setting["aspect_ratio_height"]) if (setting["aspect_ratio_height"]).is_integer() else setting["aspect_ratio_height"] ) 
+
+	# Start the web socket to make get a payment
+	cardTerminal.startPayment(price)
 
 	return render_template('kiosk_mode/confirm_payment.html', 
 							title='Confirm Payment', 

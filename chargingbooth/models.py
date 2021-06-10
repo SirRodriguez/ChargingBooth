@@ -532,4 +532,20 @@ class CardTerminalWebSocket():
 	## Internal methods that make the websocket run
 	##
 
-	
+	def waitForReady(self):
+		while(!self.ready):
+			time.sleep(0.5)
+
+	def startPayment(self, price_in_cents):
+		dollars = price_in_cents // 100
+		cents = price_in_cents % 100
+		strAmount = str(dollars) + '.' + str(cents)
+
+		payload = {
+			"type": "REQ_PROCESS_SALE",
+			"data": {
+                "amount": strAmount
+            }
+		}
+
+		self.ws.send(json.dumps(payload))
