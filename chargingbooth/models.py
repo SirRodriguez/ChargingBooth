@@ -481,7 +481,7 @@ class CardTerminalWebSocket():
 	##
 	## Web Socket methods
 	##
-	def on_message(slef, ws, message):
+	def on_message(self, ws, message):
 		jsonMessage = json.loads(message)
 
 		print(message)
@@ -527,7 +527,7 @@ class CardTerminalWebSocket():
 	def on_close(self, ws):
 		pass
 
-	def on_open(slef, ws):
+	def on_open(self, ws):
 		pass
 
 
