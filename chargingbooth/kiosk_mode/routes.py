@@ -132,13 +132,29 @@ def confirm_payment():
 	if not pl_json["registered"]:
 		return redirect(url_for('register.home'))
 
-	setting = pl_json["settings"]
+	toggle_pay = setting["toggle_pay"]
+	price = setting["price"]
+	minutes, seconds = get_min_sec(seconds=setting["charge_time"])
+	charge_time_min = minutes
+	charge_time_sec = seconds
+	time_zone = setting["time_offset"]
+	location = setting["location"]
+	aspect_ratio = str( int(setting["aspect_ratio_width"]) if (setting["aspect_ratio_width"]).is_integer() else setting["aspect_ratio_width"] ) \
+								+ ":" + str( int(setting["aspect_ratio_height"]) if (setting["aspect_ratio_height"]).is_integer() else setting["aspect_ratio_height"] ) 
 
 	return render_template('kiosk_mode/confirm_payment.html', 
 							title='Confirm Payment', 
 							service_ip=service_ip,
 							devi_id_number=devi_id_number,
-							setting=setting)
+							toggle_pay=toggle_pay,
+							price=price,
+							minutes=minutes,
+							seconds=seconds,
+							charge_time_min=charge_time_min,
+							charge_time_sec=charge_time_sec,
+							time_zone=time_zone,
+							location=location,
+							aspect_ratio=aspect_ratio)
 
 	# If there is already a session, Just add time to it
 	# Else, Make a new session
