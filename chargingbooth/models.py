@@ -533,7 +533,7 @@ class CardTerminalWebSocket():
 	##
 
 	def waitForReady(self):
-		while(!self.ready):
+		while(not self.ready):
 			time.sleep(0.5)
 
 	def startPayment(self, price_in_cents):
