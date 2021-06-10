@@ -24,6 +24,9 @@
 	<!-- Make a javascript call a url to check if a sale has been made -->
 
 	<script type="text/javascript">
+		var timer = setInterval(checkPaymentSuccess, 100);
+		checkPaymentSuccess();
+
 		function httpGetAsync(theUrl, callback){
 		    var xmlHttp = new XMLHttpRequest();
 		    xmlHttp.onreadystatechange = function() { 
@@ -51,8 +54,6 @@
 				checkPaymentSuccess()
 			}
 		}
-
-		checkPaymentSuccess();
 	</script>
 
 </body>
