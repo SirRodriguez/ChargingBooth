@@ -37,17 +37,6 @@ def home():
 	img_count = pl_json["image_count"]
 	setting = pl_json["settings"]
 
-	# Place Settings in the cache
-	settings_cache.set_values(
-		toggle_pay=setting["toggle_pay"],
-		price=setting["price"],
-		charge_time=setting["charge_time"],
-		time_offset=setting["time_offset"],
-		location=setting["location"],
-		aspect_ratio_width=setting["aspect_ratio_width"],
-		aspect_ratio_height=setting["aspect_ratio_height"]
-	)
-
 	sessions = current_sessions.local_sessions.values()
 
 	date_strings = get_offset_dates_initiated(sessions=sessions, time_offset=setting["time_offset"])
@@ -137,7 +126,19 @@ def confirm_payment():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('error.register'))
 
-	
+	pl_json = payload.json()
+
+	# Check if registered
+	if not pl_json["registered"]:
+		return redirect(url_for('register.home'))
+
+	setting = pl_json["settings"]
+
+	return render_template('kiosk_mode/confirm_payment.html', 
+							title='Confirm Payment', 
+							service_ip=service_ip,
+							devi_id_number=devi_id_number,
+							setting=setting)
 
 	# If there is already a session, Just add time to it
 	# Else, Make a new session
