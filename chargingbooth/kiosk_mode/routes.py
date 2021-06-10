@@ -8,7 +8,7 @@ from flask import render_template, Blueprint, redirect, url_for, flash, request
 from flask_login import current_user, logout_user
 from chargingbooth import db, bcrypt, current_sessions, service_ip
 from chargingbooth.kiosk_mode.utils import (start_route, get_offset_dates_initiated, get_offset_dates_end,
-											split_seconds, is_registered)
+											split_seconds, is_registered, get_min_sec)
 from chargingbooth.models import PFI, Device_ID
 import requests
 from requests.auth import HTTPBasicAuth
