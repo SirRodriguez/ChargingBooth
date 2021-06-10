@@ -423,6 +423,7 @@ class CardTerminalWebSocket():
 	def __init__(self):
 		self.ready = False
 		self.paymentSuccess = False
+		self.thread_pool = list()
 
 		websocket.enableTrace(True)
 		self.ws = websocket.WebSocketApp("ws://localhost:8080/middleware",
