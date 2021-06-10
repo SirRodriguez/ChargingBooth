@@ -484,6 +484,8 @@ class CardTerminalWebSocket():
 	def on_message(slef, ws, message):
 		jsonMessage = json.loads(message)
 
+		print(message)
+
 		if(jsonMessage['type'] == "RES_ON_WS_INIT_REQUIRED"):
 			payload = {
 				"type": "REQ_WS_INIT",
@@ -539,7 +541,7 @@ class CardTerminalWebSocket():
 	def startPayment(self, price_in_cents):
 		self.waitForReady()
 
-		
+
 		dollars = price_in_cents // 100
 		cents = price_in_cents % 100
 		strAmount = str(dollars) + '.' + str(cents)
