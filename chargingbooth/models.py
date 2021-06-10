@@ -516,6 +516,7 @@ class CardTerminalWebSocket():
                         "emvType": "STANDARD"
                     }
 			}
+			ws.send(json.dumps(payload))
 
 		elif(jsonMessage['type'] == "RES_ON_DEVICE_CONNECTED"):
 			self.ready = True
