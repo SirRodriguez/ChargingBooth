@@ -132,6 +132,8 @@ def confirm_payment():
 	if not pl_json["registered"]:
 		return redirect(url_for('register.home'))
 
+	setting = payload.json()
+
 	toggle_pay = setting["toggle_pay"]
 	price = setting["price"]
 	minutes, seconds = get_min_sec(seconds=setting["charge_time"])
