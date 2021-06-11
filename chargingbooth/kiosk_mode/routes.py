@@ -157,7 +157,7 @@ def make_session():
 def transaction_timeout():
 	start_route()
 
-	cardTerminal.confirmPaymentTimedOut()
+	cardTerminal.confirmTransactionTimedOut()
 
 	return redirect(url_for('kiosk_mode.home'))
 
