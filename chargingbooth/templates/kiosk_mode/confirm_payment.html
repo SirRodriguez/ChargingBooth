@@ -4,8 +4,6 @@
 	<meta charset="utf-8">
 	<title>Confirm Payment</title>
 
-	<!-- Reroutes the page back to home after 40 seconds -->
-	<meta http-equiv="refresh" content="40; url = {{ url_for('kiosk_mode.home') }}">
 </head>
 <body style="background-color: dodgerblue">
 
@@ -24,7 +22,7 @@
 	<!-- Make a javascript call a url to check if a sale has been made -->
 
 	<script type="text/javascript">
-		var url = "http://localhost:5000/kiosk_mode/checkPaymentSuccess";
+		var url = "http://localhost:5000/kiosk_mode/checkPaymentStatus";
 
 		httpGetAsync(url, checkResponse);
 
@@ -50,6 +48,8 @@
 			document.getElementById("test").innerHTML = payload.paymentSuccess;
 			if(payload.paymentSuccess){
 				window.location.replace("/kiosk_mode/make_session");
+			}else if(payload.paymentTimedOut){
+				window.location.replace("/kiosk_mode/transaction_timeout")
 			}else{
 				httpGetAsync(url, checkResponse);
 			}

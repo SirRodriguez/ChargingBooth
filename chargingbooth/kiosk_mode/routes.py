@@ -124,10 +124,6 @@ def confirm_payment():
 def make_session():
 	start_route()
 
-	paymentSuccessful = cardTerminal.checkPaymentSuccess()
-
-	print("Payment success: ", paymentSuccessful)
-
 	# Only make a session if there is no session currently available
 	if not current_sessions.has_sessions() and paymentSuccessful:
 		cardTerminal.confirmPaymentSuccess()
@@ -157,15 +153,33 @@ def make_session():
 
 	return redirect(url_for('kiosk_mode.home'))
 
+@kiosk_mode.route("/kiosk_mode/transaction_timeout")
+def transaction_timeout():
+	start_route()
 
+	cardTerminal.confirmPaymentTimedOut()
 
-@kiosk_mode.route("/kiosk_mode/checkPaymentSuccess")
-def checkPaymentSuccess():
+	return redirect(url_for('kiosk_mode.home'))
+
+@kiosk_mode.route("/kiosk_mode/cancel_transaction")
+def cancleTransaction():
+	start_route()
+
+	cardTerminal.cancelTransaction()
+
+	return redirect(url_for('kiosk_mode.home'))
+
+@kiosk_mode.route("/kiosk_mode/checkPaymentStatus")
+def checkPaymentStatus():
 	payload = {}
 
 	payload['paymentSuccess'] = cardTerminal.checkPaymentSuccess()
-	payload['paymentCanceled'] = cardTerminal.checkPaymentCanceled()
+	# payload['paymentCanceled'] = cardTerminal.checkPaymentCanceled()
+	payload['paymentTimedOut'] = cardTerminal.checkPaymentTimedOut()
 
 	resp = jsonify(payload)
 	resp.status_code = 200
 	return resp
+
+
+# <meta http-equiv="refresh" content="40; url = {{ url_for('kiosk_mode.home') }}">

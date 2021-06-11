@@ -421,11 +421,17 @@ class USB_Power_Controller():
 class CardTerminalWebSocket():
 
 	def __init__(self):
+		# Flags
 		self.ready = False
 		self.paymentSuccess = False
-		self.paymentCanceled = False
+		# self.paymentCanceled = False
+		self.transactionTimedOut = False
+		self.transactionActive = False
+
+		# Thread holder
 		self.thread_pool = list()
 
+		# Web Socket for card terminal
 		websocket.enableTrace(True)
 		self.ws = websocket.WebSocketApp("ws://localhost:8080/middleware",
 			on_open = self.on_open,
@@ -434,6 +440,7 @@ class CardTerminalWebSocket():
 			on_close = self.on_close
 			)
 
+		# Start the thread
 		webSocketSession = threading.Thread(target=self.ws.run_forever, args=[])
 		webSocketSession.start()
 		self.thread_pool.append(webSocketSession)
@@ -447,6 +454,9 @@ class CardTerminalWebSocket():
 
 		print(message)
 
+		##
+		# Set up messages
+		##
 		if(jsonMessage['type'] == "RES_ON_WS_INIT_REQUIRED"):
 			payload = {
 				"type": "REQ_WS_INIT",
@@ -479,13 +489,22 @@ class CardTerminalWebSocket():
 			}
 			ws.send(json.dumps(payload))
 
+		# Ready message
 		elif(jsonMessage['type'] == "RES_ON_DEVICE_CONNECTED"):
+			# Means web socket is ready
 			self.ready = True
 
 		elif(jsonMessage['type'] == "RES_ON_SALE_RESPONSE"):
+			# Sale happened
+			self.transactionActive = False
 			self.paymentSuccess = True
 
-		# elif(jsonMessage['type'] == "")
+		# Message for timed out transaction
+		elif(jsonMessage['type'] == "RES_ON_DEVICE_ERROR"):
+			if(jsonMessage['responseType'] == "RESPONSE_ERROR_GENERAL"):
+				if(jsonMessage['data']['deviceError'] == "TIMEOUT"):
+					self.transactionActive = False
+					self.transactionTimedOut = True
 
 	def on_error(self, ws, error):
 		pass
@@ -506,13 +525,15 @@ class CardTerminalWebSocket():
 			time.sleep(0.5)
 
 	def startPayment(self, price_in_cents):
+		# check if it is ready
 		self.waitForReady()
 
-
+		# Get the dollar and cents amount
 		dollars = price_in_cents // 100
 		cents = price_in_cents % 100
 		strAmount = str(dollars) + '.' + str(cents)
 
+		# Get the payload ready
 		payload = {
 			"type": "REQ_PROCESS_SALE",
 			"data": {
@@ -520,16 +541,42 @@ class CardTerminalWebSocket():
             }
 		}
 
+		# Send the payload to the web socket
 		self.ws.send(json.dumps(payload))
 
+		# Set the transaction active to true
+		self.transactionActive = True
+
+
+	##
+	# Payment Successes functions
+	##
 	def checkPaymentSuccess(self):
 		return self.paymentSuccess
 
 	def confirmPaymentSuccess(self):
 		self.paymentSuccess = False
 
-	def checkPaymentCanceled(self):
-		return self.paymentCanceled
+	##
+	# Time outs functions
+	##
+	def checkTransactionTimedOut(self):
+		return self.transactionTimedOut
 
-	def confirmPaymentCanceled(self):
-		self.paymentCanceled = False
+	def confirmTransactionTimedOut(self):
+		self.transactionTimedOut = False
+
+	##
+	# Cancel functions
+	##
+	def cancelTransaction(self):
+		if(self.transactionActive):
+			payload = {
+				"type": "REQ_CANCEL_TRANSACTION"
+			}
+
+			self.ws.send(json.dumps(payload))
+
+			# Just make sure the values are false
+			self.confirmPaymentSuccess()
+			self.confirmTransactionTimedOut()
