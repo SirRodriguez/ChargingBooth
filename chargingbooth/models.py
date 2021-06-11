@@ -423,6 +423,7 @@ class CardTerminalWebSocket():
 	def __init__(self):
 		self.ready = False
 		self.paymentSuccess = False
+		self.paymentCanceled = False
 		self.thread_pool = list()
 
 		websocket.enableTrace(True)
@@ -444,7 +445,7 @@ class CardTerminalWebSocket():
 	def on_message(self, ws, message):
 		jsonMessage = json.loads(message)
 
-		# print(message)
+		print(message)
 
 		if(jsonMessage['type'] == "RES_ON_WS_INIT_REQUIRED"):
 			payload = {
@@ -483,6 +484,8 @@ class CardTerminalWebSocket():
 
 		elif(jsonMessage['type'] == "RES_ON_SALE_RESPONSE"):
 			self.paymentSuccess = True
+
+		# elif(jsonMessage['type'] == "")
 
 	def on_error(self, ws, error):
 		pass
@@ -524,3 +527,9 @@ class CardTerminalWebSocket():
 
 	def confirmPaymentSuccess(self):
 		self.paymentSuccess = False
+
+	def checkPaymentCanceled(self):
+		return self.paymentCanceled
+
+	def confirmPaymentCanceled(self):
+		self.paymentCanceled = False

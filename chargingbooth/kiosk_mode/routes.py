@@ -164,6 +164,7 @@ def checkPaymentSuccess():
 	payload = {}
 
 	payload['paymentSuccess'] = cardTerminal.checkPaymentSuccess()
+	payload['paymentCanceled'] = cardTerminal.checkPaymentCanceled()
 
 	resp = jsonify(payload)
 	resp.status_code = 200
