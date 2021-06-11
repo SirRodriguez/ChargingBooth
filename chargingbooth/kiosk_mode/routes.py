@@ -124,8 +124,14 @@ def confirm_payment():
 def make_session():
 	start_route()
 
+	paymentSuccessful = cardTerminal.checkPaymentSuccess()
+
+	print("Payment success: ", paymentSuccessful)
+
 	# Only make a session if there is no session currently available
-	if not current_sessions.has_sessions() and cardTerminal.checkPaymentSuccess():
+	if not current_sessions.has_sessions() and paymentSuccessful:
+		cardTerminal.confirmPaymentSuccess()
+
 		devi_id_number = Device_ID.query.first().id_number
 
 		# Grab the number of images the service has, also settings
@@ -142,15 +148,14 @@ def make_session():
 		if not pl_json["registered"]:
 			return redirect(url_for('register.home'))
 
-		img_count = pl_json["image_count"]
+		# img_count = pl_json["image_count"]
 		setting = pl_json["settings"]
 		
 		current_sessions.add_session(amount_paid=setting["price"], location=setting["location"],
 										port="", increment_size=setting["charge_time"], increments=1)
 		flash('Session Added Successfully! You may start charging now.')
 
-	# return redirect(url_for('kiosk_mode.home_fast', image_count=img_count))
-	return redirect(url_for('kiosk_mode.home', image_count=img_count))
+	return redirect(url_for('kiosk_mode.home'))
 
 
 
