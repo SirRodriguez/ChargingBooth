@@ -24,6 +24,10 @@
 	<!-- Make a javascript call a url to check if a sale has been made -->
 
 	<script type="text/javascript">
+		var timer = setInterval(checkPaymentSuccess, 1000);
+
+		checkPaymentSuccess();
+
 		function httpGetAsync(theUrl, callback){
 		    var xmlHttp = new XMLHttpRequest();
 		    xmlHttp.onreadystatechange = function() { 
@@ -41,35 +45,35 @@
 		    return xmlHttp.responseText;
 		}
 
-		// function checkPaymentSuccess(){
-		// 	var response = httpGet("localhost:5000");
-		// 	var payload = JSON.parse(response);
-		// 	document.getElementById("test").innerHTML = payload.paymentSuccess;
-		// 	if(payload.paymentSuccess){
-		// 		window.location.replace("/kiosk_mode/make_session");
-		// 	}else{
-		// 		checkPaymentSuccess()
-		// 	}
+		function checkPaymentSuccess(){
+			var response = httpGet("http://localhost:5000/kiosk_mode/checkPaymentSuccess");
+			var payload = JSON.parse(response);
+			document.getElementById("test").innerHTML = payload.paymentSuccess;
+			if(payload.paymentSuccess){
+				window.location.replace("/kiosk_mode/make_session");
+			}else{
+				checkPaymentSuccess()
+			}
 
-		// }
-
-
-		const checkPaymentSuccess = async () => {
-		    const url = 'http://localhost:5000/kiosk_mode/checkPaymentSuccess'; // the URL to send the HTTP request to
-		    // const body = ''; // whatever you want to send in the body of the HTTP request
-		    // const headers = {'Content-Type': 'application/json'}; // if you're sending JSON to the server
-		    const method = 'GET';
-		    const response = await fetch(url, { method });
-		    const data = await response.text(); // or response.json() if your server returns JSON
-
-		    var payload = JSON.parse(response);
-
-		    document.getElementById("test").innerHTML = payload.paymentSuccess;
 		}
 
-		var timer = setInterval(checkPaymentSuccess, 1000);
 
-		checkPaymentSuccess();
+		// const checkPaymentSuccess = async () => {
+		//     const url = 'http://localhost:5000/kiosk_mode/checkPaymentSuccess'; // the URL to send the HTTP request to
+		//     // const body = ''; // whatever you want to send in the body of the HTTP request
+		//     // const headers = {'Content-Type': 'application/json'}; // if you're sending JSON to the server
+		//     const method = 'GET';
+		//     const response = await fetch(url, { method });
+		//     const data = await response.text(); // or response.json() if your server returns JSON
+
+		//     var payload = JSON.parse(response);
+
+		//     document.getElementById("test").innerHTML = payload.paymentSuccess;
+		// }
+
+		// var timer = setInterval(checkPaymentSuccess, 1000);
+
+		// checkPaymentSuccess();
 	</script>
 
 </body>
