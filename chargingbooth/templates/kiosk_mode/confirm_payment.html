@@ -25,8 +25,9 @@
 
 	<script type="text/javascript">
 		// var timer = setInterval(checkPaymentSuccess, 1000);
+		var url = "http://localhost:5000/kiosk_mode/checkPaymentSuccess";
 
-		checkPaymentSuccess();
+		httpGetAsync(url, checkResponse);
 
 		function httpGetAsync(theUrl, callback){
 		    var xmlHttp = new XMLHttpRequest();
@@ -45,17 +46,27 @@
 		    return xmlHttp.responseText;
 		}
 
-		function checkPaymentSuccess(){
-			var response = httpGet("http://localhost:5000/kiosk_mode/checkPaymentSuccess");
+		function checkResponse(response){
 			var payload = JSON.parse(response);
 			document.getElementById("test").innerHTML = payload.paymentSuccess;
 			if(payload.paymentSuccess){
 				window.location.replace("/kiosk_mode/make_session");
 			}else{
-				checkPaymentSuccess()
+				httpGetAsync(url, checkResponse);
 			}
-
 		}
+
+		// function checkPaymentSuccess(){
+		// 	var response = httpGet("http://localhost:5000/kiosk_mode/checkPaymentSuccess");
+		// 	var payload = JSON.parse(response);
+		// 	document.getElementById("test").innerHTML = payload.paymentSuccess;
+		// 	if(payload.paymentSuccess){
+		// 		window.location.replace("/kiosk_mode/make_session");
+		// 	}else{
+		// 		checkPaymentSuccess()
+		// 	}
+
+		// }
 
 
 		// const checkPaymentSuccess = async () => {
