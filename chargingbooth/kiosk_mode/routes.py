@@ -171,11 +171,10 @@ def cancleTransaction():
 
 @kiosk_mode.route("/kiosk_mode/checkPaymentStatus")
 def checkPaymentStatus():
-	payload = {}
-
-	payload['paymentSuccess'] = cardTerminal.checkPaymentSuccess()
-	# payload['paymentCanceled'] = cardTerminal.checkPaymentCanceled()
-	payload['paymentTimedOut'] = cardTerminal.checkPaymentTimedOut()
+	payload = {
+		'paymentSuccess': cardTerminal.checkPaymentSuccess(),
+		'paymentTimedOut': cardTerminal.checkTransactionTimedOut()
+	}
 
 	resp = jsonify(payload)
 	resp.status_code = 200
