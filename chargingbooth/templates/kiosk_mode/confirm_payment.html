@@ -56,10 +56,10 @@
 
 		const checkPaymentSuccess = async () => {
 		    const url = 'localhost:5000'; // the URL to send the HTTP request to
-		    const body = ''; // whatever you want to send in the body of the HTTP request
+		    // const body = ''; // whatever you want to send in the body of the HTTP request
 		    // const headers = {'Content-Type': 'application/json'}; // if you're sending JSON to the server
 		    const method = 'GET';
-		    const response = await fetch(url, { method, body });
+		    const response = await fetch(url, { method });
 		    const data = await response.text(); // or response.json() if your server returns JSON
 
 		    var payload = JSON.parse(response);
