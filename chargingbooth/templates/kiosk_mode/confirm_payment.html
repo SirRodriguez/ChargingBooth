@@ -25,7 +25,6 @@
 
 	<script type="text/javascript">
 		var timer = setInterval(checkPaymentSuccess, 100);
-		checkPaymentSuccess();
 
 		function httpGetAsync(theUrl, callback){
 		    var xmlHttp = new XMLHttpRequest();
@@ -44,16 +43,33 @@
 		    return xmlHttp.responseText;
 		}
 
-		function checkPaymentSuccess(){
-			var response = httpGet("localhost:5000");
-			var payload = JSON.parse(response);
-			document.getElementById("test").innerHTML = payload.paymentSuccess;
-			if(payload.paymentSuccess){
-				window.location.replace("/kiosk_mode/make_session");
-			}else{
-				checkPaymentSuccess()
-			}
+		// function checkPaymentSuccess(){
+		// 	var response = httpGet("localhost:5000");
+		// 	var payload = JSON.parse(response);
+		// 	document.getElementById("test").innerHTML = payload.paymentSuccess;
+		// 	if(payload.paymentSuccess){
+		// 		window.location.replace("/kiosk_mode/make_session");
+		// 	}else{
+		// 		checkPaymentSuccess()
+		// 	}
+
+		// }
+
+
+		const checkPaymentSuccess = async () => {
+		    const url = 'localhost:5000'; // the URL to send the HTTP request to
+		    const body = ''; // whatever you want to send in the body of the HTTP request
+		    // const headers = {'Content-Type': 'application/json'}; // if you're sending JSON to the server
+		    const method = 'GET';
+		    const response = await fetch(url, { method, body });
+		    const data = await response.text(); // or response.json() if your server returns JSON
+
+		    var payload = JSON.parse(response);
+
+		    document.getElementById("test").innerHTML = payload.paymentSuccess;
 		}
+
+		checkPaymentSuccess();
 	</script>
 
 </body>
