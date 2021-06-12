@@ -10,12 +10,16 @@
 	<!-- Window of Confirm Payment -->
 	<div class="row" style="margin: 10px">
 		<div class="col-sm-12">
-			<h1>
-				Swipe, insert, or tap the card on the card terminal
-			</h1>
-			<p id="test">
-				
-			</p>
+			<h1><center>Swipe,</center></h1>
+			<img src="{{ url_for('static', filename='kiosk_mode/icons/swipe-card-icon.png') }}">
+
+			<h1><center>Insert,</center></h1>
+			<img src="{{ url_for('static', filename='kiosk_mode/icons/insert-card-icon.png') }}">
+
+			<h1><center>or Tap</center></h1>
+			<img src="{{ url_for('static', filename='kiosk_mode/icons/tap-card-icon.png') }}">
+
+			<div>Icons made by Freepik from www.flaticon.com</div>
 		</div>
 	</div>
 
@@ -36,16 +40,8 @@
 		    xmlHttp.send(null);
 		}
 
-		function httpGet(theUrl){
-		    var xmlHttp = new XMLHttpRequest();
-		    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-		    xmlHttp.send( null );
-		    return xmlHttp.responseText;
-		}
-
 		function checkResponse(response){
 			var payload = JSON.parse(response);
-			document.getElementById("test").innerHTML = payload.paymentSuccess;
 			if(payload.paymentSuccess){
 				window.location.replace("/kiosk_mode/make_session");
 			}else if(payload.paymentTimedOut){

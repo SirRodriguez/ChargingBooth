@@ -179,6 +179,3 @@ def checkPaymentStatus():
 	resp = jsonify(payload)
 	resp.status_code = 200
 	return resp
-
-
-# <meta http-equiv="refresh" content="40; url = {{ url_for('kiosk_mode.home') }}">
