@@ -75,7 +75,7 @@ class Local_Session:
 
 	# Will be changed later to check the amount of power used
 	def power_used(self):
-		power_constant = 1
+		power_constant = 0
 		return self.total_seconds() * power_constant
 
 	def zero_time(self):
@@ -424,7 +424,6 @@ class CardTerminalWebSocket():
 		# Flags
 		self.ready = False
 		self.paymentSuccess = False
-		# self.paymentCanceled = False
 		self.transactionTimedOut = False
 		self.transactionActive = False
 
@@ -441,7 +440,7 @@ class CardTerminalWebSocket():
 			)
 
 		# Start the thread
-		webSocketSession = threading.Thread(target=self.ws.run_forever, args=[])
+		webSocketSession = threading.Thread(target=self.webSocketStartUp, args=[])
 		webSocketSession.start()
 		self.thread_pool.append(webSocketSession)
 
@@ -519,6 +518,20 @@ class CardTerminalWebSocket():
 	##
 	## Internal methods that make the websocket run
 	##
+
+	def webSocketStartUp(self):
+		while(True):
+			# Reset the Flags
+			self.ready = False
+			self.paymentSuccess = False
+			self.transactionTimedOut = False
+			self.transactionActive = False
+
+			# Start the websocket
+			self.ws.run_forever()
+
+			# Try again every second to see if the websocket is up
+			time.sleep(1)
 
 	def waitForReady(self):
 		while(not self.ready):

@@ -1,3 +1,6 @@
+<!-- TODO  try to have the web sockect object keep recconnecting to the websocket-->
+<!-- TODO  Make the payment screen look better -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,9 +16,6 @@
 			<h1>
 				Swipe, insert, or tap the card on the card terminal
 			</h1>
-			<p id="test">
-				
-			</p>
 		</div>
 	</div>
 
@@ -34,13 +34,6 @@
 		    }
 		    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
 		    xmlHttp.send(null);
-		}
-
-		function httpGet(theUrl){
-		    var xmlHttp = new XMLHttpRequest();
-		    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-		    xmlHttp.send( null );
-		    return xmlHttp.responseText;
 		}
 
 		function checkResponse(response){
