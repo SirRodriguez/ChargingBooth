@@ -426,6 +426,7 @@ class CardTerminalWebSocket():
 		self.paymentSuccess = False
 		self.transactionTimedOut = False
 		self.transactionActive = False
+		self.paymentDeclined = False
 
 		# Thread holder
 		self.thread_pool = list()
@@ -495,8 +496,17 @@ class CardTerminalWebSocket():
 
 		elif(jsonMessage['type'] == "RES_ON_SALE_RESPONSE"):
 			# Sale happened
+			# if(jsonMessage['data']['saleResponse']['description'] == 'APPROVAL'):
+			# 	self.paymentSuccess = True
+			# elif(jsonMessage['data']['saleResponse']['description'] == 'Decline'):
+			# 	self.paymentDeclined = True
+			if(jsonMessage['data']['saleResponse']['description'] == 'Decline'):
+				self.paymentDeclined = True
+			else:
+				self.paymentSuccess = True
+
+			# Transaction inactive
 			self.transactionActive = False
-			self.paymentSuccess = True
 
 		# Message for timed out transaction
 		elif(jsonMessage['type'] == "RES_ON_DEVICE_ERROR"):
@@ -526,6 +536,7 @@ class CardTerminalWebSocket():
 			self.paymentSuccess = False
 			self.transactionTimedOut = False
 			self.transactionActive = False
+			self.paymentDeclined = False
 
 			# Start the websocket
 			self.ws.run_forever()
@@ -571,6 +582,15 @@ class CardTerminalWebSocket():
 		self.paymentSuccess = False
 
 	##
+	# Payment Declined functions
+	##
+	def checkPaymentDeclined(self):
+		return self.paymentDeclined
+
+	def confirmPaymentDeclined(self):
+		self.paymentDeclined = False
+
+	##
 	# Time outs functions
 	##
 	def checkTransactionTimedOut(self):
@@ -593,3 +613,4 @@ class CardTerminalWebSocket():
 			# Just make sure the values are false
 			self.confirmPaymentSuccess()
 			self.confirmTransactionTimedOut()
+			self.confirmPaymentDeclined()

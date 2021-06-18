@@ -13,22 +13,16 @@
 	<!-- Window of Confirm Payment -->
 	<div class="row" style="margin: 10px">
 		<div class="col-sm-12">
-<<<<<<< HEAD
 			<h1><center>Swipe,</center></h1>
-			<img src="{{ url_for('static', filename='kiosk_mode/icons/swipe-card-icon.png') }}">
+			<center><img src="{{ url_for('static', filename='kiosk_mode/icons/swipe-card-icon.png') }}" style="width: 48px;height:48px;"></center>
 
 			<h1><center>Insert,</center></h1>
-			<img src="{{ url_for('static', filename='kiosk_mode/icons/insert-card-icon.png') }}">
+			<center><img src="{{ url_for('static', filename='kiosk_mode/icons/insert-card-icon.png') }}" style="width: 48px;height:48px;"></center>
 
 			<h1><center>or Tap</center></h1>
-			<img src="{{ url_for('static', filename='kiosk_mode/icons/tap-card-icon.png') }}">
+			<center><img src="{{ url_for('static', filename='kiosk_mode/icons/tap-card-icon.png') }}" style="width: 48px;height:48px;"></center>
 
 			<div>Icons made by Freepik from www.flaticon.com</div>
-=======
-			<h1>
-				Swipe, insert, or tap the card on the card terminal
-			</h1>
->>>>>>> 89b86ddce09bd46ee6490257b94f527708f2c764
 		</div>
 	</div>
 
@@ -55,6 +49,8 @@
 				window.location.replace("/kiosk_mode/make_session");
 			}else if(payload.paymentTimedOut){
 				window.location.replace("/kiosk_mode/transaction_timeout")
+			}else if(payload.paymentDeclined){
+				window.location.replace("/kiosk_mode/payment_declined")
 			}else{
 				httpGetAsync(url, checkResponse);
 			}

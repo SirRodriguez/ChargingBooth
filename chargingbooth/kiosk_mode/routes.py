@@ -125,7 +125,7 @@ def make_session():
 	start_route()
 
 	# Only make a session if there is no session currently available
-	if not current_sessions.has_sessions() and paymentSuccessful:
+	if not current_sessions.has_sessions() and cardTerminal.checkPaymentSuccess():
 		cardTerminal.confirmPaymentSuccess()
 
 		devi_id_number = Device_ID.query.first().id_number
@@ -169,11 +169,21 @@ def cancleTransaction():
 
 	return redirect(url_for('kiosk_mode.home'))
 
+@kiosk_mode.route("/kiosk_mode/payment_declined")
+def payment_declined():
+	start_route()
+
+	cardTerminal.confirmPaymentDeclined()
+
+	flash('Sorry your card was declined')
+	return redirect(url_for('kiosk_mode.home'))
+
 @kiosk_mode.route("/kiosk_mode/checkPaymentStatus")
 def checkPaymentStatus():
 	payload = {
 		'paymentSuccess': cardTerminal.checkPaymentSuccess(),
-		'paymentTimedOut': cardTerminal.checkTransactionTimedOut()
+		'paymentTimedOut': cardTerminal.checkTransactionTimedOut(),
+		'paymentDeclined': cardTerminal.checkPaymentDeclined()
 	}
 
 	resp = jsonify(payload)
