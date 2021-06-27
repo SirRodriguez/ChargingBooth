@@ -13,6 +13,7 @@ from PIL import Image
 import requests
 import json
 import websocket
+from gpiozero import LED
 
 
 
@@ -134,7 +135,7 @@ class Sessions_Container:
 		self.index = 0
 		self.thread_pool = list()
 		# Usb controler
-		self.usb_controller = USB_Power_Controller(disable=True)
+		self.usb_controller = Power_Controller()
 
 	def init_app(self, application):
 		self.app = application
@@ -386,7 +387,7 @@ class PFI:
 ####
 ## This is the interface for the raspberry pi 3b, used for the usb power controller class
 ####
-class Raspberry_pi_3b_interface():
+class Raspberry_pi_3b_USB_interface():
 	def __init__(self):
 		pass
 
@@ -396,12 +397,28 @@ class Raspberry_pi_3b_interface():
 	def power_on_usb(self):
 		os.system("echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/bind")
 
+
+####
+## This is the interface for the raspberry pi 3b, used for gpio pins to control a relay for power
+####
+class Raspberry_pi_3b_GPIO_interface():
+	def __init__(self):
+		self.pin = LED(17)
+
+	def power_off_usb(self):
+		print("################# usb off #########################")
+		self.pin.off()
+
+	def power_on_usb(self):
+		print("################# usb on #########################")
+		self.pin.on()
+
 ####
 ## This is the usb power cobntroller class. Used to send commands about the device usb
 ####
-class USB_Power_Controller():
+class Power_Controller():
 	def __init__(self, disable=False):
-		self.device_interface = Raspberry_pi_3b_interface()
+		self.device_interface = Raspberry_pi_3b_GPIO_interface()
 		self.disabled = disable
 		self.power_off()
 
