@@ -406,11 +406,9 @@ class Raspberry_pi_3b_GPIO_interface():
 		self.pin = LED(17)
 
 	def power_off_usb(self):
-		print("################# usb off #########################")
 		self.pin.off()
 
 	def power_on_usb(self):
-		print("################# usb on #########################")
 		self.pin.on()
 
 ####
