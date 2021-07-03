@@ -153,35 +153,47 @@ class Sessions_Container:
 					with open(file_path, 'r') as file:
 						session_info = file.readlines()
 
+					# Check to see if the files has at least 2 lines
+					if len(session_info) >= 2:
+						line1 = session_info[0].split(", ")
+						line2 = session_info[1].split(", ")
 
-					# Incomplete session info
-					# File line comes in as (all one line):
-					# Start:<datetime>, Duration:60, End:<date time>, Amount Paid:<number>, 
-					# Location:<location name>, Port:<port name>, Increment Size:<number>, 
-					# Increments:<number>
+						# Check if the lines are complete
+						if len(line1) >= 8 and len(line2) >= 1:
+							# Incomplete session info
+							# File line comes in as (all one line):
+							# Start:<datetime>, Duration:60, End:<date time>, Amount Paid:<number>, 
+							# Location:<location name>, Port:<port name>, Increment Size:<number>, 
+							# Increments:<number>
 
-					duration = int(session_info[0].split(", ")[1].split(":")[1])
+							duration = int(session_info[0].split(", ")[1].split(":")[1])
 
-					# File line comes in as:
-					# Seconds elapsed: <number>
-					# Where number is a float and is converted to an int by rounding down
-					time_elapsed = int(float(session_info[1].split(": ")[1]))
+							# File line comes in as:
+							# Seconds elapsed: <number>
+							# Where number is a float and is converted to an int by rounding down
+							time_elapsed = int(float(session_info[1].split(": ")[1]))
 
-					time_remaining = duration - time_elapsed
+							time_remaining = duration - time_elapsed
 
-					amount_paid 	= int(session_info[0].split(", ")[3].split(":")[1])
-					location 		= session_info[0].split(",")[4].split(":")[1]
-					port 			= session_info[0].split(",")[5].split(":")[1]
-					# increment_size 	= int(session_info[0].split(",")[6].split(":")[1])
-					# increments 		= int(session_info[0].split(",")[7].split(":")[1])
+							amount_paid 	= int(session_info[0].split(", ")[3].split(":")[1])
+							location 		= session_info[0].split(",")[4].split(":")[1]
+							port 			= session_info[0].split(",")[5].split(":")[1]
+							# increment_size 	= int(session_info[0].split(",")[6].split(":")[1])
+							# increments 		= int(session_info[0].split(",")[7].split(":")[1])
 
-					# Remove the old file so add_session creates a new one
-					os.remove(file_path)
+							# Remove the old file so add_session creates a new one
+							os.remove(file_path)
 
-					# Add the session back in the container but this time the increment size will 
-					# be the remaining duration and the increments will defualt to 1
-					self.add_session(amount_paid=amount_paid, location=location, port=port,
-										increment_size=time_remaining, increments=1)
+							# Add the session back in the container but this time the increment size will 
+							# be the remaining duration and the increments will defualt to 1
+							self.add_session(amount_paid=amount_paid, location=location, port=port,
+												increment_size=time_remaining, increments=1)
+
+						else:
+							os.remove(file_path)
+
+					else:
+						os.remove(file_path)
 
 
 	def add_session(self, amount_paid, location, port, increment_size, increments):
