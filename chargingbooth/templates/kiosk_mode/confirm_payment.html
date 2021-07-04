@@ -26,6 +26,9 @@
 	<!-- Make a javascript call a url to check if a sale has been made -->
 
 	<script type="text/javascript">
+		// Return to home screen after one minute
+		var failSafe = setTimeout(returnToHome, 60000);
+
 		var url = "http://localhost:5000/kiosk_mode/checkPaymentStatus";
 
 		httpGetAsync(url, checkResponse);
@@ -45,12 +48,18 @@
 			if(payload.paymentSuccess){
 				window.location.replace("/kiosk_mode/make_session");
 			}else if(payload.paymentTimedOut){
-				window.location.replace("/kiosk_mode/transaction_timeout")
+				window.location.replace("/kiosk_mode/transaction_timeout");
 			}else if(payload.paymentDeclined){
-				window.location.replace("/kiosk_mode/payment_declined")
+				window.location.replace("/kiosk_mode/payment_declined");
+			}else if(payload.paymentError){
+				window.location.replace("/kiosk_mode/payment_error");
 			}else{
 				httpGetAsync(url, checkResponse);
 			}
+		}
+
+		function returnToHome(){
+			window.location.replace("/kiosk_mode/cancel_transaction");
 		}
 	</script>
 

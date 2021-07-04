@@ -178,12 +178,22 @@ def payment_declined():
 	flash('Sorry your card was declined')
 	return redirect(url_for('kiosk_mode.home'))
 
+@kiosk_mode.route("/kiosk_mode/payment_error")
+def payment_error():
+	start_route()
+
+	cardTerminal.confirmPaymentError()
+
+	flash('Sorry there was an error with the payment')
+	return redirect(url_for('kiosk_mode.home'))
+
 @kiosk_mode.route("/kiosk_mode/checkPaymentStatus")
 def checkPaymentStatus():
 	payload = {
 		'paymentSuccess': cardTerminal.checkPaymentSuccess(),
 		'paymentTimedOut': cardTerminal.checkTransactionTimedOut(),
-		'paymentDeclined': cardTerminal.checkPaymentDeclined()
+		'paymentDeclined': cardTerminal.checkPaymentDeclined(),
+		'paymentError': cardTerminal.checkPaymentError()
 	}
 
 	resp = jsonify(payload)

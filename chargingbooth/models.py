@@ -459,6 +459,7 @@ class CardTerminalWebSocket():
 		self.transactionTimedOut = False
 		self.transactionActive = False
 		self.paymentDeclined = False
+		self.paymentError = False
 
 		# Thread holder
 		self.thread_pool = list()
@@ -544,8 +545,12 @@ class CardTerminalWebSocket():
 		elif(jsonMessage['type'] == "RES_ON_DEVICE_ERROR"):
 			if(jsonMessage['responseType'] == "RESPONSE_ERROR_GENERAL"):
 				if(jsonMessage['data']['deviceError'] == "TIMEOUT"):
-					self.transactionActive = False
 					self.transactionTimedOut = True
+				else:
+					self.paymentError = True
+
+				self.transactionActive = False
+
 
 	def on_error(self, ws, error):
 		pass
@@ -561,14 +566,17 @@ class CardTerminalWebSocket():
 	## Internal methods that make the websocket run
 	##
 
+	def resetFlags(self):
+		self.ready = False
+		self.paymentSuccess = False
+		self.transactionTimedOut = False
+		self.transactionActive = False
+		self.paymentDeclined = False
+		self.paymentError = False
+
 	def webSocketStartUp(self):
 		while(True):
-			# Reset the Flags
-			self.ready = False
-			self.paymentSuccess = False
-			self.transactionTimedOut = False
-			self.transactionActive = False
-			self.paymentDeclined = False
+			self.resetFlags()
 
 			# Start the websocket
 			self.ws.run_forever()
@@ -583,6 +591,9 @@ class CardTerminalWebSocket():
 	def startPayment(self, price_in_cents):
 		# check if it is ready
 		self.waitForReady()
+
+		# Make sure that the flags are false to begin with
+		self.resetFlags()
 
 		# Get the dollar and cents amount
 		dollars = price_in_cents // 100
@@ -632,6 +643,15 @@ class CardTerminalWebSocket():
 		self.transactionTimedOut = False
 
 	##
+	# Error functions
+	##
+	def checkPaymentError(self):
+		return self.paymentError
+
+	def confirmPaymentError(self):
+		self.paymentError = False
+
+	##
 	# Cancel functions
 	##
 	def cancelTransaction(self):
@@ -643,6 +663,4 @@ class CardTerminalWebSocket():
 			self.ws.send(json.dumps(payload))
 
 			# Just make sure the values are false
-			self.confirmPaymentSuccess()
-			self.confirmTransactionTimedOut()
-			self.confirmPaymentDeclined()
+			self.resetFlags()
