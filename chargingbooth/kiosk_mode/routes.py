@@ -189,3 +189,26 @@ def checkPaymentStatus():
 	resp = jsonify(payload)
 	resp.status_code = 200
 	return resp
+
+# This function only works for one session at a time functionality
+@kiosk_mode.route("/kiosk_mode/get_session_time_remaining")
+def get_session_time_remaining():
+	payload = {}
+
+	# If there are no sessions
+	if not current_sessions.has_sessions():
+		payload['has_sessions'] = False
+
+		resp = jsonify(payload)
+		resp.status_code = 200
+		return resp
+
+	payload['has_sessions'] = True
+
+	time_list = current_sessions.get_sessions_remaining_time()
+
+	payload['time_remaining'] = time_list[0]
+
+	resp = jsonify(payload)
+	resp.status_code = 200
+	return resp

@@ -294,10 +294,15 @@ class Sessions_Container:
 
 
 	def has_sessions(self):
-		if len(self.local_sessions) > 0:
-			return True
-		else:
-			return False
+		return len(self.local_sessions) > 0
+
+	def get_sessions_remaining_time(self):
+		time_remaining_list = []
+
+		for key in self.local_sessions:
+			time_remaining_list.append(self.local_sessions[key].get_time_remaining())
+
+		return time_remaining_list
 
 # Picture File Interface
 class PFI:
