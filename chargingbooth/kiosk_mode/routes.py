@@ -81,13 +81,11 @@ def confirm_payment():
 		flash("Unable to Connect to Server!", "danger")
 		return redirect(url_for('error.register'))
 
-	pl_json = payload.json()
+	setting = payload.json()
 
 	# Check if registered
-	if not pl_json["registered"]:
+	if not setting["registered"]:
 		return redirect(url_for('register.home'))
-
-	setting = payload.json()
 
 	toggle_pay = setting["toggle_pay"]
 	price = setting["price"]
@@ -99,26 +97,26 @@ def confirm_payment():
 	aspect_ratio = str( int(setting["aspect_ratio_width"]) if (setting["aspect_ratio_width"]).is_integer() else setting["aspect_ratio_width"] ) \
 								+ ":" + str( int(setting["aspect_ratio_height"]) if (setting["aspect_ratio_height"]).is_integer() else setting["aspect_ratio_height"] ) 
 
-	# Start the web socket to make get a payment
-	cardTerminal.startPayment(price)
+	# Check to see if toggle pay is on
+	if toggle_pay:
+		# Start the web socket to make get a payment
+		cardTerminal.startPayment(price)
 
-	return render_template('kiosk_mode/confirm_payment.html', 
-							title='Confirm Payment', 
-							service_ip=service_ip,
-							devi_id_number=devi_id_number,
-							toggle_pay=toggle_pay,
-							price=price,
-							minutes=minutes,
-							seconds=seconds,
-							charge_time_min=charge_time_min,
-							charge_time_sec=charge_time_sec,
-							time_zone=time_zone,
-							location=location,
-							aspect_ratio=aspect_ratio)
-
-	# If there is already a session, Just add time to it
-	# Else, Make a new session
-	return redirect(url_for('kiosk_mode.make_session'))
+		return render_template('kiosk_mode/confirm_payment.html', 
+								title='Confirm Payment', 
+								service_ip=service_ip,
+								devi_id_number=devi_id_number,
+								toggle_pay=toggle_pay,
+								price=price,
+								minutes=minutes,
+								seconds=seconds,
+								charge_time_min=charge_time_min,
+								charge_time_sec=charge_time_sec,
+								time_zone=time_zone,
+								location=location,
+								aspect_ratio=aspect_ratio)
+	else:
+		return redirect(url_for('kiosk_mode.make_session'))
 
 @kiosk_mode.route("/kiosk_mode/make_session")
 def make_session():

@@ -567,7 +567,6 @@ class CardTerminalWebSocket():
 	##
 
 	def resetFlags(self):
-		self.ready = False
 		self.paymentSuccess = False
 		self.transactionTimedOut = False
 		self.transactionActive = False

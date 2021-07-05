@@ -52,13 +52,9 @@
 				{% endif %}
 	        </div>
 	        <div class="modal-footer">
-		        <!-- Need to change this to ask for a payment first before moving on to make a session -->
-		        <a href="{{ url_for('kiosk_mode.confirm_payment') }}" class="block_button" style="color: black;">
-		        	<button>
-		        		<h3>Continue With Payment</h3>
-		        	</button>
-		        </a>
-
+	        	<a href="{{ url_for('kiosk_mode.confirm_payment') }}" class="block_button" style="color: black;">
+	        		<h3>Continue With Payment</h3>
+	        	</a>
 	        </div>
 	      </div>
 
@@ -83,9 +79,7 @@
 	        <div class="modal-footer">
 
 	          <a href="{{ url_for('kiosk_mode.confirm_payment') }}" class="block_button" style="color: black;">
-	          	<button>
-	          		<h3>Confirm</h3>
-	          	</button>
+          		<h3>Confirm</h3>
 	          </a>
 	        </div>
 	      </div>
