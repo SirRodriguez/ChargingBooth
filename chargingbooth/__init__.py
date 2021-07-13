@@ -14,10 +14,14 @@ login_manager.login_message_category = 'info'
 mail = Mail()
 service_ip = os.environ.get('SERVICE_IP')
 
-from chargingbooth.models import Sessions_Container, AdminKey, CardTerminalWebSocket
+from chargingbooth.models import Sessions_Container, AdminKey, CardTerminalWebSocket, StartPaymentFlag
 admin_key = AdminKey()
 current_sessions = Sessions_Container()
 cardTerminal = CardTerminalWebSocket()
+
+# This flag is to signify that the button to start payment was pressed
+# And the user does not go back a age on the screen
+startCardSessionFlag = StartPaymentFlag()
 
 
 def create_app(config_class=Config):

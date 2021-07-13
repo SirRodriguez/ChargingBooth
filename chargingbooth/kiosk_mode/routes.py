@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 from flask import render_template, Blueprint, redirect, url_for, flash, request, jsonify
 from flask_login import current_user, logout_user
-from chargingbooth import db, bcrypt, current_sessions, service_ip, cardTerminal
+from chargingbooth import db, bcrypt, current_sessions, service_ip, cardTerminal, startCardSessionFlag
 from chargingbooth.kiosk_mode.utils import (start_route, get_offset_dates_initiated, get_offset_dates_end,
 											split_seconds, is_registered, get_min_sec)
 from chargingbooth.models import PFI, Device_ID
@@ -18,6 +18,9 @@ kiosk_mode = Blueprint('kiosk_mode', __name__)
 @kiosk_mode.route("/kiosk_mode", methods=['GET', 'POST'])
 def home():
 	start_route()
+
+	# Rest the card session flag
+	startCardSessionFlag.resetFlag()
 
 	devi_id_number = Device_ID.query.first().id_number
 
@@ -62,10 +65,21 @@ def home():
 							setting=setting, 
 							hours=hours, minutes=minutes, seconds=seconds)
 
+@kiosk_mode.route("/kiosk_mode/enable_payment")
+def enablePayment():
+	startCardSessionFlag.setFlag()
+	return redirect(url_for('kiosk_mode.confirm_payment'))
+
 
 @kiosk_mode.route("/kiosk_mode/confirm_payment")
 def confirm_payment():
 	start_route()
+
+	if(startCardSessionFlag.getFlag() == False):
+		return redirect(url_for('kiosk_mode.home'))
+
+	# Rest the card session flag
+	startCardSessionFlag.resetFlag()
 
 	# This is where the payments will happen
 	# Once they are passed, They will be redirected to make a session
@@ -122,6 +136,9 @@ def confirm_payment():
 def make_session():
 	start_route()
 
+	# Rest the card session flag
+	startCardSessionFlag.resetFlag()
+
 	# Only make a session if there is no session currently available
 	if not current_sessions.has_sessions() and cardTerminal.checkPaymentSuccess():
 		cardTerminal.confirmPaymentSuccess()
@@ -155,6 +172,9 @@ def make_session():
 def transaction_timeout():
 	start_route()
 
+	# Rest the card session flag
+	startCardSessionFlag.resetFlag()
+
 	cardTerminal.confirmTransactionTimedOut()
 
 	return redirect(url_for('kiosk_mode.home'))
@@ -162,6 +182,9 @@ def transaction_timeout():
 @kiosk_mode.route("/kiosk_mode/cancel_transaction")
 def cancleTransaction():
 	start_route()
+
+	# Rest the card session flag
+	startCardSessionFlag.resetFlag()
 
 	cardTerminal.cancelTransaction()
 
@@ -171,6 +194,9 @@ def cancleTransaction():
 def payment_declined():
 	start_route()
 
+	# Rest the card session flag
+	startCardSessionFlag.resetFlag()
+
 	cardTerminal.confirmPaymentDeclined()
 
 	flash('Sorry your card was declined')
@@ -179,6 +205,9 @@ def payment_declined():
 @kiosk_mode.route("/kiosk_mode/payment_error")
 def payment_error():
 	start_route()
+
+	# Rest the card session flag
+	startCardSessionFlag.resetFlag()
 
 	cardTerminal.confirmPaymentError()
 

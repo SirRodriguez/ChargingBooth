@@ -663,3 +663,19 @@ class CardTerminalWebSocket():
 
 			# Just make sure the values are false
 			self.resetFlags()
+
+####
+## This is the container to hold the flag for starting a payment
+####
+class StartPaymentFlag():
+	def __init__(self):
+		self.flag = False
+
+	def getFlag(self):
+		return self.flag
+
+	def resetFlag(self):
+		self.flag = False
+
+	def setFlag(self):
+		self.flag = True
