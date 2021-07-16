@@ -460,6 +460,12 @@ class CardTerminalWebSocket():
 		self.transactionActive = False
 		self.paymentDeclined = False
 		self.paymentError = False
+		self.cardNeedsInsert = False
+		self.pleaseWait = False
+		self.cardDetected = False
+		self.processingCard = False
+		self.goingOnline = False
+		self.removeCard = False
 
 		# Thread holder
 		self.thread_pool = list()
@@ -528,11 +534,6 @@ class CardTerminalWebSocket():
 			self.ready = True
 
 		elif(jsonMessage['type'] == "RES_ON_SALE_RESPONSE"):
-			# Sale happened
-			# if(jsonMessage['data']['saleResponse']['description'] == 'APPROVAL'):
-			# 	self.paymentSuccess = True
-			# elif(jsonMessage['data']['saleResponse']['description'] == 'Decline'):
-			# 	self.paymentDeclined = True
 			if(jsonMessage['data']['saleResponse']['description'] == 'Decline'):
 				self.paymentDeclined = True
 			else:
@@ -546,10 +547,33 @@ class CardTerminalWebSocket():
 			if(jsonMessage['responseType'] == "RESPONSE_ERROR_GENERAL"):
 				if(jsonMessage['data']['deviceError'] == "TIMEOUT"):
 					self.transactionTimedOut = True
-				else:
-					self.paymentError = True
 
-				self.transactionActive = False
+			self.paymentError = True
+			self.transactionActive = False
+
+		elif(jsonMessage['type'] == "RES_ON_ERROR"):
+			self.paymentError = True
+			self.transactionActive = False
+
+		elif(jsonMessage['type'] == "RES_ON_WS_ERROR"):
+			self.paymentError = True
+			self.transactionActive = False
+
+		# This is if the user has swipped the card and the card has a chip
+		elif(jsonMessage['type'] == "RES_ON_MESSAGE"):
+			if(jsonMessage['responseType'] == "RESPONSE_OK"):
+				if(jsonMessage['data']['message'] == "CARD_REQUIRES_CHIP_READ" or jsonMessage['data']['message'] == "USE_CHIP_READER"):
+					self.cardNeedsInsert = True
+				elif(jsonMessage['data']['message'] == "PLEASE_WAIT"):
+					self.pleaseWait = True
+				elif(jsonMessage['data']['message'] == "CARD_DETECTED"):
+					self.cardDetected = True
+				elif(jsonMessage['data']['message'] == "PROCESSING"):
+					self.processingCard = True
+				elif(jsonMessage['data']['message'] == "GOING_ONLINE"):
+					self.goingOnline = True
+				elif(jsonMessage['data']['message'] == "REMOVE_CARD"):
+					self.removeCard = True
 
 
 	def on_error(self, ws, error):
@@ -572,6 +596,12 @@ class CardTerminalWebSocket():
 		self.transactionActive = False
 		self.paymentDeclined = False
 		self.paymentError = False
+		self.cardNeedsInsert = False
+		self.pleaseWait = False
+		self.cardDetected = False
+		self.processingCard = False
+		self.goingOnline = False
+		self.removeCard = False
 
 	def webSocketStartUp(self):
 		while(True):
@@ -649,6 +679,60 @@ class CardTerminalWebSocket():
 
 	def confirmPaymentError(self):
 		self.paymentError = False
+
+	##
+	# If the card needs inserted functions
+	##
+	def checkCardNeedsInsert(self):
+		return self.cardNeedsInsert
+
+	def confirmCardNeedsInsert(self):
+		self.cardNeedsInsert = False
+
+	##
+	# Please wait flag
+	##
+	def checkPleaseWait(self):
+		return self.pleaseWait
+
+	def confirmPleaseWait(self):
+		self.pleaseWait = False
+
+	##
+	# Card detected flag
+	##
+	def checkCardDetected(self):
+		return self.cardDetected
+
+	def confirmCardDetected(self):
+		self.cardDetected = False
+
+	##
+	# Proccessing card flag
+	##
+	def checkProcessingCard(self):
+		return self.processingCard
+
+	def confirmProcessingCard(self):
+		self.processingCard = False
+
+	##
+	# Going online flag
+	##
+	def checkGoingOnline(self):
+		return self.goingOnline
+
+	def confirmGoingOnline(self):
+		self.goingOnline = False
+
+	##
+	# Remove Card flag
+	##
+	def checkRemoveCard(self):
+		return self.removeCard
+
+	def confirmRemoveCard(self):
+		self.removeCard = False
 
 	##
 	# Cancel functions

@@ -220,8 +220,25 @@ def checkPaymentStatus():
 		'paymentSuccess': cardTerminal.checkPaymentSuccess(),
 		'paymentTimedOut': cardTerminal.checkTransactionTimedOut(),
 		'paymentDeclined': cardTerminal.checkPaymentDeclined(),
-		'paymentError': cardTerminal.checkPaymentError()
+		'paymentError': cardTerminal.checkPaymentError(),
+		'cardNeedsInserted': cardTerminal.checkCardNeedsInsert(),
+		'pleaseWait': cardTerminal.checkPleaseWait(),
+		'cardDetected': cardTerminal.checkCardDetected(),
+		'processingCard': cardTerminal.checkProcessingCard(),
+		'goingOnline': cardTerminal.checkGoingOnline(),
+		'removeCard': cardTerminal.checkRemoveCard()
 	}
+
+	# print('--paymentSuccess: ', payload['paymentSuccess'])
+	# print('--paymentTimedOut: ', payload['paymentTimedOut'])
+	# print('--paymentDeclined: ', payload['paymentDeclined'])
+	# print('--paymentError: ', payload['paymentError'])
+	# print('--cardNeedsInserted:', payload['cardNeedsInserted'])
+	# print('--pleaseWait:', payload['pleaseWait'])
+	# print('--cardDetected:', payload['cardDetected'])
+	# print('--processingCard:', payload['processingCard'])
+	# print('--goingOnline:', payload['goingOnline'])
+	# print('--removeCard:', payload['removeCard'])
 
 	resp = jsonify(payload)
 	resp.status_code = 200

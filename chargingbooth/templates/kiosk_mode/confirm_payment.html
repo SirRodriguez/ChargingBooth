@@ -20,6 +20,8 @@
 			<center><img src="{{ url_for('static', filename='kiosk_mode/icons/tap-card-icon.png') }}" style="width: 48px;height:48px;"></center>
 
 			<div>Icons made by Freepik from www.flaticon.com</div>
+
+			<h1 id="Message"></h1>
 		</div>
 	</div>
 
@@ -47,12 +49,40 @@
 			var payload = JSON.parse(response);
 			if(payload.paymentSuccess){
 				window.location.replace("/kiosk_mode/make_session");
+
 			}else if(payload.paymentTimedOut){
 				window.location.replace("/kiosk_mode/transaction_timeout");
+
 			}else if(payload.paymentDeclined){
 				window.location.replace("/kiosk_mode/payment_declined");
+
 			}else if(payload.paymentError){
 				window.location.replace("/kiosk_mode/payment_error");
+
+			}else if(payload.removeCard){
+				document.getElementById("Message").innerHTML = "Please Remove Card.";
+				httpGetAsync(url, checkResponse);
+
+			}else if(payload.goingOnline){
+				document.getElementById("Message").innerHTML = "Going Online.";
+				httpGetAsync(url, checkResponse);
+
+			}else if(payload.processingCard){
+				document.getElementById("Message").innerHTML = "Processing Card.";
+				httpGetAsync(url, checkResponse);
+
+			}else if(payload.cardDetected){
+				document.getElementById("Message").innerHTML = "Card Detected.";
+				httpGetAsync(url, checkResponse);
+
+			}else if(payload.pleaseWait){
+				document.getElementById("Message").innerHTML = "Please Wait.";
+				httpGetAsync(url, checkResponse);
+
+			}else if(payload.cardNeedsInserted){
+				document.getElementById("Message").innerHTML = "Please Insert Your Card.";
+				httpGetAsync(url, checkResponse);
+
 			}else{
 				httpGetAsync(url, checkResponse);
 			}
