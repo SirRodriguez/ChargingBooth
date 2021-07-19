@@ -521,7 +521,8 @@ class CardTerminalWebSocket():
 				"type": "REQ_INIT_DEVICE",
                     "data": {
                         "device": "IDTECH",
-                        "inputMethod": "SWIPE_OR_INSERT_OR_TAP",
+                        # "inputMethod": "SWIPE_OR_INSERT_OR_TAP",
+                        "inputMethod": "SWIPE_OR_INSERT",
                         "connectionType": "USB",
                         "emvType": "STANDARD"
                     }
